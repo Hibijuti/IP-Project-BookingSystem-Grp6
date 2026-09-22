@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>K-SoundRentals</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="logo">
+      <img src="Logo.png" alt="K-SoundRentals Logo" class="logo-img">
+      K-SoundRentals
+    </div>
+    <!-- HAMBURGER BUTTON (only visible on mobile) -->
+    <button class="hamburger" id="hamburger">
+    ☰
+    </button>
+
+    <ul class="nav-links" id="nav-links">
+      <li><a href="#packages">Packages</a></li>
+      <li><a href="#videos">Videos</a></li>
+      <li><a href="#booking">Book Now</a></li>
+  </ul>
+
+  </nav>
+
+  <!-- HERO SECTION -->
+  <section class="hero">
+    <h1>Karaoke Party Delivered
+    To Your Door 🎶</h1>
+    <p>Premium karaoke setup for birthdays, fiestas & reunions in Cebu.</p>
+    <a href="#packages" class="btn">See Packages</a>
+  </section>
+
+<!-- VIDEOS SECTION -->
+<section id="videos" class="videos">
+  <h2>See It In Action</h2>
+  <p>Watch our real karaoke setup videos from past events.</p>
+
+  <!-- CAROUSEL WRAPPER -->
+  <div class="carousel">
+
+    <!-- LEFT ARROW -->
+    <button class="carousel-btn prev" id="prev-btn">‹</button>
+
+    <!-- THE TRACK: all cards sit here side by side -->
+    <div class="carousel-track-wrapper">
+      <div class="carousel-track" id="carousel-track">
+
+        <!-- VIDEO CARD 1 -->
+        <a href="https://www.facebook.com/share/r/1Ns8TwmQs2/"
+           target="_blank" class="video-card">
+          <div class="video-thumb">
+            <img src="video1.jpg" alt="Birthday Party Setup">
+            <div class="play-btn">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <p class="video-label">Birthday Party Setup</p>
+        </a>
+
+        <!-- VIDEO CARD 2 -->
+        <a href="https://www.facebook.com/share/r/177mgxHSqY/"
+           target="_blank" class="video-card">
+          <div class="video-thumb">
+            <img src="video2.jpg" alt="Fiesta Night">
+            <div class="play-btn">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <p class="video-label">Fiesta Night</p>
+        </a>
+
+        <!-- VIDEO CARD 3 -->
+        <a href="https://www.facebook.com/share/r/1JE5j95vvZ/"
+           target="_blank" class="video-card">
+          <div class="video-thumb">
+            <img src="video3.jpg" alt="Family Reunion">
+            <div class="play-btn">
+              <svg viewBox="0 0 24 24" fill="white"><path d="M8 5v14l11-7z"/></svg>
+            </div>
+          </div>
+          <p class="video-label">Family Reunion</p>
+        </a>
+
+        <!-- ADD MORE VIDEO CARDS HERE LATER -->
+        <!-- Just copy one of the blocks above, change the
+             href, src, alt, and video-label text -->
+
+      </div>
+    </div>
+
+    <!-- RIGHT ARROW -->
+    <button class="carousel-btn next" id="next-btn">›</button>
+
+  </div>
+
+  <!-- DOTS navigation -->
+  <div class="carousel-dots" id="carousel-dots"></div>
+
+</section>
+
+  <!-- PACKAGES SECTION -->
+<section id="packages" class="packages">
+  <h2>Choose Your Package</h2>
+  <p class="packages-sub">Note: Delivery is not included. 12hrs package is up to 10pm only, no overnight.</p>
+
+  <div class="package-grid">
+
+    <!-- PACKAGE 1: Speaker + Mic -->
+    <div class="package-card">
+      <h3>Speaker & Mic</h3>
+      <p class="pkg-desc">JBL Partybox 520 + 2 Wireless Mics</p>
+      <div class="price-options">
+        <div class="price-row">
+          <span class="duration">12 hrs</span>
+          <span class="price">₱999</span>
+        </div>
+        <div class="price-divider"></div>
+        <div class="price-row">
+          <span class="duration">22 hrs</span>
+          <span class="price">₱1,199</span>
+        </div>
+      </div>
+      <ul>
+        <li>JBL Partybox 520 Speaker</li>
+        <li>2 Wireless Microphones</li>
+      </ul>
+      <button class="btn book-btn"
+        data-package="Speaker &amp; Mic — ₱999 (12 hrs)">
+        Book This
+      </button>
+    </div>
+
+    <!-- PACKAGE 2: Full Karaoke (1 Speaker) -->
+    <div class="package-card featured">
+      <span class="badge">Most Popular</span>
+      <h3>Full Karaoke</h3>
+      <p class="pkg-desc">TV + Speaker + Mic + Karaoke Player</p>
+      <div class="price-options">
+        <div class="price-row">
+          <span class="duration">12 hrs</span>
+          <span class="price">₱1,299</span>
+        </div>
+        <div class="price-divider"></div>
+        <div class="price-row">
+          <span class="duration">22 hrs</span>
+          <span class="price">₱1,499</span>
+        </div>
+      </div>
+      <ul>
+        <li>32" Smart TV</li>
+        <li>JBL Partybox 520 Speaker</li>
+        <li>2 Wireless Microphones</li>
+        <li>Karaoke Player</li>
+      </ul>
+      <button class="btn book-btn"
+      data-package="Full Karaoke — ₱1,299 (12 hrs)">
+      Book This
+      </button>
+    </div>
+
+    <!-- PACKAGE 3: Full Karaoke (2 Speakers) -->
+    <div class="package-card">
+      <span class="badge badge-gold">Premium</span>
+      <h3>Full Karaoke Pro</h3>
+      <p class="pkg-desc">TV + 2 Speakers + Mic + Karaoke Player</p>
+      <div class="price-options">
+        <div class="price-row">
+          <span class="duration">12 hrs</span>
+          <span class="price">₱2,099</span>
+        </div>
+        <div class="price-divider"></div>
+        <div class="price-row">
+          <span class="duration">22 hrs</span>
+          <span class="price">₱2,299</span>
+        </div>
+      </div>
+      <ul>
+        <li>32" Smart TV</li>
+        <li>2x JBL Partybox 520 Speakers</li>
+        <li>2 Wireless Microphones</li>
+        <li>Karaoke Player</li>
+      </ul>
+      <button class="btn book-btn"
+        data-package="Full Karaoke Pro — ₱2,099 (12 hrs)">
+        Book This
+      </button>
+    </div>
+
+  </div>
+</section>
+
+ <!-- BOOKING SECTION -->
+<section id="booking" class="booking">
+  <h2>Reserve Your Date</h2>
+  <p class="booking-sub">Check available dates then fill in your details.
+  We will confirm via Messenger after reviewing your booking.</p>
+
+  <!-- CALENDAR TOGGLE BUTTON -->
+  <button class="btn btn-outline"
+    onclick="document.getElementById('calendar-modal').style.display='flex'"
+    type="button">
+    📅 Check Available Dates
+  </button>
+
+  <!-- CALENDAR MODAL -->
+  <div id="calendar-modal" class="modal-overlay"
+    style="display:none"
+    onclick="if(event.target===this)this.style.display='none'">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Availability Calendar</h3>
+        <button class="modal-close"
+          onclick="document.getElementById('calendar-modal').style.display='none'">✕</button>
+      </div>
+      <div class="cal-legend">
+        <span class="leg available">Available</span>
+        <span class="leg booked">Unavailable</span>
+        <span class="leg selected">Selected</span>
+      </div>
+      <div id="calendar-root"></div>
+      <button class="btn" style="margin-top:16px;width:100%"
+        onclick="useSelectedDate()">Use This Date</button>
+
+      <!-- OWNER ADMIN AREA -->
+      <div class="admin-zone">
+        <input type="password" id="admin-pw"
+          placeholder="Owner password"
+          class="admin-input">
+        <button class="btn-small"
+          onclick="unlockAdmin()">Admin</button>
+      </div>
+      <p id="admin-msg" class="admin-msg"></p>
+    </div>
+  </div>
+
+  <!-- BOOKING FORM -->
+  <form class="booking-form" onsubmit="handleBooking(event)">
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text"
+            id="input-name"
+            placeholder="Juan dela Cruz" required>
+      </div>
+      <div class="form-group">
+        <label>Contact Number</label>
+        <input type="tel"
+          id="input-phone"
+          placeholder="09XX XXX XXXX" required>
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="form-group">
+        <label>Event Date</label>
+        <input type="date" id="input-date" required>
+      </div>
+      <div class="form-group">
+        <label>Delivery Time</label>
+        <select required>
+          <option value="">Pick a time</option>
+          <option>8:00 AM</option>
+          <option>9:00 AM</option>
+          <option>10:00 AM</option>
+          <option>11:00 AM</option>
+          <option>12:00 PM</option>
+          <option>1:00 PM</option>
+          <option>2:00 PM</option>
+          <option>3:00 PM</option>
+          <option>4:00 PM</option>
+          <option>5:00 PM</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>Package</label>
+      <select id="package-select" required>
+        <option value="">Choose a Package</option>
+        <option>Speaker & Mic — ₱999 (12 hrs)</option>
+        <option>Speaker & Mic — ₱1,199 (22 hrs)</option>
+        <option>Full Karaoke — ₱1,299 (12 hrs)</option>
+        <option>Full Karaoke — ₱1,499 (22 hrs)</option>
+        <option>Full Karaoke Pro — ₱2,099 (12 hrs)</option>
+        <option>Full Karaoke Pro — ₱2,299 (22 hrs)</option>
+      </select>
+    </div>
+
+    <div class="form-group">
+      <label>Event Address</label>
+      <input type="text"
+        id="input-address"
+        placeholder="Barangay, City, Cebu" required>
+    </div>
+
+    <button type="submit" class="btn">
+      Send Reservation Request
+    </button>
+  </form>
+
+  <!-- SUCCESS MESSAGE (hidden until form submitted) -->
+  <div id="booking-success" class="success-box"
+    style="display:none">
+    <h3>🎉 Request Sent!</h3>
+    <p>We received your booking request. Please send your
+    <strong>₱500 security deposit</strong> via GCash or GoTyme
+    to confirm your slot, then message us on Facebook with
+    your receipt.</p>
+    <div class="payment-info">
+      <p>GCash: <strong>0962 450 5778</strong></p>
+      <p>GoTyme: <strong>0193 3986 5806</strong></p>
+      <p>Account Name: <strong>Kyle Jayverson Baguio</strong></p>
+      <p>Amount: <strong>₱500</strong></p>
+    </div>
+    <a href="https://m.me/KSoundRentals"
+      class="btn" target="_blank">
+      Message Us on Facebook
+    </a>
+  </div>
+</section>
+
+ <footer>
+    <p>© 2026 K-SoundRentals · Cebu City ·
+      <a href="https://www.facebook.com/KSoundRentals"
+         target="_blank">KSoundRentals</a>
+    </p>
+  </footer>
+
+  <script src="calendar.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
