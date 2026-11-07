@@ -2,100 +2,62 @@
 // K-SOUNDRENTALS — Availability Calendar Module
 // ===================================================
 
-import { API_BASE_URL } from './packages.js';
 import {
   getBlockedDatesFromDB,
   syncBlockedDateToDB,
   getBookingsFromDB,
-  updateBookingStatusInDB,
-  deleteBookingFromDB
+  cancelBookingInDB,
+  reactivateBookingInDB,
+  deleteBookingFromDB,
+  isSupabaseConfigured
 } from './db.js';
 
 const ADMIN_PASSWORD = 'ksound2026';
-const STORAGE_KEY = 'blockedDates';
 
 let isAdmin = false;
 let selectedDate = null;
 let currentYear = new Date().getFullYear();
 let currentMonth = new Date().getMonth();
+let blockedDates = [];
 
 export function getBlockedDates() {
-  try {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    return saved ? JSON.parse(saved) : [];
-  } catch {
-    return [];
-  }
-}
-
-export function saveBlockedDates(dates) {
-  const unique = Array.from(new Set(dates));
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(unique));
+  return blockedDates;
 }
 
 export function isBlocked(dateStr) {
-  return getBlockedDates().includes(dateStr);
+  return blockedDates.includes(dateStr);
 }
 
-export function blockDateLocally(dateStr) {
+export async function blockDateLocally(dateStr) {
   if (!dateStr) return;
-  const dates = getBlockedDates();
-  if (!dates.includes(dateStr)) {
-    dates.push(dateStr);
-    saveBlockedDates(dates);
+  if (!blockedDates.includes(dateStr)) {
+    blockedDates.push(dateStr);
     renderCalendar(currentYear, currentMonth);
-    syncBlockedDateToDB(dateStr, true).catch(() => {});
+    await syncBlockedDateToDB(dateStr, true);
   }
 }
 
 export async function syncBlockedDatesFromServer() {
   try {
-    const dbDates = await getBlockedDatesFromDB();
-    if (Array.isArray(dbDates) && dbDates.length > 0) {
-      const merged = Array.from(new Set([...getBlockedDates(), ...dbDates]));
-      saveBlockedDates(merged);
-      renderCalendar(currentYear, currentMonth);
-      return;
-    }
-
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3500);
-    const res = await fetch(`${API_BASE_URL}/blocked-dates`, { signal: controller.signal });
-    clearTimeout(timeoutId);
-    if (res.ok) {
-      const data = await res.json();
-      const serverDates = Array.isArray(data) ? data : data?.blockedDates || [];
-      if (serverDates.length > 0) {
-        const merged = Array.from(new Set([...getBlockedDates(), ...serverDates]));
-        saveBlockedDates(merged);
-        renderCalendar(currentYear, currentMonth);
-      }
-    }
-  } catch {}
+    blockedDates = await getBlockedDatesFromDB();
+    renderCalendar(currentYear, currentMonth);
+  } catch (err) {
+    console.error('[K-SoundRentals] Calendar sync error:', err);
+  }
 }
 
 export async function toggleBlock(dateStr) {
-  const dates = getBlockedDates();
-  const idx = dates.indexOf(dateStr);
+  const idx = blockedDates.indexOf(dateStr);
   const willBlock = idx === -1;
 
   if (willBlock) {
-    dates.push(dateStr);
+    blockedDates.push(dateStr);
   } else {
-    dates.splice(idx, 1);
+    blockedDates.splice(idx, 1);
   }
 
-  saveBlockedDates(dates);
   renderCalendar(currentYear, currentMonth);
   await syncBlockedDateToDB(dateStr, willBlock);
-
-  try {
-    await fetch(`${API_BASE_URL}/blocked-dates`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ date: dateStr, blocked: willBlock, blockedDates: dates })
-    });
-  } catch {}
 }
 
 export function renderCalendar(year, month) {
@@ -207,36 +169,26 @@ export async function getSavedBookings() {
 }
 
 export async function deleteSavedBooking(id) {
-  if (!confirm('Permanently delete this reservation record?')) return;
+  if (!confirm('Permanently delete this reservation record from Supabase?')) return;
   await deleteBookingFromDB(id);
   await renderAdminLedger();
 }
 
 export async function cancelSavedBooking(id, dateStr) {
-  if (!confirm(`Cancel this reservation? This will reopen ${dateStr} on the calendar.`)) return;
-  await updateBookingStatusInDB(id, 'cancelled');
-  if (dateStr) {
-    const dates = getBlockedDates().filter((d) => d !== dateStr);
-    saveBlockedDates(dates);
-    await syncBlockedDateToDB(dateStr, false);
-    renderCalendar(currentYear, currentMonth);
-  }
+  if (!confirm(`Cancel this reservation? This will reopen ${dateStr} on the Supabase calendar.`)) return;
+  await cancelBookingInDB(id, dateStr);
+  await syncBlockedDatesFromServer();
   await renderAdminLedger();
 }
 
 export async function reactivateSavedBooking(id, dateStr) {
-  await updateBookingStatusInDB(id, 'confirmed');
-  if (dateStr) {
-    blockDateLocally(dateStr);
-  }
+  await reactivateBookingInDB(id, dateStr);
+  await syncBlockedDatesFromServer();
   await renderAdminLedger();
 }
 
 export function clearAllSavedBookings() {
-  if (confirm('Are you sure you want to clear all locally cached bookings?')) {
-    localStorage.removeItem('ksound_bookings');
-    renderAdminLedger();
-  }
+  alert('Bookings are stored strictly in Supabase. Delete individual records or manage them in your Supabase dashboard.');
 }
 
 export async function exportBookingsCsv() {
@@ -282,14 +234,31 @@ export async function renderAdminLedger() {
     return;
   }
 
-  const bookings = await getSavedBookings();
   container.style.display = 'block';
+
+  // Check if Supabase credentials are configured
+  if (!isSupabaseConfigured()) {
+    container.innerHTML = `
+      <div class="admin-supabase-notice">
+        <div class="supabase-badge">⚡ Supabase Database</div>
+        <h4>Database Connection Needed</h4>
+        <p>Bookings &amp; calendar blocks are set to be stored strictly in <strong>Supabase</strong>.</p>
+        <p>Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> in your <code>.env</code> file or Vercel Environment Variables to activate real-time cloud tracking.</p>
+        <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" class="supabase-doc-link">Get Free Supabase Project &nearr;</a>
+      </div>
+    `;
+    return;
+  }
+
+  container.innerHTML = '<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:12px;">Loading live reservations from Supabase...</div>';
+
+  const bookings = await getSavedBookings();
 
   if (bookings.length === 0) {
     container.innerHTML = `
       <div class="admin-ledger-empty">
-        <p>No customer reservations recorded yet.</p>
-        <small style="color:var(--text-muted)">New bookings submitted are synced and saved here.</small>
+        <p>No customer reservations recorded yet in Supabase.</p>
+        <small style="color:var(--text-muted)">Live bookings submitted on any phone or laptop will instantly appear here.</small>
       </div>
     `;
     return;
@@ -316,7 +285,7 @@ export async function renderAdminLedger() {
               ${isCancelled ? '✕ Cancelled' : '✓ Confirmed'}
             </span>
             <span class="admin-booking-date">📅 ${b.date} &bull; ${delTime}</span>
-            <button type="button" class="admin-del-btn" onclick="window.deleteSavedBooking('${b.id}')" title="Delete record">&times;</button>
+            <button type="button" class="admin-del-btn" onclick="window.deleteSavedBooking('${b.id}')" title="Delete from Supabase">&times;</button>
           </div>
           <div class="admin-booking-body">
             <strong>${b.name}</strong> &bull; <a href="tel:${b.phone}" class="admin-phone-link">${b.phone}</a>
@@ -340,11 +309,10 @@ export async function renderAdminLedger() {
   container.innerHTML = `
     <div class="admin-ledger-header">
       <div>
-        <h4>Reservations (${confirmedCount} Active, ${cancelledCount} Cancelled)</h4>
+        <h4>Supabase Reservations (${confirmedCount} Active, ${cancelledCount} Cancelled)</h4>
       </div>
       <div class="admin-ledger-actions">
         <button type="button" class="btn-micro" onclick="window.exportBookingsCsv()">Export CSV</button>
-        <button type="button" class="btn-micro text-danger" onclick="window.clearAllSavedBookings()">Clear</button>
       </div>
     </div>
     <div class="admin-ledger-scroll">
@@ -409,4 +377,5 @@ export function initCalendar() {
   window.reactivateSavedBooking = reactivateSavedBooking;
   window.clearAllSavedBookings = clearAllSavedBookings;
   window.exportBookingsCsv = exportBookingsCsv;
+  window.renderAdminLedger = renderAdminLedger;
 }

@@ -1,181 +1,186 @@
 // ===================================================
-// K-SOUNDRENTALS — Database Engine (Supabase Cloud + Local Sync)
+// K-SOUNDRENTALS — Strict Supabase Database Engine
 // ===================================================
 
+import { createClient } from '@supabase/supabase-js';
 import { SUPABASE_URL, SUPABASE_ANON_KEY } from './packages.js';
 
-export async function getBookingsFromDB() {
-  if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/bookings?order=created_at.desc`, {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          localStorage.setItem('ksound_bookings', JSON.stringify(data));
-          return data;
-        }
-      }
-    } catch {
-      // Fallback to localStorage
-    }
-  }
+let supabaseClient = null;
 
-  try {
-    return JSON.parse(localStorage.getItem('ksound_bookings') || '[]');
-  } catch {
-    return [];
+export function getSupabase() {
+  if (supabaseClient) return supabaseClient;
+  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL === 'YOUR_SUPABASE_URL') {
+    return null;
   }
+  supabaseClient = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  return supabaseClient;
 }
 
+export function isSupabaseConfigured() {
+  const url = SUPABASE_URL?.trim() || '';
+  const key = SUPABASE_ANON_KEY?.trim() || '';
+  return Boolean(url && key && url.startsWith('http') && key.length > 10);
+}
+
+// 1. Fetch live bookings strictly from Supabase
+export async function getBookingsFromDB() {
+  const supabase = getSupabase();
+  if (!supabase) {
+    console.warn('[K-SoundRentals] Supabase is not configured. Set VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in your .env or Vercel.');
+    return [];
+  }
+
+  const { data, error } = await supabase
+    .from('bookings')
+    .select('*')
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    console.error('[K-SoundRentals] Error reading bookings from Supabase:', error.message);
+    return [];
+  }
+
+  return data || [];
+}
+
+// 2. Insert booking strictly into Supabase
 export async function saveBookingToDB(bookingData) {
-  const newEntry = {
-    id: 'KS-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-    createdAt: new Date().toLocaleString(),
-    status: 'confirmed',
-    ...bookingData
+  const supabase = getSupabase();
+  const bookingId = 'KS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+
+  const payload = {
+    id: bookingId,
+    name: bookingData.name,
+    phone: bookingData.phone,
+    date: bookingData.date,
+    delivery_time: bookingData.deliveryTime,
+    package: bookingData.packageChosen,
+    address: bookingData.address,
+    map_link: bookingData.mapLink || null,
+    payment_channel: bookingData.paymentChannel,
+    payment_type: bookingData.paymentTypeLabel,
+    amount_due: bookingData.amountDue,
+    reference_no: bookingData.referenceNo || null,
+    status: 'confirmed'
   };
 
-  // 1. Save locally
-  try {
-    const list = JSON.parse(localStorage.getItem('ksound_bookings') || '[]');
-    list.unshift(newEntry);
-    localStorage.setItem('ksound_bookings', JSON.stringify(list.slice(0, 50)));
-  } catch {}
-
-  // 2. Save to Supabase Cloud
-  if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-    try {
-      await fetch(`${SUPABASE_URL}/rest/v1/bookings`, {
-        method: 'POST',
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
-          Prefer: 'return=representation'
-        },
-        body: JSON.stringify({
-          id: newEntry.id,
-          name: newEntry.name,
-          phone: newEntry.phone,
-          date: newEntry.date,
-          delivery_time: newEntry.deliveryTime,
-          package: newEntry.packageChosen,
-          address: newEntry.address,
-          map_link: newEntry.mapLink || '',
-          payment_channel: newEntry.paymentChannel,
-          payment_type: newEntry.paymentTypeLabel,
-          amount_due: newEntry.amountDue,
-          reference_no: newEntry.referenceNo || '',
-          status: 'confirmed'
-        })
-      });
-    } catch {}
+  if (!supabase) {
+    console.warn('[K-SoundRentals] Supabase credentials missing. Booking was not saved to database.');
+    return payload;
   }
 
-  return newEntry;
+  const { data, error } = await supabase
+    .from('bookings')
+    .insert([payload])
+    .select()
+    .single();
+
+  if (error) {
+    console.error('[K-SoundRentals] Error writing booking to Supabase:', error.message);
+    throw error;
+  }
+
+  // Automatically lock the event date in Supabase blocked_dates
+  if (bookingData.date) {
+    await syncBlockedDateToDB(bookingData.date, true);
+  }
+
+  return data || payload;
 }
 
-export async function updateBookingStatusInDB(id, newStatus) {
-  // Update local
-  try {
-    const list = JSON.parse(localStorage.getItem('ksound_bookings') || '[]');
-    const item = list.find((b) => b.id === id);
-    if (item) {
-      item.status = newStatus;
-      localStorage.setItem('ksound_bookings', JSON.stringify(list));
-    }
-  } catch {}
+// 3. Cancel booking strictly in Supabase (and reopen calendar date)
+export async function cancelBookingInDB(id, dateStr) {
+  const supabase = getSupabase();
+  if (!supabase) return;
 
-  // Update Cloud
-  if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-    try {
-      await fetch(`${SUPABASE_URL}/rest/v1/bookings?id=eq.${id}`, {
-        method: 'PATCH',
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ status: newStatus })
-      });
-    } catch {}
+  const { error } = await supabase
+    .from('bookings')
+    .update({ status: 'cancelled' })
+    .eq('id', id);
+
+  if (error) {
+    console.error('[K-SoundRentals] Error updating booking status in Supabase:', error.message);
+    throw error;
+  }
+
+  // Reopen the date for other customers
+  if (dateStr) {
+    await syncBlockedDateToDB(dateStr, false);
   }
 }
 
+// 4. Reactivate booking strictly in Supabase (and relock calendar date)
+export async function reactivateBookingInDB(id, dateStr) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+
+  const { error } = await supabase
+    .from('bookings')
+    .update({ status: 'confirmed' })
+    .eq('id', id);
+
+  if (error) {
+    console.error('[K-SoundRentals] Error reactivating booking in Supabase:', error.message);
+    throw error;
+  }
+
+  // Relock the date
+  if (dateStr) {
+    await syncBlockedDateToDB(dateStr, true);
+  }
+}
+
+// 5. Delete booking record permanently from Supabase
 export async function deleteBookingFromDB(id) {
-  try {
-    const list = JSON.parse(localStorage.getItem('ksound_bookings') || '[]');
-    const filtered = list.filter((b) => b.id !== id);
-    localStorage.setItem('ksound_bookings', JSON.stringify(filtered));
-  } catch {}
+  const supabase = getSupabase();
+  if (!supabase) return;
 
-  if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-    try {
-      await fetch(`${SUPABASE_URL}/rest/v1/bookings?id=eq.${id}`, {
-        method: 'DELETE',
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      });
-    } catch {}
+  const { error } = await supabase
+    .from('bookings')
+    .delete()
+    .eq('id', id);
+
+  if (error) {
+    console.error('[K-SoundRentals] Error deleting booking from Supabase:', error.message);
   }
 }
 
+// 6. Fetch live blocked dates strictly from Supabase
 export async function getBlockedDatesFromDB() {
-  if (SUPABASE_URL && SUPABASE_ANON_KEY && SUPABASE_URL !== 'YOUR_SUPABASE_URL') {
-    try {
-      const res = await fetch(`${SUPABASE_URL}/rest/v1/blocked_dates?select=date`, {
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        if (Array.isArray(data)) {
-          const cloudDates = data.map((d) => d.date);
-          localStorage.setItem('blockedDates', JSON.stringify(cloudDates));
-          return cloudDates;
-        }
-      }
-    } catch {}
-  }
+  const supabase = getSupabase();
+  if (!supabase) return [];
 
-  try {
-    return JSON.parse(localStorage.getItem('blockedDates') || '[]');
-  } catch {
+  const { data, error } = await supabase
+    .from('blocked_dates')
+    .select('date');
+
+  if (error) {
+    console.error('[K-SoundRentals] Error fetching blocked dates from Supabase:', error.message);
     return [];
   }
+
+  return (data || []).map((row) => row.date);
 }
 
+// 7. Upsert or delete blocked date strictly in Supabase
 export async function syncBlockedDateToDB(dateStr, shouldBlock) {
-  if (!SUPABASE_URL || !SUPABASE_ANON_KEY || SUPABASE_URL === 'YOUR_SUPABASE_URL') return;
-  try {
-    if (shouldBlock) {
-      await fetch(`${SUPABASE_URL}/rest/v1/blocked_dates`, {
-        method: 'POST',
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`,
-          'Content-Type': 'application/json',
-          Prefer: 'resolution=merge-duplicates'
-        },
-        body: JSON.stringify({ date: dateStr })
-      });
-    } else {
-      await fetch(`${SUPABASE_URL}/rest/v1/blocked_dates?date=eq.${dateStr}`, {
-        method: 'DELETE',
-        headers: {
-          apikey: SUPABASE_ANON_KEY,
-          Authorization: `Bearer ${SUPABASE_ANON_KEY}`
-        }
-      });
+  const supabase = getSupabase();
+  if (!supabase || !dateStr) return;
+
+  if (shouldBlock) {
+    const { error } = await supabase
+      .from('blocked_dates')
+      .upsert({ date: dateStr }, { onConflict: 'date' });
+    if (error) {
+      console.error('[K-SoundRentals] Error blocking date in Supabase:', error.message);
     }
-  } catch {}
+  } else {
+    const { error } = await supabase
+      .from('blocked_dates')
+      .delete()
+      .eq('date', dateStr);
+    if (error) {
+      console.error('[K-SoundRentals] Error unblocking date in Supabase:', error.message);
+    }
+  }
 }
