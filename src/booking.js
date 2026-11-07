@@ -11,6 +11,7 @@ import {
   pesoIconSvg
 } from './packages.js';
 import { isBlocked, blockDateLocally } from './calendar.js';
+import { saveBookingToDB } from './db.js';
 
 let activePaymentChannel = 'gcash';
 let activePaymentType = 'deposit'; // 'deposit' | 'full'
@@ -363,7 +364,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
   const statusBanner = document.getElementById('booking-status-banner');
 
   blockDateLocally(bookingData.date);
-  saveBookingLocally(bookingData);
+  saveBookingToDB(bookingData);
 
   if (formCard) formCard.style.display = 'none';
   if (successBox) {

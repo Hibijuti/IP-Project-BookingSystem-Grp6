@@ -4,6 +4,17 @@
 
 export const API_BASE_URL = 'http://localhost:3000';
 
+// Supabase Cloud Database: set in .env or paste your credentials here
+export const SUPABASE_URL =
+  import.meta.env?.VITE_SUPABASE_URL ||
+  localStorage.getItem('supabase_url') ||
+  '';
+
+export const SUPABASE_ANON_KEY =
+  import.meta.env?.VITE_SUPABASE_ANON_KEY ||
+  localStorage.getItem('supabase_anon_key') ||
+  '';
+
 // Google Maps API Key: set in .env (VITE_GOOGLE_MAPS_KEY) or paste your key here
 export const GOOGLE_MAPS_API_KEY =
   import.meta.env?.VITE_GOOGLE_MAPS_KEY ||
