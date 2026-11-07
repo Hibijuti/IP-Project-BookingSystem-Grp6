@@ -1,363 +1,84 @@
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Packages | K-SoundRentals</title>
-
-    <meta
-        name="description"
-        content="Choose your K-SoundRentals karaoke and speaker rental package."
-    >
-
+    <title>Packages | K-SoundRentals Cebu</title>
+    <meta name="description" content="K-SoundRentals Packages — JBL PartyBox 520, Wireless Mics, and 32-inch Smart TV Karaoke Setups in Cebu.">
+    <link rel="icon" type="image/png" href="Logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-    <!-- ================= NAVBAR ================= -->
-
+    <!-- ================= FLOATING PILL NAVBAR ================= -->
     <header class="navbar">
         <div class="nav-container">
-
             <a href="index.html" class="logo">
                 <img src="Logo.png" alt="K-SoundRentals Logo">
+                <span class="brand-name">K-Sound<span>Rentals</span></span>
             </a>
 
             <nav class="nav-links" id="nav-links">
                 <a href="index.html">Home</a>
                 <a href="packages.html" class="active">Packages</a>
                 <a href="videos.html">Events</a>
-                <a href="booking.html" class="nav-book">Book Now</a>
+                <a href="booking.html" class="nav-book">
+                    <span>Book Now</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
             </nav>
 
-            <button class="hamburger" id="hamburger" type="button">
-                ☰
+            <button class="hamburger" id="hamburger" type="button" aria-label="Toggle Menu" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </button>
-
         </div>
     </header>
 
-
-    <!-- ================= PACKAGES ================= -->
-
+    <!-- ================= REUSABLE PACKAGE CARDS COMPONENT ================= -->
     <main class="packages">
-
-        <p class="packages-sub">
-            12-hour packages are available up to 10:00 PM.
-        </p>
-
-        <div class="package-grid">
-
-
-            <!-- ================= PACKAGE 1 ================= -->
-
-            <div
-                class="package-card"
-                style="display:flex;flex-direction:column;"
-            >
-
-                <h3>
-                    Speaker & Mic
-                </h3>
-
-                <p class="pkg-desc">
-                    JBL PartyBox 520 + 2 Wireless Mics
-                </p>
-
-                <div class="price-options">
-
-                    <div class="price-row">
-                        <span class="duration">
-                            12 hrs
-                        </span>
-
-                        <span class="price">
-                            ₱999
-                        </span>
-                    </div>
-
-                    <div class="price-divider"></div>
-
-                    <div class="price-row">
-                        <span class="duration">
-                            22 hrs
-                        </span>
-
-                        <span class="price">
-                            ₱1,199
-                        </span>
-                    </div>
-
-                </div>
-
-                <ul>
-                    <li>JBL PartyBox 520 Speaker</li>
-                    <li>2 Wireless Microphones</li>
-                    <li>Powerful party sound</li>
-                    <li>Great for simple gatherings</li>
-                </ul>
-
-                <a
-                    href="booking.html?package=speaker12"
-                    class="btn"
-                    style="background:#ff8c00;color:#fff;border-color:#ff8c00;margin-top:auto;"
-                >
-                    Book This
-                </a>
-
-            </div>
-
-
-            <!-- ================= PACKAGE 2 ================= -->
-
-            <div
-                class="package-card featured"
-                style="display:flex;flex-direction:column;"
-            >
-
-                <span class="badge">
-                    Most Popular
-                </span>
-
-                <h3>
-                    Full Karaoke
-                </h3>
-
-                <p class="pkg-desc">
-                    TV + Speaker + Mic + Karaoke Player
-                </p>
-
-                <div class="price-options">
-
-                    <div class="price-row">
-                        <span class="duration">
-                            12 hrs
-                        </span>
-
-                        <span class="price">
-                            ₱1,299
-                        </span>
-                    </div>
-
-                    <div class="price-divider"></div>
-
-                    <div class="price-row">
-                        <span class="duration">
-                            22 hrs
-                        </span>
-
-                        <span class="price">
-                            ₱1,499
-                        </span>
-                    </div>
-
-                </div>
-
-                <ul>
-                    <li>32" Smart TV</li>
-                    <li>JBL PartyBox 520 Speaker</li>
-                    <li>2 Wireless Microphones</li>
-                    <li>Karaoke Player</li>
-                    <li>Complete karaoke setup</li>
-                </ul>
-
-                <a
-                    href="booking.html?package=karaoke12"
-                    class="btn"
-                    style="background:#ff8c00;color:#fff;border-color:#ff8c00;margin-top:auto;"
-                >
-                    Book This
-                </a>
-
-            </div>
-
-
-            <!-- ================= PACKAGE 3 ================= -->
-
-            <div
-                class="package-card"
-                style="display:flex;flex-direction:column;"
-            >
-
-                <span class="badge badge-gold">
-                    Premium
-                </span>
-
-                <h3>
-                    Full Karaoke Pro
-                </h3>
-
-                <p class="pkg-desc">
-                    TV + 2 Speakers + Mic + Karaoke Player
-                </p>
-
-                <div class="price-options">
-
-                    <div class="price-row">
-                        <span class="duration">
-                            12 hrs
-                        </span>
-
-                        <span class="price">
-                            ₱2,099
-                        </span>
-                    </div>
-
-                    <div class="price-divider"></div>
-
-                    <div class="price-row">
-                        <span class="duration">
-                            22 hrs
-                        </span>
-
-                        <span class="price">
-                            ₱2,299
-                        </span>
-                    </div>
-
-                </div>
-
-                <ul>
-                    <li>32" Smart TV</li>
-                    <li>2× JBL PartyBox 520 Speakers</li>
-                    <li>2 Wireless Microphones</li>
-                    <li>Karaoke Player</li>
-                    <li>More powerful sound coverage</li>
-                </ul>
-
-                <a
-                    href="booking.html?package=pro12"
-                    class="btn"
-                    style="background:#ff8c00;color:#fff;border-color:#ff8c00;margin-top:auto;"
-                >
-                    Book This
-                </a>
-
-            </div>
-
+        <div class="section-heading anim-reveal" style="margin-bottom: 32px;">
+            <h2>Rental <span class="text-gradient">Packages.</span></h2>
         </div>
 
+        <div class="package-grid" data-component="package-grid"></div>
     </main>
 
-
-    <!-- ================= CTA ================= -->
-
-    <section class="home-cta">
-
-        <div class="cta-content">
-
-            <span class="section-eyebrow">
-                FOUND YOUR PACKAGE?
-            </span>
-
-            <h2>
-                LET'S GET
-                <span>THE PARTY STARTED.</span>
-            </h2>
-
-            <p>
-                Choose your package, select your date, and send us
-                your reservation request.
-            </p>
-
-            <div class="cta-buttons">
-
-                <a
-                    href="booking.html"
-                    class="btn btn-primary"
-                >
-                    Book Your Setup
-                </a>
-
-                <a
-                    href="https://m.me/KSoundRentals"
-                    target="_blank"
-                    class="btn btn-outline"
-                >
-                    Message Us
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
     <!-- ================= FOOTER ================= -->
-
     <footer class="footer">
-
         <div class="footer-container">
-
             <div class="footer-brand">
-
-                <img
-                    src="Logo.png"
-                    alt="K-SoundRentals Logo"
-                >
-
-                <p>
-                    Modern Karaoke & Speaker Rental
-                </p>
-
+                <a href="index.html" class="logo">
+                    <img src="Logo.png" alt="K-SoundRentals Logo">
+                    <span class="brand-name">K-Sound<span>Rentals</span></span>
+                </a>
+                <p style="margin-top: 10px;">Karaoke &amp; Speaker Rental in Lapu-Lapu City, Cebu</p>
             </div>
 
             <div class="footer-links">
-
-                <a href="index.html">
-                    Home
-                </a>
-
-                <a href="packages.html">
-                    Packages
-                </a>
-
-                <a href="videos.html">
-                    Events
-                </a>
-
-                <a href="booking.html">
-                    Book Now
-                </a>
-
+                <a href="index.html">Home</a>
+                <a href="packages.html">Packages</a>
+                <a href="videos.html">Events</a>
+                <a href="booking.html">Book Now</a>
             </div>
 
             <div class="footer-social">
-
-                <a
-                    href="https://www.facebook.com/KSoundRentals"
-                    target="_blank"
-                >
-                    Facebook
-                </a>
-
-                <a
-                    href="https://m.me/KSoundRentals"
-                    target="_blank"
-                >
-                    Messenger
-                </a>
-
+                <a href="https://www.facebook.com/KSoundRentals" target="_blank" rel="noopener noreferrer">Facebook</a>
+                <a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer">Messenger</a>
             </div>
-
         </div>
 
         <div class="footer-bottom">
-
-            <p>
-                © 2026 K-SoundRentals. All rights reserved.
-            </p>
-
+            <p>&copy; 2026 K-SoundRentals. All rights reserved.</p>
         </div>
-
     </footer>
 
-
-    <script src="app.js"></script>
-
+    <script type="module" src="/app.js"></script>
 </body>
 </html>

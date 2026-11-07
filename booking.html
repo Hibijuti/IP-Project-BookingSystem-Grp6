@@ -2,669 +2,345 @@
 <html lang="en">
 
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Book Now | K-SoundRentals</title>
-
-    <meta
-        name="description"
-        content="Book your K-SoundRentals karaoke and speaker setup."
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Now | K-SoundRentals Cebu</title>
+    <meta name="description" content="Book your K-SoundRentals karaoke and JBL PartyBox 520 speaker setup in Cebu.">
+    <link rel="icon" type="image/png" href="Logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
     <link rel="stylesheet" href="style.css">
-
 </head>
-
 
 <body>
 
-
-    <!-- ================= NAVBAR ================= -->
-
+    <!-- ================= FLOATING PILL NAVBAR ================= -->
     <header class="navbar">
-
         <div class="nav-container">
-
             <a href="index.html" class="logo">
-
-                <img
-                    src="Logo.png"
-                    alt="K-SoundRentals Logo"
-                >
-
+                <img src="Logo.png" alt="K-SoundRentals Logo">
+                <span class="brand-name">K-Sound<span>Rentals</span></span>
             </a>
-
 
             <nav class="nav-links" id="nav-links">
-
-                <a href="index.html">
-                    Home
+                <a href="index.html">Home</a>
+                <a href="packages.html">Packages</a>
+                <a href="videos.html">Events</a>
+                <a href="booking.html" class="nav-book active">
+                    <span>Book Now</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
-
-                <a href="packages.html">
-                    Packages
-                </a>
-
-                <a href="videos.html">
-                    Events
-                </a>
-
-                <a
-                    href="booking.html"
-                    class="nav-book active"
-                >
-                    Book Now
-                </a>
-
             </nav>
 
-
-            <button
-                class="hamburger"
-                id="hamburger"
-                type="button"
-            >
-                ☰
+            <button class="hamburger" id="hamburger" type="button" aria-label="Toggle Menu" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </button>
-
         </div>
-
     </header>
 
-
-    <!-- ================= PAGE INTRO ================= -->
-
-
-
-    <!-- ================= BOOKING ================= -->
-
+    <!-- ================= SPLIT-SCREEN BOOKING ================= -->
     <main class="booking">
 
-
-        <div class="booking-intro">
-
-            <h2>
-                Reserve Your Date
-            </h2>
-
-            <p class="booking-sub">
-                Check available dates first, then fill in your details.
-                We will confirm your booking through Messenger.
-            </p>
-
+        <div class="section-heading anim-reveal" style="margin-bottom: 32px;">
+            <h2>Reserve Your <span class="text-gradient">Date.</span></h2>
         </div>
 
+        <div class="booking-workspace">
 
-        <!-- ================= CALENDAR BUTTON ================= -->
+            <!-- LEFT COLUMN: LIVE AVAILABILITY CALENDAR + SELECTED PACKAGE CARD -->
+            <div class="booking-left-col">
 
-        <button
-            class="btn btn-outline"
-            type="button"
-            onclick="document.getElementById('calendar-modal').style.display='flex'"
-        >
-            📅 Check Available Dates
-        </button>
+                <div class="calendar-panel spotlight-card">
+                    <div class="panel-header">
+                        <h3>Availability Calendar</h3>
+                        <span class="cal-hint-pill">Tap a date</span>
+                    </div>
 
+                    <div class="cal-legend">
+                        <span class="leg available">Available</span>
+                        <span class="leg booked">Unavailable</span>
+                        <span class="leg selected">Selected</span>
+                    </div>
 
-        <!-- ================= CALENDAR MODAL ================= -->
+                    <div id="calendar-root"></div>
 
-        <div
-            id="calendar-modal"
-            class="modal-overlay"
-            style="display:none"
-            onclick="if(event.target===this)this.style.display='none'"
-        >
-
-            <div class="modal-box">
-
-
-                <div class="modal-header">
-
-                    <h3>
-                        Availability Calendar
-                    </h3>
-
-                    <button
-                        class="modal-close"
-                        type="button"
-                        onclick="document.getElementById('calendar-modal').style.display='none'"
-                    >
-                        ✕
-                    </button>
-
+                    <details class="admin-details">
+                        <summary>Admin &amp; Booking Ledger</summary>
+                        <div class="admin-zone">
+                            <input
+                                type="password"
+                                id="admin-pw"
+                                placeholder="Owner PIN (ksound2026)"
+                                class="admin-input"
+                            >
+                            <button
+                                class="btn-small"
+                                type="button"
+                                onclick="unlockAdmin()"
+                            >
+                                Unlock
+                            </button>
+                        </div>
+                        <p id="admin-msg" class="admin-msg"></p>
+                        <div id="admin-bookings-list" class="admin-bookings-list" style="display:none"></div>
+                    </details>
                 </div>
 
-
-                <!-- LEGEND -->
-
-                <div class="cal-legend">
-
-                    <span class="leg available">
-                        Available
-                    </span>
-
-                    <span class="leg booked">
-                        Unavailable
-                    </span>
-
-                    <span class="leg selected">
-                        Selected
-                    </span>
-
-                </div>
-
-
-                <!-- CALENDAR -->
-
-                <div id="calendar-root"></div>
-
-
-                <!-- SELECT DATE -->
-
-                <button
-                    class="btn"
-                    type="button"
-                    style="margin-top:16px;width:100%"
-                    onclick="useSelectedDate()"
-                >
-                    Use This Date
-                </button>
-
-
-                <!-- ADMIN -->
-
-                <div class="admin-zone">
-
-                    <input
-                        type="password"
-                        id="admin-pw"
-                        placeholder="Owner password"
-                        class="admin-input"
-                    >
-
-                    <button
-                        class="btn-small"
-                        type="button"
-                        onclick="unlockAdmin()"
-                    >
-                        Admin
-                    </button>
-
-                </div>
-
-
-                <p
-                    id="admin-msg"
-                    class="admin-msg"
-                ></p>
+                <!-- LIVE PACKAGE SUMMARY CARD (UPDATED BY JS) -->
+                <div id="live-package-card" class="live-package-card spotlight-card"></div>
 
             </div>
 
-        </div>
+            <!-- RIGHT COLUMN: RESERVATION FORM -->
+            <div class="booking-right-col">
 
+                <div id="booking-form-card" class="booking-form-card spotlight-card">
+                    <div class="panel-header" style="margin-bottom: 18px;">
+                        <h3>Booking Details</h3>
+                    </div>
 
-        <!-- ================= BOOKING FORM ================= -->
+                    <form class="booking-form" onsubmit="handleBooking(event)" novalidate>
 
-        <form
-            class="booking-form"
-            onsubmit="handleBooking(event)"
-        >
+                        <!-- NAME & PHONE ROW -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="input-name">Full Name</label>
+                                <input
+                                    type="text"
+                                    id="input-name"
+                                    placeholder="Juan Dela Cruz"
+                                    required
+                                >
+                            </div>
 
+                            <div class="form-group">
+                                <label for="input-phone">Mobile Number</label>
+                                <input
+                                    type="tel"
+                                    id="input-phone"
+                                    placeholder="09XX XXX XXXX"
+                                    required
+                                >
+                            </div>
+                        </div>
 
-            <!-- NAME + PHONE -->
+                        <!-- EVENT DATE -->
+                        <div class="form-group">
+                            <label for="input-date">Event Date</label>
+                            <input
+                                type="date"
+                                id="input-date"
+                                required
+                            >
+                        </div>
 
-            <div class="form-row">
+                        <!-- INTERACTIVE DELIVERY TIME CHIPS -->
+                        <div class="form-group">
+                            <label for="delivery-time">Delivery Time</label>
+                            <div class="time-chips-grid" role="group" aria-label="Select Delivery Time">
+                                <button type="button" class="time-chip" data-time="8:00 AM" aria-pressed="false">8:00 AM</button>
+                                <button type="button" class="time-chip" data-time="9:00 AM" aria-pressed="false">9:00 AM</button>
+                                <button type="button" class="time-chip" data-time="10:00 AM" aria-pressed="false">10:00 AM</button>
+                                <button type="button" class="time-chip" data-time="11:00 AM" aria-pressed="false">11:00 AM</button>
+                                <button type="button" class="time-chip" data-time="12:00 PM" aria-pressed="false">12:00 PM</button>
+                                <button type="button" class="time-chip" data-time="1:00 PM" aria-pressed="false">1:00 PM</button>
+                                <button type="button" class="time-chip" data-time="2:00 PM" aria-pressed="false">2:00 PM</button>
+                                <button type="button" class="time-chip" data-time="3:00 PM" aria-pressed="false">3:00 PM</button>
+                                <button type="button" class="time-chip" data-time="4:00 PM" aria-pressed="false">4:00 PM</button>
+                                <button type="button" class="time-chip" data-time="5:00 PM" aria-pressed="false">5:00 PM</button>
+                            </div>
+                            <select id="delivery-time" class="sr-only-select" required tabindex="-1">
+                                <option value="">Pick a time</option>
+                                <option>8:00 AM</option>
+                                <option>9:00 AM</option>
+                                <option>10:00 AM</option>
+                                <option>11:00 AM</option>
+                                <option>12:00 PM</option>
+                                <option>1:00 PM</option>
+                                <option>2:00 PM</option>
+                                <option>3:00 PM</option>
+                                <option>4:00 PM</option>
+                                <option>5:00 PM</option>
+                            </select>
+                        </div>
 
-                <div class="form-group">
+                        <!-- INTERACTIVE PACKAGE CARDS + DURATION PILL TOGGLE -->
+                        <div class="form-group">
+                            <div class="pkg-picker-header">
+                                <label for="package-select">Package</label>
+                                <div class="dur-pill-toggle" role="group" aria-label="Rental Duration">
+                                    <button type="button" class="dur-pill-btn active" data-hours="12" aria-pressed="true">12 Hrs</button>
+                                    <button type="button" class="dur-pill-btn" data-hours="22" aria-pressed="false">22 Hrs</button>
+                                </div>
+                            </div>
 
-                    <label for="input-name">
-                        Full Name
-                    </label>
+                            <div class="pkg-choice-grid" role="group" aria-label="Select Rental Package">
+                                <button type="button" class="pkg-choice-card" data-tier="Speaker & Mic" aria-pressed="false">
+                                    <strong>Speaker &amp; Mic</strong>
+                                    <span class="choice-equip">JBL 520 &bull; 2 Mics</span>
+                                    <div class="choice-price-row">
+                                        <span class="choice-price peso-inline">₱999</span>
+                                        <small class="choice-hrs">/ 12 hrs</small>
+                                    </div>
+                                </button>
 
-                    <input
-                        type="text"
-                        id="input-name"
-                        placeholder="Juan dela Cruz"
-                        required
-                    >
+                                <button type="button" class="pkg-choice-card active" data-tier="Full Karaoke" aria-pressed="true">
+                                    <strong>Full Karaoke</strong>
+                                    <span class="choice-equip">32" TV &bull; JBL 520 &bull; 2 Mics</span>
+                                    <div class="choice-price-row">
+                                        <span class="choice-price peso-inline">₱1,299</span>
+                                        <small class="choice-hrs">/ 12 hrs</small>
+                                    </div>
+                                </button>
 
+                                <button type="button" class="pkg-choice-card" data-tier="Full Karaoke Pro" aria-pressed="false">
+                                    <strong>Full Karaoke Pro</strong>
+                                    <span class="choice-equip">32" TV &bull; 2&times; JBL 520</span>
+                                    <div class="choice-price-row">
+                                        <span class="choice-price peso-inline">₱2,099</span>
+                                        <small class="choice-hrs">/ 12 hrs</small>
+                                    </div>
+                                </button>
+                            </div>
+
+                            <select id="package-select" class="sr-only-select" required tabindex="-1">
+                                <option value="">Choose a Package</option>
+                                <option>Speaker & Mic — ₱999 (12 hrs)</option>
+                                <option>Speaker & Mic — ₱1,199 (22 hrs)</option>
+                                <option>Full Karaoke — ₱1,299 (12 hrs)</option>
+                                <option>Full Karaoke — ₱1,499 (22 hrs)</option>
+                                <option>Full Karaoke Pro — ₱2,099 (12 hrs)</option>
+                                <option>Full Karaoke Pro — ₱2,299 (22 hrs)</option>
+                            </select>
+                        </div>
+
+                        <!-- DYNAMIC PICKUP TIME HELPER -->
+                        <div id="pickup-helper" class="pickup-helper" style="display:none"></div>
+
+                        <!-- EVENT VENUE ADDRESS & OPENSTREETMAP PIN-PICKER -->
+                        <div class="form-group">
+                            <div class="map-header-row">
+                                <label for="input-address">Event Venue &amp; Pin (Lapu-Lapu City)</label>
+                                <button type="button" id="map-locate-btn" class="map-gps-btn">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
+                                    <span>My GPS</span>
+                                </button>
+                            </div>
+
+                            <div class="map-search-bar">
+                                <input
+                                    type="text"
+                                    id="map-search-input"
+                                    placeholder="Search barangay, subdivision, or resort in Lapu-Lapu..."
+                                >
+                                <button type="button" id="map-search-btn" class="map-search-btn">Find</button>
+                            </div>
+
+                            <div id="osm-map" class="osm-map-box" aria-label="Lapu-Lapu City Venue Map"></div>
+                            <div id="map-pin-status" class="map-pin-status">
+                                <span>Tap anywhere on the map or drag the pin to set your delivery location.</span>
+                            </div>
+
+                            <input
+                                type="text"
+                                id="input-address"
+                                placeholder="House/Street, Barangay, Lapu-Lapu City"
+                                required
+                            >
+                            <input type="hidden" id="input-map-link" value="">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-shine" style="width: 100%;">
+                            <span>Complete Reservation</span>
+                            <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        </button>
+
+                        <div class="booking-guarantees-row">
+                            <div class="b-guarantee-item">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#86efac" stroke-width="2.3"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                                <span>Free Delivery (Lapu-Lapu)</span>
+                            </div>
+                            <div class="b-guarantee-item">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ff8c00" stroke-width="2.3"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/></svg>
+                                <span>1 Valid ID Upon Handover</span>
+                            </div>
+                            <div class="b-guarantee-item">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#38bdf8" stroke-width="2.3"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                <span>₱200 Downpayment</span>
+                            </div>
+                        </div>
+
+                    </form>
                 </div>
 
+                <!-- CONFIRMATION CARD -->
+                <div id="success-message" class="success-box spotlight-card" style="display:none">
+                    <div class="success-icon-badge">
+                        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                    </div>
 
-                <div class="form-group">
+                    <h3>Reservation Saved!</h3>
+                    <p>Send your booking summary via Messenger to confirm your schedule.</p>
 
-                    <label for="input-phone">
-                        Contact Number
-                    </label>
+                    <div id="booking-status-banner" style="display:none"></div>
+                    <div id="booking-summary" class="booking-summary-box"></div>
 
-                    <input
-                        type="tel"
-                        id="input-phone"
-                        placeholder="09XX XXX XXXX"
-                        required
-                    >
-
+                    <div class="success-actions">
+                        <button type="button" id="copy-booking-summary" class="btn btn-outline">
+                            Copy Summary
+                        </button>
+                        <a
+                            href="https://m.me/KSoundRentals"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            class="btn btn-primary btn-shine"
+                        >
+                            Open Messenger
+                        </a>
+                    </div>
                 </div>
 
             </div>
-
-
-            <!-- DATE + TIME -->
-
-            <div class="form-row">
-
-                <div class="form-group">
-
-                    <label for="input-date">
-                        Event Date
-                    </label>
-
-                    <input
-                        type="date"
-                        id="input-date"
-                        required
-                    >
-
-                </div>
-
-
-                <div class="form-group">
-
-                    <label for="delivery-time">
-                        Delivery Time
-                    </label>
-
-                    <select
-                        id="delivery-time"
-                        required
-                    >
-
-                        <option value="">
-                            Pick a time
-                        </option>
-
-                        <option>
-                            8:00 AM
-                        </option>
-
-                        <option>
-                            9:00 AM
-                        </option>
-
-                        <option>
-                            10:00 AM
-                        </option>
-
-                        <option>
-                            11:00 AM
-                        </option>
-
-                        <option>
-                            12:00 PM
-                        </option>
-
-                        <option>
-                            1:00 PM
-                        </option>
-
-                        <option>
-                            2:00 PM
-                        </option>
-
-                        <option>
-                            3:00 PM
-                        </option>
-
-                        <option>
-                            4:00 PM
-                        </option>
-
-                        <option>
-                            5:00 PM
-                        </option>
-
-                    </select>
-
-                </div>
-
-            </div>
-
-
-            <!-- PACKAGE -->
-
-            <div class="form-group">
-
-                <label for="package-select">
-                    Package
-                </label>
-
-                <select
-                    id="package-select"
-                    required
-                >
-
-                    <option value="">
-                        Choose a Package
-                    </option>
-
-                    <option>
-                        Speaker & Mic — ₱999 (12 hrs)
-                    </option>
-
-                    <option>
-                        Speaker & Mic — ₱1,199 (22 hrs)
-                    </option>
-
-                    <option>
-                        Full Karaoke — ₱1,299 (12 hrs)
-                    </option>
-
-                    <option>
-                        Full Karaoke — ₱1,499 (22 hrs)
-                    </option>
-
-                    <option>
-                        Full Karaoke Pro — ₱2,099 (12 hrs)
-                    </option>
-
-                    <option>
-                        Full Karaoke Pro — ₱2,299 (22 hrs)
-                    </option>
-
-                </select>
-
-            </div>
-
-
-            <!-- ADDRESS -->
-
-            <div class="form-group">
-
-                <label for="input-address">
-                    Event Address
-                </label>
-
-                <input
-                    type="text"
-                    id="input-address"
-                    placeholder="Barangay, City, Cebu"
-                    required
-                >
-
-            </div>
-
-
-            <!-- TERMS / NOTICE -->
-
-            <div class="booking-notice">
-
-                <strong>
-                    ₱500 Security Deposit
-                </strong>
-
-                <p>
-                    A refundable ₱500 security deposit is required
-                    to reserve your booking slot.
-                </p>
-
-            </div>
-
-
-            <!-- SUBMIT -->
-
-            <button
-                type="submit"
-                class="btn btn-primary"
-            >
-                Send Reservation Request
-            </button>
-
-        </form>
-
-
-        <!-- ================= SUCCESS ================= -->
-
-        <div
-            id="booking-success"
-            class="success-box"
-            style="display:none"
-        >
-
-            <h3>
-                🎉 Request Sent!
-            </h3>
-
-            <p>
-                We received your booking request.
-                Please send your
-                <strong>₱500 security deposit</strong>
-                via GCash or GoTyme to confirm your slot,
-                then message us on Facebook with your receipt.
-            </p>
-
-
-            <div class="payment-info">
-
-                <p>
-                    GCash:
-                    <strong>
-                        0962 450 5778
-                    </strong>
-                </p>
-
-                <p>
-                    GoTyme:
-                    <strong>
-                        0193 3986 5806
-                    </strong>
-                </p>
-
-                <p>
-                    Account Name:
-                    <strong>
-                        Kyle Jayverson Baguio
-                    </strong>
-                </p>
-
-                <p>
-                    Amount:
-                    <strong>
-                        ₱500
-                    </strong>
-                </p>
-
-            </div>
-
-
-            <a
-                href="https://m.me/KSoundRentals"
-                class="btn btn-primary"
-                target="_blank"
-                rel="noopener noreferrer"
-            >
-                Message Us on Facebook
-            </a>
 
         </div>
 
     </main>
 
-
-    <!-- ================= CTA ================= -->
-
-    <section class="home-cta">
-
-        <div class="cta-content">
-
-            <span class="section-eyebrow">
-                NEED HELP?
-            </span>
-
-            <h2>
-                HAVE A
-                <span>QUESTION?</span>
-            </h2>
-
-            <p>
-                Send us a message and we'll help you choose
-                the right setup for your event.
-            </p>
-
-            <div class="cta-buttons">
-
-                <a
-                    href="https://m.me/KSoundRentals"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-primary"
-                >
-                    Message Us
-                </a>
-
-                <a
-                    href="packages.html"
-                    class="btn btn-outline"
-                >
-                    View Packages
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
     <!-- ================= FOOTER ================= -->
-
     <footer class="footer">
-
         <div class="footer-container">
-
             <div class="footer-brand">
-
-                <img
-                    src="Logo.png"
-                    alt="K-SoundRentals Logo"
-                >
-
-                <p>
-                    Modern Karaoke & Speaker Rental
-                </p>
-
+                <a href="index.html" class="logo">
+                    <img src="Logo.png" alt="K-SoundRentals Logo">
+                    <span class="brand-name">K-Sound<span>Rentals</span></span>
+                </a>
+                <p style="margin-top: 10px;">Karaoke &amp; Speaker Rental in Lapu-Lapu City, Cebu</p>
             </div>
-
 
             <div class="footer-links">
-
-                <a href="index.html">
-                    Home
-                </a>
-
-                <a href="packages.html">
-                    Packages
-                </a>
-
-                <a href="videos.html">
-                    Events
-                </a>
-
-                <a href="booking.html">
-                    Book Now
-                </a>
-
+                <a href="index.html">Home</a>
+                <a href="packages.html">Packages</a>
+                <a href="videos.html">Events</a>
+                <a href="booking.html">Book Now</a>
             </div>
-
 
             <div class="footer-social">
-
-                <a
-                    href="https://www.facebook.com/KSoundRentals"
-                    target="_blank"
-                >
-                    Facebook
-                </a>
-
-                <a
-                    href="https://m.me/KSoundRentals"
-                    target="_blank"
-                >
-                    Messenger
-                </a>
-
+                <a href="https://www.facebook.com/KSoundRentals" target="_blank" rel="noopener noreferrer">Facebook</a>
+                <a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer">Messenger</a>
             </div>
-
         </div>
-
 
         <div class="footer-bottom">
-
-            <p>
-                © 2026 K-SoundRentals. All rights reserved.
-            </p>
-
+            <p>&copy; 2026 K-SoundRentals. All rights reserved.</p>
         </div>
-
     </footer>
 
-
-    <!-- ================= SCRIPTS ================= -->
-
-    <script src="calendar.js"></script>
-    <script src="app.js"></script>
-
-
-    <!-- ================= PACKAGE URL HANDLER ================= -->
-
-    <script>
-
-        document.addEventListener("DOMContentLoaded", function () {
-
-            const params = new URLSearchParams(
-                window.location.search
-            );
-
-            const selectedPackage = params.get("package");
-
-            const packageSelect =
-                document.getElementById("package-select");
-
-
-            if (!packageSelect || !selectedPackage) {
-                return;
-            }
-
-
-            const packageMap = {
-
-                speaker12:
-                    "Speaker & Mic — ₱999 (12 hrs)",
-
-                karaoke12:
-                    "Full Karaoke — ₱1,299 (12 hrs)",
-
-                pro12:
-                    "Full Karaoke Pro — ₱2,099 (12 hrs)"
-
-            };
-
-
-            if (packageMap[selectedPackage]) {
-
-                packageSelect.value =
-                    packageMap[selectedPackage];
-
-            }
-
-        });
-
-    </script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
+    <script type="module" src="/app.js"></script>
 
 </body>
 </html>

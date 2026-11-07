@@ -1,389 +1,109 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-
     <meta charset="UTF-8">
-
-    <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1.0"
-    >
-
-    <title>Events | K-SoundRentals</title>
-
-    <meta
-        name="description"
-        content="See K-SoundRentals karaoke and speaker setups from real events."
-    >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Events | K-SoundRentals Cebu</title>
+    <meta name="description" content="K-SoundRentals Event Videos &amp; Real Party Setups in Cebu.">
+    <link rel="icon" type="image/png" href="Logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-
 </head>
 
 <body>
 
-
-    <!-- ================= NAVBAR ================= -->
-
+    <!-- ================= FLOATING PILL NAVBAR ================= -->
     <header class="navbar">
-
         <div class="nav-container">
-
             <a href="index.html" class="logo">
-
-                <img
-                    src="Logo.png"
-                    alt="K-SoundRentals Logo"
-                >
-
+                <img src="Logo.png" alt="K-SoundRentals Logo">
+                <span class="brand-name">K-Sound<span>Rentals</span></span>
             </a>
 
-
             <nav class="nav-links" id="nav-links">
-
-                <a href="index.html">
-                    Home
+                <a href="index.html">Home</a>
+                <a href="packages.html">Packages</a>
+                <a href="videos.html" class="active">Events</a>
+                <a href="booking.html" class="nav-book">
+                    <span>Book Now</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                 </a>
-
-                <a href="packages.html">
-                    Packages
-                </a>
-
-                <a
-                    href="videos.html"
-                    class="active"
-                >
-                    Events
-                </a>
-
-                <a
-                    href="booking.html"
-                    class="nav-book"
-                >
-                    Book Now
-                </a>
-
             </nav>
 
-
-            <button
-                class="hamburger"
-                id="hamburger"
-                type="button"
-            >
-                ☰
+            <button class="hamburger" id="hamburger" type="button" aria-label="Toggle Menu" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
             </button>
-
         </div>
-
     </header>
 
-
-    <!-- ================= PAGE INTRO ================= -->
-
-
-
-
-    <!-- ================= VIDEOS ================= -->
-
+    <!-- ================= 1. AUTO-SLIDING EVENT VIDEOS CAROUSEL ================= -->
     <main class="videos">
+        <div class="section-heading anim-reveal" style="margin-bottom: 28px;">
+            <h2>Event <span class="text-gradient">Videos.</span></h2>
+        </div>
 
-        <div class="carousel">
-
-            <!-- LEFT ARROW -->
-
-            <button
-                class="carousel-btn prev"
-                id="prev-btn"
-                type="button"
-                aria-label="Previous video"
-            >
-                ‹
+        <div class="carousel anim-reveal anim-delay-1">
+            <button class="carousel-btn" id="prev-btn" type="button" aria-label="Previous Event">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="15 18 9 12 15 6"/></svg>
             </button>
-
-
-            <!-- TRACK -->
 
             <div class="carousel-track-wrapper">
-
-                <div
-                    class="carousel-track"
-                    id="carousel-track"
-                >
-
-
-                    <!-- VIDEO 1 -->
-
-                    <a
-                        href="https://www.facebook.com/share/r/1Ns8TwmQs2/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="video-card"
-                    >
-
-                        <div class="video-thumb">
-
-                            <img
-                                src="video1.jpg"
-                                alt="Birthday Party Setup"
-                            >
-
-                            <div class="play-btn">
-
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="white"
-                                    aria-hidden="true"
-                                >
-
-                                    <path
-                                        d="M8 5v14l11-7z"
-                                    />
-
-                                </svg>
-
-                            </div>
-
-                        </div>
-
-
-                        <p class="video-label">
-                            Birthday Party Setup
-                        </p>
-
-                    </a>
-
-
-                    <!-- VIDEO 2 -->
-
-                    <a
-                        href="https://www.facebook.com/share/r/177mgxHSqY/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="video-card"
-                    >
-
-                        <div class="video-thumb">
-
-                            <img
-                                src="video2.jpg"
-                                alt="Fiesta Night"
-                            >
-
-                            <div class="play-btn">
-
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="white"
-                                    aria-hidden="true"
-                                >
-
-                                    <path
-                                        d="M8 5v14l11-7z"
-                                    />
-
-                                </svg>
-
-                            </div>
-
-                        </div>
-
-
-                        <p class="video-label">
-                            Fiesta Night
-                        </p>
-
-                    </a>
-
-
-                    <!-- VIDEO 3 -->
-
-                    <a
-                        href="https://www.facebook.com/share/r/1JE5j95vvZ/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="video-card"
-                    >
-
-                        <div class="video-thumb">
-
-                            <img
-                                src="video3.jpg"
-                                alt="Family Reunion"
-                            >
-
-                            <div class="play-btn">
-
-                                <svg
-                                    viewBox="0 0 24 24"
-                                    fill="white"
-                                    aria-hidden="true"
-                                >
-
-                                    <path
-                                        d="M8 5v14l11-7z"
-                                    />
-
-                                </svg>
-
-                            </div>
-
-                        </div>
-
-
-                        <p class="video-label">
-                            Family Reunion
-                        </p>
-
-                    </a>
-
-                </div>
-
+                <div class="carousel-track" id="carousel-track" data-component="events-video-carousel"></div>
             </div>
 
-
-            <!-- RIGHT ARROW -->
-
-            <button
-                class="carousel-btn next"
-                id="next-btn"
-                type="button"
-                aria-label="Next video"
-            >
-                ›
+            <button class="carousel-btn" id="next-btn" type="button" aria-label="Next Event">
+                <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="9 18 15 12 9 6"/></svg>
             </button>
-
         </div>
 
+        <div class="carousel-dots" id="carousel-dots" role="tablist" aria-label="Gallery navigation"></div>
 
-        <!-- CAROUSEL DOTS -->
+        <!-- ================= 2. AUTO-SCROLLING SETUP PHOTOS STRIP ================= -->
+        <section class="equipment-gallery-section anim-reveal" style="margin-top: 52px;">
+            <div class="section-heading" style="margin-bottom: 24px;">
+                <h2>Party <span class="text-gradient">Setups.</span></h2>
+            </div>
 
-        <div
-            class="carousel-dots"
-            id="carousel-dots"
-        ></div>
-
+            <div class="auto-marquee">
+                <div class="auto-marquee-track" data-component="events-photo-marquee"></div>
+            </div>
+        </section>
     </main>
 
-
-    <!-- ================= CTA ================= -->
-
-    <section class="home-cta">
-
-        <div class="cta-content">
-
-            <span class="section-eyebrow">
-                YOUR EVENT COULD BE NEXT
-            </span>
-
-            <h2>
-                READY TO
-                <span>MAKE SOME NOISE?</span>
-            </h2>
-
-            <p>
-                Book a K-SoundRentals setup for your next celebration.
-            </p>
-
-            <div class="cta-buttons">
-
-                <a
-                    href="booking.html"
-                    class="btn btn-primary"
-                >
-                    Book Your Setup
-                </a>
-
-                <a
-                    href="https://m.me/KSoundRentals"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="btn btn-outline"
-                >
-                    Message Us
-                </a>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
     <!-- ================= FOOTER ================= -->
-
     <footer class="footer">
-
         <div class="footer-container">
-
             <div class="footer-brand">
-
-                <img
-                    src="Logo.png"
-                    alt="K-SoundRentals Logo"
-                >
-
-                <p>
-                    Modern Karaoke & Speaker Rental
-                </p>
-
+                <a href="index.html" class="logo">
+                    <img src="Logo.png" alt="K-SoundRentals Logo">
+                    <span class="brand-name">K-Sound<span>Rentals</span></span>
+                </a>
+                <p style="margin-top: 10px;">Karaoke &amp; Speaker Rental in Lapu-Lapu City, Cebu</p>
             </div>
-
 
             <div class="footer-links">
-
-                <a href="index.html">
-                    Home
-                </a>
-
-                <a href="packages.html">
-                    Packages
-                </a>
-
-                <a href="videos.html">
-                    Events
-                </a>
-
-                <a href="booking.html">
-                    Book Now
-                </a>
-
+                <a href="index.html">Home</a>
+                <a href="packages.html">Packages</a>
+                <a href="videos.html">Events</a>
+                <a href="booking.html">Book Now</a>
             </div>
-
 
             <div class="footer-social">
-
-                <a
-                    href="https://www.facebook.com/KSoundRentals"
-                    target="_blank"
-                >
-                    Facebook
-                </a>
-
-                <a
-                    href="https://m.me/KSoundRentals"
-                    target="_blank"
-                >
-                    Messenger
-                </a>
-
+                <a href="https://www.facebook.com/KSoundRentals" target="_blank" rel="noopener noreferrer">Facebook</a>
+                <a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer">Messenger</a>
             </div>
-
         </div>
-
 
         <div class="footer-bottom">
-
-            <p>
-                © 2026 K-SoundRentals. All rights reserved.
-            </p>
-
+            <p>&copy; 2026 K-SoundRentals. All rights reserved.</p>
         </div>
-
     </footer>
 
-
-    <script src="app.js"></script>
-
+    <script type="module" src="/app.js"></script>
 </body>
 </html>
