@@ -1752,6 +1752,42 @@ img {
     color: var(--text-muted);
 }
 
+/* Package Image Showcase Thumbnail */
+.choice-img-wrap {
+    width: 100%;
+    height: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, rgba(255, 140, 0, 0.12) 0%, rgba(18, 18, 26, 0.45) 80%);
+    border-radius: 10px;
+    margin-bottom: 10px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.choice-img {
+    max-height: 80px;
+    max-width: 95%;
+    object-fit: contain;
+    transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+    filter: drop-shadow(0 6px 12px rgba(0, 0, 0, 0.55));
+}
+
+.pkg-choice-card:hover .choice-img,
+.pkg-choice-card.active .choice-img {
+    transform: scale(1.08) translateY(-2px);
+}
+
+@media (max-width: 580px) {
+    .choice-img-wrap {
+        height: 72px;
+    }
+    .choice-img {
+        max-height: 64px;
+    }
+}
+
 .error-msg {
     color: #f87171;
     font-size: 12px;
@@ -6593,6 +6629,76 @@ img {
     color: #ffffff;
 }
 
+/* Facebook Name Input Styling */
+.fb-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.fb-input-wrap .fb-input-icon {
+    position: absolute;
+    left: 14px;
+    color: #0084ff;
+    display: flex;
+    align-items: center;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.fb-input-wrap input {
+    padding-left: 42px !important;
+}
+
+.form-field-hint {
+    display: block;
+    font-size: 11.5px;
+    color: var(--text-muted);
+    margin-top: 5px;
+    line-height: 1.4;
+}
+
+/* Map Pin Preview Bar */
+.map-link-preview {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background: rgba(34, 197, 94, 0.08);
+    border: 1px solid rgba(34, 197, 94, 0.22);
+    border-radius: 10px;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.map-link-preview svg {
+    flex-shrink: 0;
+    color: #22c55e;
+}
+
+.map-link-preview a {
+    color: var(--orange);
+    text-decoration: underline;
+    font-weight: 600;
+}
+
+.map-link-preview a:hover {
+    color: var(--orange-light);
+}
+
+/* Facebook Badge in Confirmation Summary */
+.conf-fb-val {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #ffffff;
+}
+
+.conf-fb-val svg {
+    flex-shrink: 0;
+}
+
 /* ===================================================
    LIGHTBOX MODAL FOR GCASH QR PREVIEW
    =================================================== */
@@ -6920,6 +7026,110 @@ img {
     font-size: 13px;
     font-weight: 600;
     color: rgba(255, 255, 255, 0.85);
+}
+
+/* Confirmation Instructions Card (Send Proof to Facebook Page) */
+.conf-instructions-card {
+    background: rgba(18, 18, 28, 0.88);
+    border: 1px solid rgba(0, 132, 255, 0.28);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin-bottom: 20px;
+    text-align: left;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}
+
+.conf-instructions-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+}
+
+.instructions-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13.5px;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+.instructions-badge svg {
+    color: #0084ff;
+    flex-shrink: 0;
+}
+
+.instructions-action-pill {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.6px;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    background: rgba(0, 132, 255, 0.15);
+    color: #38bdf8;
+    border: 1px solid rgba(56, 189, 248, 0.3);
+}
+
+.conf-steps-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.conf-step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.step-num {
+    width: 26px;
+    height: 26px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    background: rgba(0, 132, 255, 0.2);
+    border: 1px solid rgba(0, 132, 255, 0.45);
+    color: #38bdf8;
+    font-size: 12px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+}
+
+.step-desc {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.step-desc strong {
+    font-size: 13px;
+    color: #ffffff;
+    font-weight: 700;
+}
+
+.step-desc span,
+.step-desc p {
+    font-size: 12px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+    margin: 0;
+}
+
+.link-orange {
+    color: var(--orange);
+    text-decoration: underline;
+    font-weight: 700;
+}
+
+.link-orange:hover {
+    color: var(--orange-light);
 }
 
 /* Dedicated GCash Deposit Card */

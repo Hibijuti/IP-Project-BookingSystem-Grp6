@@ -58,6 +58,11 @@ export function initVenueMap() {
       mapLinkInput.value = gmapsUrl;
     }
 
+    const previewAnchor = document.getElementById('preview-gmaps-anchor');
+    if (previewAnchor) {
+      previewAnchor.href = gmapsUrl;
+    }
+
     if (!shouldReverseGeocode) return;
 
     try {

@@ -292,16 +292,20 @@ function updatePickupHelper() {
 }
 
 function buildBookingSummaryText(data) {
+  const gmapsLink = data.mapLink || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(data.address || 'Lapu-Lapu City'));
   return [
-    'K-SoundRentals Reservation #' + (data.id || 'BOOKING'),
+    '🎤 K-SOUNDRENTALS RESERVATION #' + (data.id || 'BOOKING'),
     '----------------------------------------',
     'Customer: ' + data.name,
+    data.fbName ? 'Facebook: ' + data.fbName : null,
     'Mobile: ' + data.phone,
     'Schedule: ' + data.date + ' @ ' + data.deliveryTime,
     'Package: ' + data.packageChosen,
     'Venue: ' + data.address,
-    data.mapLink ? 'Map Pin: ' + data.mapLink : null,
-    'Deposit: ₱' + Number(data.amountDue || 200).toLocaleString() + ' via ' + (data.paymentChannel || 'GCash')
+    'Google Maps: ' + gmapsLink,
+    'Deposit Required: ₱' + Number(data.amountDue || 200).toLocaleString() + ' (GCash 0995 985 9549)',
+    '----------------------------------------',
+    'Screenshot to be sent to Messenger: https://m.me/KSoundRentals'
   ]
     .filter(Boolean)
     .join('\n');
@@ -369,6 +373,13 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       '      <small>Customer</small>',
       '      <strong>' + bookingData.name + ' (<a href="tel:' + bookingData.phone + '">' + bookingData.phone + '</a>)</strong>',
       '    </div>',
+      '    <div class="conf-grid-item">',
+      '      <small>Facebook Name</small>',
+      '      <strong class="conf-fb-val">',
+      '        <svg viewBox="0 0 24 24" width="13" height="13" fill="#0084ff"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.914 1.454 5.518 3.734 7.202V22l3.411-1.872c.905.251 1.867.387 2.855.387 5.523 0 10-4.145 10-9.257C22 6.145 17.523 2 12 2zm1.002 12.443-2.56-2.73-4.996 2.73 5.496-5.834 2.624 2.73 4.932-2.73-5.496 5.834z"/></svg>',
+      '        <span>' + (bookingData.fbName || '—') + '</span>',
+      '      </strong>',
+      '    </div>',
       '    <div class="conf-grid-item full-width">',
       '      <small>Delivery Venue</small>',
       '      <strong>' + bookingData.address + '</strong>',
@@ -387,6 +398,39 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       '    <div class="conf-price-row balance-sub">',
       '      <span>Remaining Balance Upon Handover</span>',
       '      <small>₱' + balanceAmt.toLocaleString() + '</small>',
+      '    </div>',
+      '  </div>',
+      '</div>',
+      '<!-- INSTRUCTIONS TO SEND PROOF TO FACEBOOK PAGE -->',
+      '<div class="conf-instructions-card">',
+      '  <div class="conf-instructions-head">',
+      '    <div class="instructions-badge">',
+      '      <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.914 1.454 5.518 3.734 7.202V22l3.411-1.872c.905.251 1.867.387 2.855.387 5.523 0 10-4.145 10-9.257C22 6.145 17.523 2 12 2zm1.002 12.443-2.56-2.73-4.996 2.73 5.496-5.834 2.624 2.73 4.932-2.73-5.496 5.834z"/></svg>',
+      '      <span>Next Step: Send Proof to Our Facebook Page</span>',
+      '    </div>',
+      '    <span class="instructions-action-pill">Final Step</span>',
+      '  </div>',
+      '  <div class="conf-steps-list">',
+      '    <div class="conf-step-item">',
+      '      <span class="step-num">1</span>',
+      '      <div class="step-desc">',
+      '        <strong>Send ₱' + depositAmt.toLocaleString() + ' Deposit via GCash</strong>',
+      '        <span>Scan the QR code or use the account number below.</span>',
+      '      </div>',
+      '    </div>',
+      '    <div class="conf-step-item">',
+      '      <span class="step-num">2</span>',
+      '      <div class="step-desc">',
+      '        <strong>Take a Screenshot of Payment</strong>',
+      '        <span>Save your GCash transaction confirmation receipt.</span>',
+      '      </div>',
+      '    </div>',
+      '    <div class="conf-step-item">',
+      '      <span class="step-num">3</span>',
+      '      <div class="step-desc">',
+      '        <strong>Message Our Facebook Page (<a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer" class="link-orange">m.me/KSoundRentals</a>)</strong>',
+      '        <span>Send the screenshot and your reference code (<strong>#' + (bookingData.id || 'CONFIRMED') + '</strong>) so we can instantly verify and lock your slot!</span>',
+      '      </div>',
       '    </div>',
       '  </div>',
       '</div>',
@@ -475,6 +519,12 @@ async function submitToWeb3Forms(bookingPayload) {
     return false;
   }
 
+  const gmapsLink =
+    bookingPayload.mapLink ||
+    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+      bookingPayload.address || 'Lapu-Lapu City, Cebu'
+    )}`;
+
   const response = await fetch('https://api.web3forms.com/submit', {
     method: 'POST',
     headers: {
@@ -483,18 +533,19 @@ async function submitToWeb3Forms(bookingPayload) {
     },
     body: JSON.stringify({
       access_key: WEB3FORMS_ACCESS_KEY,
-      subject: `K-SoundRentals Booking: ${bookingPayload.packageChosen} (${bookingPayload.date})`,
+      subject: `New Reservation [${bookingPayload.id}]: ${bookingPayload.name} - ${bookingPayload.packageChosen} (${bookingPayload.date})`,
       from_name: 'K-SoundRentals Booking System',
-      name: bookingPayload.name,
-      phone: bookingPayload.phone,
-      event_date: bookingPayload.date,
-      delivery_time: bookingPayload.deliveryTime,
-      package: bookingPayload.packageChosen,
-      address: bookingPayload.address,
-      google_maps_pin: bookingPayload.mapLink || 'Not pinned',
-      payment_method: bookingPayload.paymentChannel,
-      payment_option: `Reservation Deposit (PHP ${bookingPayload.amountDue})`,
-      payment_reference: 'Sent via Messenger'
+      'Booking Reference': bookingPayload.id,
+      'Customer Full Name': bookingPayload.name,
+      'Facebook Name': bookingPayload.fbName || 'Not specified',
+      'Mobile Phone': bookingPayload.phone,
+      'Event Date': bookingPayload.date,
+      'Delivery Time': bookingPayload.deliveryTime,
+      'Package Chosen': bookingPayload.packageChosen,
+      'Delivery Venue Address': bookingPayload.address,
+      'Google Maps Location Link': gmapsLink,
+      'Deposit Amount Required': `PHP ${bookingPayload.amountDue}`,
+      'Messenger Action Required': 'Customer will send ₱200 deposit screenshot to Facebook Page (m.me/KSoundRentals)'
     })
   });
 
@@ -569,11 +620,18 @@ export function validateStep(stepIndex) {
 
   if (stepIndex === 4) {
     let valid = true;
+    const fbInput = document.getElementById('input-fb');
     clearError(nameInput);
+    if (fbInput) clearError(fbInput);
     clearError(phoneInput);
 
     if (!nameInput || !nameInput.value.trim()) {
       showError(nameInput, 'Enter your full name.');
+      valid = false;
+    }
+
+    if (fbInput && !fbInput.value.trim()) {
+      showError(fbInput, 'Enter your Facebook account name.');
       valid = false;
     }
 
@@ -671,6 +729,7 @@ export async function handleBooking(event) {
 
   const nameInput = document.getElementById('input-name');
   const phoneInput = document.getElementById('input-phone');
+  const fbInput = document.getElementById('input-fb');
   const dateInput = document.getElementById('input-date');
   const addressInput = document.getElementById('input-address');
   const mapLinkInput = document.getElementById('input-map-link');
@@ -682,16 +741,19 @@ export async function handleBooking(event) {
   const amountDue = selectedPkg.deposit;
   const phoneVal = phoneInput.value.trim().replace(/[\s-]/g, '');
   const bookingId = 'KS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  const addressVal = addressInput.value.trim();
+  const mapLinkVal = mapLinkInput?.value?.trim() || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addressVal || 'Lapu-Lapu City'));
 
   const bookingPayload = {
     id: bookingId,
     name: nameInput.value.trim(),
+    fbName: fbInput?.value?.trim() || '',
     phone: phoneVal,
     date: dateInput.value,
     deliveryTime: timeSelect.value,
     packageChosen: pkgSelect.value,
-    address: addressInput.value.trim(),
-    mapLink: mapLinkInput?.value?.trim() || '',
+    address: addressVal,
+    mapLink: mapLinkVal,
     paymentChannel: methodObj.name,
     paymentTypeLabel: 'Reservation Deposit',
     amountDue,

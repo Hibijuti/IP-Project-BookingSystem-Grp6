@@ -64,16 +64,31 @@ export async function saveBookingToDB(bookingData) {
     status: 'confirmed'
   };
 
+  if (bookingData.fbName) {
+    payload.fb_name = bookingData.fbName;
+  }
+
   if (!supabase) {
     console.warn('[K-SoundRentals] Supabase credentials missing. Booking was not saved to database.');
     return payload;
   }
 
-  const { data, error } = await supabase
+  let { data, error } = await supabase
     .from('bookings')
     .insert([payload])
     .select()
     .single();
+
+  if (error && error.message && error.message.includes('fb_name')) {
+    delete payload.fb_name;
+    const retry = await supabase
+      .from('bookings')
+      .insert([payload])
+      .select()
+      .single();
+    data = retry.data;
+    error = retry.error;
+  }
 
   if (error) {
     console.error('[K-SoundRentals] Error writing booking to Supabase:', error.message);

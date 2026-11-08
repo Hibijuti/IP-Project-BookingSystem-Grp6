@@ -158,6 +158,9 @@
 
                             <div class="pkg-choice-grid" role="group" aria-label="Select Rental Package">
                                 <button type="button" class="pkg-choice-card" data-tier="Speaker & Mic" aria-pressed="false">
+                                    <div class="choice-img-wrap">
+                                        <img src="/images/pkg-speaker-mic.png" alt="Speaker & Mic Package" class="choice-img" loading="lazy">
+                                    </div>
                                     <strong>Speaker &amp; Mic</strong>
                                     <span class="choice-equip">JBL 520 &bull; 2 Mics</span>
                                     <div class="choice-price-row">
@@ -167,6 +170,9 @@
                                 </button>
 
                                 <button type="button" class="pkg-choice-card active" data-tier="Full Karaoke" aria-pressed="true">
+                                    <div class="choice-img-wrap">
+                                        <img src="/images/pkg-full-karaoke.png" alt="Full Karaoke Package" class="choice-img" loading="lazy">
+                                    </div>
                                     <strong>Full Karaoke</strong>
                                     <span class="choice-equip">32" TV &bull; JBL 520 &bull; 2 Mics</span>
                                     <div class="choice-price-row">
@@ -176,6 +182,9 @@
                                 </button>
 
                                 <button type="button" class="pkg-choice-card" data-tier="Full Karaoke Pro" aria-pressed="false">
+                                    <div class="choice-img-wrap">
+                                        <img src="/images/pkg-full-karaoke-pro.png" alt="Full Karaoke Pro Package" class="choice-img" loading="lazy">
+                                    </div>
                                     <strong>Full Karaoke Pro</strong>
                                     <span class="choice-equip">32" TV &bull; 2&times; JBL 520</span>
                                     <div class="choice-price-row">
@@ -234,6 +243,10 @@
                                 </button>
                                 <div id="osm-map" class="osm-map-box" aria-label="Venue Map"></div>
                             </div>
+                            <div class="map-link-preview" id="map-link-preview-box">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#22c55e" stroke-width="2.3"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                <span>Google Maps Pin: <a href="https://www.google.com/maps?q=10.311500,123.953500" id="preview-gmaps-anchor" target="_blank" rel="noopener noreferrer">View pinned venue on Google Maps ↗</a></span>
+                            </div>
                         </div>
 
                         <div class="wizard-actions-row">
@@ -273,7 +286,7 @@
                             </div>
                         </div>
 
-                        <!-- NAME & PHONE ROW -->
+                        <!-- CONTACT DETAILS -->
                         <div class="form-row">
                             <div class="form-group">
                                 <label for="input-name">Full Name</label>
@@ -296,9 +309,27 @@
                             </div>
                         </div>
 
+                        <div class="form-group" style="margin-top: 10px;">
+                            <label for="input-fb">Facebook Name</label>
+                            <div class="fb-input-wrap">
+                                <span class="fb-input-icon">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.914 1.454 5.518 3.734 7.202V22l3.411-1.872c.905.251 1.867.387 2.855.387 5.523 0 10-4.145 10-9.257C22 6.145 17.523 2 12 2zm1.002 12.443-2.56-2.73-4.996 2.73 5.496-5.834 2.624 2.73 4.932-2.73-5.496 5.834z"/></svg>
+                                </span>
+                                <input
+                                    type="text"
+                                    id="input-fb"
+                                    placeholder="Your Facebook account name"
+                                    required
+                                >
+                            </div>
+                            <small class="form-field-hint">Used to verify your ₱200 deposit screenshot when you message our Facebook page.</small>
+                        </div>
+
                         <div class="step4-deposit-notice">
-                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22c55e" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
-                            <span>₱200 GCash reservation deposit instructions will appear on the next screen.</span>
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#22c55e" stroke-width="2.3"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                            <div>
+                                <strong>₱200 reservation deposit</strong> locks in your date. After reserving, send your GCash payment screenshot to our Facebook page (<strong>m.me/KSoundRentals</strong>) for instant verification.
+                            </div>
                         </div>
 
                         <div class="wizard-actions-row">
