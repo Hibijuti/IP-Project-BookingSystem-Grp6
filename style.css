@@ -92,11 +92,12 @@ img {
     display: inline-flex;
     align-items: center;
     gap: 2px;
+    vertical-align: middle;
 }
 
 .peso-svg {
     display: inline-block;
-    vertical-align: -2px;
+    vertical-align: -1px;
     flex-shrink: 0;
 }
 

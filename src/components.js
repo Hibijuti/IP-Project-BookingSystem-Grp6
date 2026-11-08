@@ -159,7 +159,7 @@ export function createPackageCardHTML(pkg) {
       </ul>
 
       <a href="booking.html?pkg=${pkg.pkg12Key}" class="btn ${pkg.btnClass} pkg-book-btn">
-        Book 12 Hours — ₱${pkg.price12}
+        Book 12 Hours — <span class="peso-inline">${PESO_SVG_18}${pkg.price12}</span>
       </a>
     </article>
   `;

@@ -14,7 +14,7 @@ import {
   adminSignOut,
   getAdminSession
 } from './db.js';
-import { findPackageByLabel } from './packages.js';
+import { findPackageByLabel, pesoIconSvg } from './packages.js';
 
 let isAdmin = false;
 let selectedDate = null;
@@ -290,7 +290,7 @@ function updateAdminAnalytics(bookings) {
       ? `Next: ${new Date(upcoming[0].date + 'T00:00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}`
       : 'No upcoming events';
   }
-  if (elContract) elContract.textContent = `₱${totalContractValue.toLocaleString()}`;
+  if (elContract) elContract.innerHTML = `<span class="peso-inline">${pesoIconSvg(22)}${totalContractValue.toLocaleString()}</span>`;
   if (elTopPkg) elTopPkg.textContent = topPkgName;
   if (elSubTopPkg) elSubTopPkg.textContent = maxCount > 0 ? `${maxCount} confirmed bookings` : 'Awaiting bookings';
 }
@@ -336,7 +336,7 @@ function renderFilteredBookingsList() {
       const isCancelled = b.status === 'cancelled';
       const pkg = findPackageByLabel(b.packageChosen || b.package);
       const pkgLabel = pkg ? `${pkg.tier} (${pkg.durationTag})` : (b.packageChosen || b.package || 'Full Karaoke');
-      const pkgRate = pkg ? `₱${pkg.price.toLocaleString()}` : (b.amountDue || b.amount_due ? `₱${Number(b.amountDue || b.amount_due).toLocaleString()}` : '₱1,299');
+      const pkgRate = pkg ? `<span class="peso-inline">${pesoIconSvg(13)}${pkg.price.toLocaleString()}</span>` : (b.amountDue || b.amount_due ? `<span class="peso-inline">${pesoIconSvg(13)}${Number(b.amountDue || b.amount_due).toLocaleString()}</span>` : `<span class="peso-inline">${pesoIconSvg(13)}1,299</span>`);
       const mapUrl = b.map_link || b.mapLink || b.map_url || b.mapUrl;
       const fbName = b.fb_name || b.fbName;
       const deliveryTime = b.delivery_time || b.deliveryTime || '';

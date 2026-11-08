@@ -91,11 +91,11 @@ export function updateLiveSummary() {
       recapPkgImgEl.alt = selectedPkg.label;
     }
     if (recapPriceEl) {
-      recapPriceEl.innerHTML = `₱${selectedPkg.price.toLocaleString()}`;
+      recapPriceEl.innerHTML = `${pesoIconSvg(18)}${selectedPkg.price.toLocaleString()}`;
     }
     if (recapBalanceEl) {
       const bal = Math.max(0, selectedPkg.price - selectedPkg.deposit);
-      recapBalanceEl.textContent = `₱${bal.toLocaleString()}`;
+      recapBalanceEl.innerHTML = `${pesoIconSvg(14)}${bal.toLocaleString()}`;
     }
   }
 
@@ -382,7 +382,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       '      </div>',
       '      <div class="conf-status-tag">',
       '        <span class="status-pulse-dot"></span>',
-      '        <span>Awaiting ₱' + depositAmt.toLocaleString() + ' Deposit</span>',
+      '        <span>Awaiting <span class="peso-inline">' + pesoIconSvg(12) + depositAmt.toLocaleString() + '</span> Deposit</span>',
       '      </div>',
       '    </div>',
       '    <div class="conf-pkg-hero">',
@@ -443,18 +443,18 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       '    <div class="conf-pricing-breakdown">',
       '      <div class="conf-price-row">',
       '        <span>Package Rental Rate</span>',
-      '        <strong>₱' + totalPrice.toLocaleString() + '</strong>',
+      '        <strong class="peso-inline">' + pesoIconSvg(15) + totalPrice.toLocaleString() + '</strong>',
       '      </div>',
       '      <div class="conf-price-row deposit-highlight">',
       '        <div class="deposit-label-wrap">',
       '          <span class="deposit-dot"></span>',
       '          <span>Required Reservation Deposit</span>',
       '        </div>',
-      '        <strong class="text-orange">₱' + depositAmt.toLocaleString() + '</strong>',
+      '        <strong class="text-orange peso-inline">' + pesoIconSvg(15) + depositAmt.toLocaleString() + '</strong>',
       '      </div>',
       '      <div class="conf-price-row balance-sub">',
       '        <span>Remaining Balance (Payable Upon Handover)</span>',
-      '        <small>₱' + balanceAmt.toLocaleString() + '</small>',
+      '        <small class="peso-inline">' + pesoIconSvg(13) + balanceAmt.toLocaleString() + '</small>',
       '      </div>',
       '    </div>',
       '  </div>',
@@ -468,7 +468,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       '    </div>',
       '    <div class="conf-pay-due">',
       '      <span class="due-label">Amount to Send</span>',
-      '      <strong class="due-val">₱' + depositAmt.toLocaleString() + '</strong>',
+      '      <strong class="due-val peso-inline">' + pesoIconSvg(16) + depositAmt.toLocaleString() + '</strong>',
       '    </div>',
       '  </div>',
       '  <div class="conf-pay-body">',
@@ -513,7 +513,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       '        <div class="p-step">',
       '          <span class="p-step-num">1</span>',
       '          <div class="p-step-text">',
-      '            <strong>Send ₱' + depositAmt.toLocaleString() + '</strong>',
+      '            <strong class="peso-inline">Send ' + pesoIconSvg(14) + depositAmt.toLocaleString() + '</strong>',
       '            <small>via QR or number</small>',
       '          </div>',
       '        </div>',
