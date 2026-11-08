@@ -6536,6 +6536,57 @@ img {
     color: #ffffff;
 }
 
+/* GCash Brand Pill & Clean QR Frame */
+.pay-brand-pill {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #ffffff;
+    background: #007dfe;
+    box-shadow: 0 0 12px rgba(0, 125, 254, 0.4);
+    letter-spacing: 0.3px;
+}
+
+.clean-qr-stage {
+    display: grid;
+    grid-template-columns: 165px 1fr;
+    gap: 18px;
+    align-items: center;
+}
+
+.clean-qr-stage .pay-qr-frame {
+    width: 165px;
+    height: auto;
+    max-height: 290px;
+    border-radius: 14px;
+    padding: 6px;
+    background: #ffffff;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.clean-qr-stage .pay-qr-img {
+    width: 100%;
+    height: auto;
+    max-height: 278px;
+    object-fit: contain;
+    border-radius: 10px;
+    display: block;
+}
+
+@media (max-width: 640px) {
+    .clean-qr-stage {
+        grid-template-columns: 1fr;
+        justify-items: center;
+    }
+    .clean-qr-stage .pay-qr-frame {
+        width: 180px;
+    }
+}
+
 .pay-clean-header {
     display: flex;
     align-items: center;

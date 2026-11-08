@@ -33,17 +33,8 @@ export const PAYMENT_METHODS = {
     accountNumber: '0995 985 9549',
     rawNumber: '09959859549',
     accountName: 'Kyle B. (K-SoundRentals)',
-    qrImage: '/images/qr-gcash.svg',
+    qrImage: '/images/gcashref.jpg',
     accent: '#007dfe'
-  },
-  gotyme: {
-    id: 'gotyme',
-    name: 'GoTyme Bank',
-    accountNumber: '0141 9685 0614',
-    rawNumber: '014196850614',
-    accountName: 'Kyle B. (K-SoundRentals)',
-    qrImage: '/images/qr-gotyme.svg',
-    accent: '#00d2b8'
   }
 };
 
