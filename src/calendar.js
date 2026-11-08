@@ -263,6 +263,7 @@ export const BOOKING_STATUSES = {
     shortLabel: 'Pending',
     badgeClass: 'status-pending',
     nextAction: 'Verify ₱500 Deposit',
+    nextActionHtml: 'Verify <span class="peso-inline">' + pesoIconSvg(12) + '500</span> Deposit',
     nextStatus: 'deposit_verified',
     nextIcon: '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
   },
@@ -901,7 +902,7 @@ function renderFilteredBookingsList() {
         advanceButtonHtml = `
           <button type="button" class="btn-admin-advance btn-step-${st.nextStatus}" onclick="window.updateBookingStatus('${b.id}', '${st.nextStatus}', '${b.date}')">
             ${st.nextIcon || ''}
-            <span>${st.nextAction}</span>
+            <span>${st.nextActionHtml || st.nextAction}</span>
           </button>
         `;
       }

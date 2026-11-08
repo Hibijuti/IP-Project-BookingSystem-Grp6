@@ -174,3 +174,8 @@ export function pesoIconSvg(sizeOrClass = 16) {
   }
   return `<svg class="${sizeOrClass}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16"/><path d="M6 4h7a5 5 0 0 1 0 10H6"/><path d="M4 8h16"/><path d="M4 11.5h16"/></svg>`;
 }
+
+export function formatCurrencyHtml(text, size = 16) {
+  if (!text) return '';
+  return String(text).replace(/₱\s*([\d,]+)/g, (_, amt) => `<span class="peso-inline">${pesoIconSvg(size)}${amt}</span>`);
+}

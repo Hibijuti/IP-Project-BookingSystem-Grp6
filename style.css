@@ -95,7 +95,8 @@ img {
     vertical-align: middle;
 }
 
-.peso-svg {
+.peso-svg,
+.peso-icon {
     display: inline-block;
     vertical-align: -1px;
     flex-shrink: 0;
