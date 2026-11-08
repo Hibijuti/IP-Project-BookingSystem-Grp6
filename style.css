@@ -3835,6 +3835,23 @@ img {
     background: var(--orange);
     box-shadow: none;
     will-change: transform;
+    animation: brandEqPulse 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes brandEqPulse {
+    0% { transform: scaleY(0.25); }
+    50% { transform: scaleY(0.95); }
+    100% { transform: scaleY(0.4); }
+}
+
+.brand-eq-bar:nth-child(1) { animation-delay: 0.1s; animation-duration: 0.85s; }
+.brand-eq-bar:nth-child(2) { animation-delay: 0.25s; animation-duration: 1.05s; }
+.brand-eq-bar:nth-child(3) { animation-delay: 0.0s; animation-duration: 0.75s; }
+.brand-eq-bar:nth-child(4) { animation-delay: 0.35s; animation-duration: 1.15s; }
+.brand-eq-bar:nth-child(5) { animation-delay: 0.15s; animation-duration: 0.95s; }
+
+.dash-sidebar-brand .brand-eq {
+    margin-left: 2px;
 }
 
 .brand-eq-bar:nth-child(even) {

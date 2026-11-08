@@ -9,18 +9,20 @@ export function initVisualizers() {
 }
 
 function injectBrandVisualizer() {
-  const navLogo = document.querySelector('.navbar .logo');
-  if (!navLogo || navLogo.querySelector('.brand-eq')) return;
+  const navLogos = document.querySelectorAll('.navbar .logo, .dash-sidebar-brand');
+  navLogos.forEach((navLogo) => {
+    if (!navLogo || navLogo.querySelector('.brand-eq')) return;
 
-  const eq = document.createElement('span');
-  eq.className = 'brand-eq';
-  eq.setAttribute('aria-hidden', 'true');
-  for (let i = 0; i < 5; i++) {
-    const bar = document.createElement('i');
-    bar.className = 'brand-eq-bar';
-    eq.appendChild(bar);
-  }
-  navLogo.appendChild(eq);
+    const eq = document.createElement('span');
+    eq.className = 'brand-eq';
+    eq.setAttribute('aria-hidden', 'true');
+    for (let i = 0; i < 5; i++) {
+      const bar = document.createElement('i');
+      bar.className = 'brand-eq-bar';
+      eq.appendChild(bar);
+    }
+    navLogo.appendChild(eq);
+  });
 }
 
 function injectHeroBgVisualizer() {

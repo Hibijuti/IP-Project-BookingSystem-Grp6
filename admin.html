@@ -167,16 +167,7 @@
                             <button type="button" class="dash-mobile-toggle" id="dash-mobile-toggle" onclick="window.toggleMobileSidebar(true)" aria-label="Open navigation sidebar">
                                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
                             </button>
-                            <div class="dash-title-wrap">
-                                <h2 class="dash-active-page-title" id="dash-active-page-title">Overview</h2>
-                                <div class="dash-audio-visualizer" aria-hidden="true" title="Audio Wave Live">
-                                    <span class="viz-bar bar-1"></span>
-                                    <span class="viz-bar bar-2"></span>
-                                    <span class="viz-bar bar-3"></span>
-                                    <span class="viz-bar bar-4"></span>
-                                    <span class="viz-bar bar-5"></span>
-                                </div>
-                            </div>
+                            <h2 class="dash-active-page-title" id="dash-active-page-title">Overview</h2>
                         </div>
 
                         <div class="dash-header-actions">
@@ -429,9 +420,11 @@
     <script type="module">
         import { initCalendar, unlockAdmin, adminSignIn, adminSignOut, getAdminSession } from './src/calendar.js';
         import { initNavigation } from './src/ui.js';
+        import { initVisualizers } from './src/visualizer.js';
 
         window.addEventListener('DOMContentLoaded', async () => {
             initNavigation();
+            initVisualizers();
 
         // Quick navigation active pill toggle
         document.querySelectorAll('.dash-nav-pill').forEach(pill => {
