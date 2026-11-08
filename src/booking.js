@@ -1,5 +1,5 @@
 // ===================================================
-// K-SOUNDRENTALS — Breadcrumbs Stepper Booking & Payment Module
+// K-SOUNDRENTALS — Clean Breadcrumbs Booking & Deposit Module
 // ===================================================
 
 import {
@@ -14,7 +14,6 @@ import { isBlocked, blockDateLocally } from './calendar.js';
 import { saveBookingToDB } from './db.js';
 
 let activePaymentChannel = 'gcash';
-let activePaymentType = 'deposit'; // 'deposit' | 'full'
 let currentStep = 1;
 let maxStepUnlocked = 1;
 
@@ -57,72 +56,37 @@ export function updateLiveSummary() {
   const pkgSelect = document.getElementById('package-select');
   const dateInput = document.getElementById('input-date');
   const timeSelect = document.getElementById('delivery-time');
-  const addressInput = document.getElementById('input-address');
 
   const selectedPkg = findPackageByLabel(pkgSelect?.value) || PACKAGES.pkg2_12;
   const dateVal = dateInput?.value || '';
   const timeVal = timeSelect?.value || '';
-  const addressVal = addressInput?.value?.trim() || '';
 
-  // 1. Update summary DOM elements
-  const sumDateEl = document.getElementById('sum-date');
-  const sumTimeEl = document.getElementById('sum-time');
-  const sumPkgEl = document.getElementById('sum-pkg');
-  const sumDurEl = document.getElementById('sum-duration');
-  const sumVenueEl = document.getElementById('sum-venue');
-  const sumPriceEl = document.getElementById('sum-price');
-  const sumDepositEl = document.getElementById('sum-deposit');
-  const sumChipsEl = document.getElementById('sum-equip-chips');
+  const recapDateTimeEl = document.getElementById('recap-datetime');
+  const recapPkgEl = document.getElementById('recap-pkg');
+  const recapPriceEl = document.getElementById('recap-price');
 
-  if (sumDateEl) {
+  if (recapDateTimeEl) {
     if (dateVal) {
       const [y, m, d] = dateVal.split('-').map(Number);
       const dateObj = new Date(y, m - 1, d);
-      sumDateEl.textContent = dateObj.toLocaleDateString('en-US', {
+      const shortDate = dateObj.toLocaleDateString('en-US', {
         month: 'short',
-        day: 'numeric',
-        year: 'numeric'
+        day: 'numeric'
       });
-      sumDateEl.classList.remove('text-muted');
+      recapDateTimeEl.textContent = timeVal ? `${shortDate} • ${timeVal}` : shortDate;
     } else {
-      sumDateEl.textContent = 'Tap to select';
-      sumDateEl.classList.add('text-muted');
+      recapDateTimeEl.textContent = '—';
     }
   }
 
-  if (sumTimeEl) {
-    sumTimeEl.textContent = timeVal || 'Select time';
-    sumTimeEl.classList.toggle('text-muted', !timeVal);
+  if (recapPkgEl && selectedPkg) {
+    recapPkgEl.textContent = `${selectedPkg.tier} (${selectedPkg.durationHours}h)`;
   }
 
-  if (sumPkgEl && selectedPkg) {
-    sumPkgEl.textContent = selectedPkg.tier;
+  if (recapPriceEl && selectedPkg) {
+    recapPriceEl.innerHTML = `${pesoIconSvg(14)}${selectedPkg.price.toLocaleString()}`;
   }
 
-  if (sumDurEl && selectedPkg) {
-    sumDurEl.textContent = `${selectedPkg.durationHours} Hours`;
-  }
-
-  if (sumVenueEl) {
-    sumVenueEl.textContent = addressVal || 'Lapu-Lapu City';
-  }
-
-  if (sumPriceEl && selectedPkg) {
-    sumPriceEl.innerHTML = `${pesoIconSvg(15)}${selectedPkg.price.toLocaleString()}`;
-  }
-
-  if (sumDepositEl && selectedPkg) {
-    const due = activePaymentType === 'full' ? selectedPkg.price : selectedPkg.deposit;
-    sumDepositEl.innerHTML = `${pesoIconSvg(15)}${due.toLocaleString()}`;
-  }
-
-  if (sumChipsEl && selectedPkg?.equipment) {
-    sumChipsEl.innerHTML = selectedPkg.equipment
-      .map((item) => `<span class="equip-chip">${item}</span>`)
-      .join('');
-  }
-
-  // 2. Also sync QR code widget
   updatePaymentQRWidget(selectedPkg);
 }
 
@@ -140,7 +104,7 @@ function updatePaymentQRWidget(selectedPkg) {
     findPackageByLabel(document.getElementById('package-select')?.value) ||
     PACKAGES.pkg2_12;
 
-  const amountDue = activePaymentType === 'full' ? pkg.price : pkg.deposit;
+  const amountDue = pkg.deposit; // Strictly ₱200 reservation deposit
 
   if (qrImg) {
     qrImg.src = method.qrImage;
@@ -151,31 +115,18 @@ function updatePaymentQRWidget(selectedPkg) {
   if (acctNameEl) acctNameEl.textContent = method.accountName;
   if (copyBtn) copyBtn.setAttribute('data-copy', method.rawNumber);
   if (amountDueEl) {
-    amountDueEl.innerHTML = `${pesoIconSvg(18)}${amountDue.toLocaleString()}`;
+    amountDueEl.innerHTML = `${pesoIconSvg(16)}${amountDue.toLocaleString()}`;
   }
 }
 
 function initPaymentFlowControls() {
   const channelBtns = document.querySelectorAll('.pay-channel-btn[data-channel]');
-  const typeBtns = document.querySelectorAll('.pay-type-btn[data-paytype]');
 
   channelBtns.forEach((btn) => {
     btn.addEventListener('click', () => {
       activePaymentChannel = btn.dataset.channel;
       channelBtns.forEach((b) => {
         const isMatch = b.dataset.channel === activePaymentChannel;
-        b.classList.toggle('active', isMatch);
-        b.setAttribute('aria-pressed', String(isMatch));
-      });
-      updateLiveSummary();
-    });
-  });
-
-  typeBtns.forEach((btn) => {
-    btn.addEventListener('click', () => {
-      activePaymentType = btn.dataset.paytype;
-      typeBtns.forEach((b) => {
-        const isMatch = b.dataset.paytype === activePaymentType;
         b.classList.toggle('active', isMatch);
         b.setAttribute('aria-pressed', String(isMatch));
       });
@@ -329,9 +280,7 @@ function updatePickupHelper() {
   helperEl.style.display = 'flex';
   helperEl.innerHTML = `
     <span class="pickup-dot"></span>
-    <span>Estimated Pickup: <strong>${formattedEnd}${
-      nextDay ? ' (next day)' : ' (same day)'
-    }</strong> &bull; ${pkg.durationHours}-hr rental</span>
+    <span>Pickup: <strong>${formattedEnd}${nextDay ? ' (next day)' : ''}</strong></span>
   `;
 }
 
@@ -345,8 +294,7 @@ function buildBookingSummaryText(data) {
     `Package: ${data.packageChosen}`,
     `Address: ${data.address}`,
     data.mapLink ? `Map Pin: ${data.mapLink}` : null,
-    `Payment Method: ${data.paymentChannel} (${data.paymentTypeLabel} - ₱${data.amountDue.toLocaleString()})`,
-    data.referenceNo ? `Reference No: ${data.referenceNo}` : null
+    `Deposit Channel: ${data.paymentChannel} (₱${data.amountDue.toLocaleString()} Deposit)`
   ]
     .filter(Boolean)
     .join('\n');
@@ -370,15 +318,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
   }
 
   if (statusBanner) {
-    if (isOfflineFallback) {
-      statusBanner.style.display = 'block';
-      statusBanner.className = 'status-banner offline';
-      statusBanner.innerHTML = `
-        <strong>Saved Locally:</strong> Copy your summary below and send it with your payment screenshot via Messenger.
-      `;
-    } else {
-      statusBanner.style.display = 'none';
-    }
+    statusBanner.style.display = 'none';
   }
 
   if (summaryEl) {
@@ -386,21 +326,15 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       <div class="summary-grid">
         <div><span>Name:</span> <strong>${bookingData.name}</strong></div>
         <div><span>Contact:</span> <strong>${bookingData.phone}</strong></div>
-        <div><span>Event Date:</span> <strong>${bookingData.date}</strong></div>
-        <div><span>Delivery Time:</span> <strong>${bookingData.deliveryTime}</strong></div>
+        <div><span>Schedule:</span> <strong>${bookingData.date} &bull; ${bookingData.deliveryTime}</strong></div>
         <div><span>Package:</span> <strong>${bookingData.packageChosen}</strong></div>
         <div><span>Address:</span> <strong>${bookingData.address}</strong></div>
         ${
           bookingData.mapLink
-            ? `<div><span>Map Pin:</span> <a href="${bookingData.mapLink}" target="_blank" rel="noopener noreferrer" class="text-orange">View Google Maps Pin &nearr;</a></div>`
+            ? `<div><span>Map Pin:</span> <a href="${bookingData.mapLink}" target="_blank" rel="noopener noreferrer" class="text-orange">Open Maps Pin &nearr;</a></div>`
             : ''
         }
-        <div><span>Payment:</span> <strong>${bookingData.paymentChannel} &bull; ${bookingData.paymentTypeLabel} (₱${bookingData.amountDue.toLocaleString()})</strong></div>
-        ${
-          bookingData.referenceNo
-            ? `<div><span>Ref No.:</span> <strong class="text-orange">${bookingData.referenceNo}</strong></div>`
-            : ''
-        }
+        <div><span>Deposit:</span> <strong>₱${bookingData.amountDue.toLocaleString()} via ${bookingData.paymentChannel}</strong></div>
       </div>
     `;
   }
@@ -412,7 +346,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       try {
         await navigator.clipboard.writeText(text);
         const orig = copySummaryBtn.innerHTML;
-        copySummaryBtn.textContent = '✓ Copied!';
+        copySummaryBtn.textContent = '✓ Copied';
         setTimeout(() => {
           copySummaryBtn.innerHTML = orig;
         }, 2000);
@@ -449,8 +383,8 @@ async function submitToWeb3Forms(bookingPayload) {
       address: bookingPayload.address,
       google_maps_pin: bookingPayload.mapLink || 'Not pinned',
       payment_method: bookingPayload.paymentChannel,
-      payment_option: `${bookingPayload.paymentTypeLabel} (PHP ${bookingPayload.amountDue})`,
-      payment_reference: bookingPayload.referenceNo || 'To follow via Messenger'
+      payment_option: `Reservation Deposit (PHP ${bookingPayload.amountDue})`,
+      payment_reference: 'Sent via Messenger'
     })
   });
 
@@ -472,12 +406,15 @@ export function validateStep(stepIndex) {
 
   if (stepIndex === 1) {
     let valid = true;
+    const calRoot = document.getElementById('calendar-root');
+    const chipsGrid = document.querySelector('.time-chips-grid');
+    if (calRoot) clearError(calRoot);
     clearError(dateInput);
+    if (chipsGrid) clearError(chipsGrid);
     clearError(timeSelect);
 
     if (!dateInput || !dateInput.value) {
-      const calRoot = document.getElementById('calendar-root');
-      showError(calRoot || dateInput, 'Please tap an available date on the calendar.');
+      showError(calRoot || dateInput, 'Select an available date.');
       valid = false;
     } else {
       const [y, m, d] = dateInput.value.split('-').map(Number);
@@ -486,17 +423,16 @@ export function validateStep(stepIndex) {
       today.setHours(0, 0, 0, 0);
 
       if (chosenDate < today) {
-        showError(dateInput, 'Event date cannot be in the past.');
+        showError(calRoot || dateInput, 'Date cannot be in the past.');
         valid = false;
       } else if (isBlocked(dateInput.value)) {
-        showError(dateInput, 'This date is already booked. Please choose another date.');
+        showError(calRoot || dateInput, 'This date is unavailable.');
         valid = false;
       }
     }
 
     if (!timeSelect || !timeSelect.value) {
-      const chipsGrid = document.querySelector('.time-chips-grid');
-      showError(chipsGrid || timeSelect, 'Please pick a target delivery time.');
+      showError(chipsGrid || timeSelect, 'Select a delivery time.');
       valid = false;
     }
 
@@ -506,7 +442,7 @@ export function validateStep(stepIndex) {
   if (stepIndex === 2) {
     clearError(pkgSelect);
     if (!pkgSelect || !pkgSelect.value) {
-      showError(pkgSelect, 'Please choose a rental package.');
+      showError(pkgSelect, 'Select a package.');
       return false;
     }
     return true;
@@ -515,7 +451,7 @@ export function validateStep(stepIndex) {
   if (stepIndex === 3) {
     clearError(addressInput);
     if (!addressInput || !addressInput.value.trim()) {
-      showError(addressInput, 'Please enter or pin your event address in Lapu-Lapu.');
+      showError(addressInput, 'Enter or pin your delivery address.');
       return false;
     }
     return true;
@@ -533,7 +469,7 @@ export function validateStep(stepIndex) {
 
     const phoneVal = (phoneInput?.value || '').trim().replace(/[\s-]/g, '');
     if (!/^09\d{9}$/.test(phoneVal)) {
-      showError(phoneInput, 'Enter a valid 11-digit PH mobile number starting with 09.');
+      showError(phoneInput, 'Enter a valid 11-digit mobile number (09XXXXXXXXX).');
       valid = false;
     }
 
@@ -544,9 +480,9 @@ export function validateStep(stepIndex) {
 }
 
 export function goToStep(targetStep) {
-  if (targetStep < 1 || targetStep > 4) return;
+  if (targetStep < 1 || targetStep > 4 || targetStep === currentStep) return;
 
-  // If attempting to advance forward, validate current step first
+  // Validate current step(s) when moving forward
   if (targetStep > currentStep) {
     for (let s = currentStep; s < targetStep; s++) {
       if (!validateStep(s)) {
@@ -555,30 +491,41 @@ export function goToStep(targetStep) {
     }
   }
 
+  const direction = targetStep > currentStep ? 'forward' : 'backward';
   currentStep = targetStep;
   if (targetStep > maxStepUnlocked) {
     maxStepUnlocked = targetStep;
   }
 
-  // 1. Update Panes
+  // 1. Update Step Panes with directional animation
   const panes = document.querySelectorAll('.wizard-step-pane');
   panes.forEach((pane) => {
     const paneIndex = Number(pane.dataset.stepIndex);
     const isActive = paneIndex === currentStep;
-    pane.classList.toggle('active', isActive);
+    pane.classList.remove('active', 'step-enter-forward', 'step-enter-backward');
+    if (isActive) {
+      pane.classList.add(
+        'active',
+        direction === 'forward' ? 'step-enter-forward' : 'step-enter-backward'
+      );
+    }
   });
 
-  // 2. Update Breadcrumb Pills
+  // 2. Update Breadcrumb Pills with pop animation
   const pills = document.querySelectorAll('.crumb-pill[data-step]');
   pills.forEach((pill) => {
     const s = Number(pill.dataset.step);
-    pill.classList.remove('active', 'completed', 'disabled');
+    const wasCompleted = pill.classList.contains('completed');
+    pill.classList.remove('active', 'completed', 'disabled', 'crumb-pop');
 
     if (s === currentStep) {
-      pill.classList.add('active');
+      pill.classList.add('active', 'crumb-pop');
       pill.setAttribute('aria-current', 'step');
     } else if (s < currentStep || s <= maxStepUnlocked) {
       pill.classList.add('completed');
+      if (!wasCompleted) {
+        pill.classList.add('crumb-pop');
+      }
       pill.removeAttribute('aria-current');
     } else {
       pill.classList.add('disabled');
@@ -586,34 +533,25 @@ export function goToStep(targetStep) {
     }
   });
 
-  // 3. Update Connectors
+  // 3. Update Pure Green Connectors
   const connectors = document.querySelectorAll('.crumb-connector[data-connector]');
   connectors.forEach((conn) => {
     const cIndex = Number(conn.dataset.connector);
     conn.classList.toggle('completed', cIndex < currentStep);
   });
 
-  // 4. Trigger Leaflet map invalidateSize if reaching step 3
-  if (currentStep === 3) {
-    if (typeof window.refreshVenueMap === 'function') {
-      window.refreshVenueMap();
-    }
+  // 4. Refresh Leaflet map size when entering Step 3
+  if (currentStep === 3 && typeof window.refreshVenueMap === 'function') {
+    window.refreshVenueMap();
   }
 
-  // 5. Update summary
+  // 5. Update recap
   updateLiveSummary();
-
-  // 6. Smooth scroll to stepper top on mobile
-  const stepper = document.getElementById('booking-stepper-bar');
-  if (stepper && window.innerWidth < 900) {
-    stepper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
 }
 
 export async function handleBooking(event) {
   event.preventDefault();
 
-  // Validate all steps from 1 to 4
   for (let s = 1; s <= 4; s++) {
     if (!validateStep(s)) {
       goToStep(s);
@@ -626,15 +564,12 @@ export async function handleBooking(event) {
   const dateInput = document.getElementById('input-date');
   const addressInput = document.getElementById('input-address');
   const mapLinkInput = document.getElementById('input-map-link');
-  const refInput = document.getElementById('input-pay-ref');
   const pkgSelect = document.getElementById('package-select');
   const timeSelect = document.getElementById('delivery-time');
 
   const selectedPkg = findPackageByLabel(pkgSelect.value) || PACKAGES.pkg2_12;
   const methodObj = PAYMENT_METHODS[activePaymentChannel] || PAYMENT_METHODS.gcash;
-  const amountDue =
-    activePaymentType === 'full' ? selectedPkg.price : selectedPkg.deposit;
-
+  const amountDue = selectedPkg.deposit;
   const phoneVal = phoneInput.value.trim().replace(/[\s-]/g, '');
 
   const bookingPayload = {
@@ -646,16 +581,15 @@ export async function handleBooking(event) {
     address: addressInput.value.trim(),
     mapLink: mapLinkInput?.value?.trim() || '',
     paymentChannel: methodObj.name,
-    paymentTypeLabel:
-      activePaymentType === 'full' ? 'Full Payment' : 'Reservation Deposit',
+    paymentTypeLabel: 'Reservation Deposit',
     amountDue,
-    referenceNo: refInput?.value?.trim() || ''
+    referenceNo: ''
   };
 
   const submitBtn = document.querySelector('.wizard-submit-btn');
-  const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Complete Reservation';
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Reserve';
   if (submitBtn) {
-    submitBtn.textContent = 'Securing Reservation in Cloud...';
+    submitBtn.textContent = 'Saving...';
     submitBtn.disabled = true;
   }
 
@@ -715,12 +649,7 @@ function initBreadcrumbsInteraction() {
   pills.forEach((pill) => {
     pill.addEventListener('click', () => {
       const target = Number(pill.dataset.step);
-      // Allow navigation if previously unlocked or jumping backwards
-      if (target <= maxStepUnlocked || target < currentStep) {
-        goToStep(target);
-      } else {
-        goToStep(target); // will trigger validation of current step
-      }
+      goToStep(target);
     });
   });
 }
@@ -734,7 +663,6 @@ export function initBookingForm() {
   const pkgSelect = document.getElementById('package-select');
   const timeSelect = document.getElementById('delivery-time');
   const dateInput = document.getElementById('input-date');
-  const addressInput = document.getElementById('input-address');
 
   if (pkgSelect) {
     if (selectedKey && PACKAGES[selectedKey]) {
@@ -753,6 +681,15 @@ export function initBookingForm() {
     });
   }
 
+  if (timeSelect) {
+    timeSelect.addEventListener('change', () => {
+      const chipsGrid = document.querySelector('.time-chips-grid');
+      if (chipsGrid) clearError(chipsGrid);
+      clearError(timeSelect);
+      updateLiveSummary();
+    });
+  }
+
   const watchedInputs = document.querySelectorAll(
     '#input-name, #input-phone, #input-date, #delivery-time, #input-address, #package-select'
   );
@@ -766,10 +703,6 @@ export function initBookingForm() {
       updateLiveSummary();
     });
   });
-
-  if (addressInput) {
-    addressInput.addEventListener('input', updateLiveSummary);
-  }
 
   initInteractiveFormPickers();
   initPaymentFlowControls();

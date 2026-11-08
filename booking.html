@@ -42,12 +42,11 @@
         </div>
     </header>
 
-    <!-- ================= BREADCRUMB WIZARD BOOKING ================= -->
+    <!-- ================= CLEAN BREADCRUMB BOOKING FLOW ================= -->
     <main class="booking">
 
-        <div class="section-heading anim-reveal" style="margin-bottom: 24px;">
+        <div class="section-heading anim-reveal" style="margin-bottom: 20px;">
             <h2>Reserve Your <span class="text-gradient">Date.</span></h2>
-            <p class="section-subtitle">Reserve in 4 quick steps &bull; Instant confirmation &bull; Free Lapu-Lapu delivery</p>
         </div>
 
         <!-- FLUID PILL BREADCRUMBS STEPPER BAR -->
@@ -60,7 +59,7 @@
                     </span>
                     <span class="crumb-title">Date &amp; Time</span>
                 </button>
-                <div class="crumb-connector" data-connector="1"></div>
+                <div class="crumb-connector" data-connector="1"><span class="crumb-connector-fill"></span></div>
 
                 <button type="button" class="crumb-pill disabled" data-step="2">
                     <span class="crumb-badge">
@@ -69,416 +68,302 @@
                     </span>
                     <span class="crumb-title">Package</span>
                 </button>
-                <div class="crumb-connector" data-connector="2"></div>
+                <div class="crumb-connector" data-connector="2"><span class="crumb-connector-fill"></span></div>
 
                 <button type="button" class="crumb-pill disabled" data-step="3">
                     <span class="crumb-badge">
                         <span class="crumb-num">3</span>
                         <span class="crumb-check">✓</span>
                     </span>
-                    <span class="crumb-title">Venue</span>
+                    <span class="crumb-title">Location</span>
                 </button>
-                <div class="crumb-connector" data-connector="3"></div>
+                <div class="crumb-connector" data-connector="3"><span class="crumb-connector-fill"></span></div>
 
                 <button type="button" class="crumb-pill disabled" data-step="4">
                     <span class="crumb-badge">
                         <span class="crumb-num">4</span>
                         <span class="crumb-check">✓</span>
                     </span>
-                    <span class="crumb-title">Contact &amp; Pay</span>
+                    <span class="crumb-title">Confirm</span>
                 </button>
             </nav>
         </div>
 
-        <!-- WORKSPACE LAYOUT: WIZARD PANE (LEFT) + STICKY ORDER CAPSULE (RIGHT) -->
-        <div class="booking-flow-layout">
+        <!-- SINGLE CENTERED WIZARD CONTAINER -->
+        <div class="booking-single-container">
 
-            <!-- LEFT COLUMN: WIZARD STEPS FORM -->
-            <div class="booking-wizard-col">
+            <div id="booking-form-card" class="booking-form-card spotlight-card">
 
-                <div id="booking-form-card" class="booking-form-card spotlight-card">
+                <form class="booking-form" id="booking-stepper-form" onsubmit="handleBooking(event)" novalidate>
 
-                    <form class="booking-form" id="booking-stepper-form" onsubmit="handleBooking(event)" novalidate>
-
-                        <!-- ================= STEP 1: DATE & TIME ================= -->
-                        <div class="wizard-step-pane active" id="wizard-step-1" data-step-index="1">
-                            <div class="step-pane-header">
-                                <span class="step-tag-pill">Step 1 of 4</span>
-                                <h3>Select Event Date &amp; Delivery Time</h3>
-                                <p class="text-muted">Tap an available date on the calendar, then choose your preferred setup time.</p>
+                    <!-- ================= STEP 1: DATE & TIME ================= -->
+                    <div class="wizard-step-pane active" id="wizard-step-1" data-step-index="1">
+                        <div class="cal-wizard-wrap">
+                            <div class="cal-legend">
+                                <span class="leg available">Available</span>
+                                <span class="leg booked">Unavailable</span>
+                                <span class="leg selected">Selected</span>
                             </div>
-
-                            <!-- AVAILABILITY CALENDAR -->
-                            <div class="cal-wizard-wrap">
-                                <div class="cal-legend">
-                                    <span class="leg available">Available</span>
-                                    <span class="leg booked">Unavailable</span>
-                                    <span class="leg selected">Selected</span>
-                                </div>
-                                <div id="calendar-root"></div>
-                                <input type="hidden" id="input-date" required>
-                            </div>
-
-                            <!-- INTERACTIVE DELIVERY TIME CHIPS -->
-                            <div class="form-group" style="margin-top: 24px;">
-                                <div class="pkg-picker-header">
-                                    <label for="delivery-time">Target Delivery Time</label>
-                                    <span class="cal-hint-pill">Lapu-Lapu City</span>
-                                </div>
-                                <div class="time-chips-grid" role="group" aria-label="Select Delivery Time">
-                                    <button type="button" class="time-chip" data-time="8:00 AM" aria-pressed="false">8:00 AM</button>
-                                    <button type="button" class="time-chip" data-time="9:00 AM" aria-pressed="false">9:00 AM</button>
-                                    <button type="button" class="time-chip" data-time="10:00 AM" aria-pressed="false">10:00 AM</button>
-                                    <button type="button" class="time-chip" data-time="11:00 AM" aria-pressed="false">11:00 AM</button>
-                                    <button type="button" class="time-chip" data-time="12:00 PM" aria-pressed="false">12:00 PM</button>
-                                    <button type="button" class="time-chip" data-time="1:00 PM" aria-pressed="false">1:00 PM</button>
-                                    <button type="button" class="time-chip" data-time="2:00 PM" aria-pressed="false">2:00 PM</button>
-                                    <button type="button" class="time-chip" data-time="3:00 PM" aria-pressed="false">3:00 PM</button>
-                                    <button type="button" class="time-chip" data-time="4:00 PM" aria-pressed="false">4:00 PM</button>
-                                    <button type="button" class="time-chip" data-time="5:00 PM" aria-pressed="false">5:00 PM</button>
-                                </div>
-                                <select id="delivery-time" class="sr-only-select" required tabindex="-1">
-                                    <option value="">Pick a time</option>
-                                    <option>8:00 AM</option>
-                                    <option>9:00 AM</option>
-                                    <option>10:00 AM</option>
-                                    <option>11:00 AM</option>
-                                    <option>12:00 PM</option>
-                                    <option>1:00 PM</option>
-                                    <option>2:00 PM</option>
-                                    <option>3:00 PM</option>
-                                    <option>4:00 PM</option>
-                                    <option>5:00 PM</option>
-                                </select>
-                            </div>
-
-                            <!-- STEP 1 ACTION BUTTON -->
-                            <div class="wizard-actions-row single-action">
-                                <button type="button" class="btn btn-primary btn-shine wizard-next-btn" onclick="goToStep(2)">
-                                    <span>Next: Choose Package</span>
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                                </button>
-                            </div>
+                            <div id="calendar-root"></div>
+                            <input type="hidden" id="input-date" required>
                         </div>
 
-                        <!-- ================= STEP 2: PACKAGE & DURATION ================= -->
-                        <div class="wizard-step-pane" id="wizard-step-2" data-step-index="2">
-                            <div class="step-pane-header">
-                                <span class="step-tag-pill">Step 2 of 4</span>
-                                <h3>Select Rental Package &amp; Duration</h3>
-                                <p class="text-muted">Pick your setup and choose between 12-hour or extended 22-hour rental.</p>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label for="delivery-time">Delivery Time</label>
+                            <div class="time-chips-grid" role="group" aria-label="Select Delivery Time">
+                                <button type="button" class="time-chip" data-time="8:00 AM" aria-pressed="false">8:00 AM</button>
+                                <button type="button" class="time-chip" data-time="9:00 AM" aria-pressed="false">9:00 AM</button>
+                                <button type="button" class="time-chip" data-time="10:00 AM" aria-pressed="false">10:00 AM</button>
+                                <button type="button" class="time-chip" data-time="11:00 AM" aria-pressed="false">11:00 AM</button>
+                                <button type="button" class="time-chip" data-time="12:00 PM" aria-pressed="false">12:00 PM</button>
+                                <button type="button" class="time-chip" data-time="1:00 PM" aria-pressed="false">1:00 PM</button>
+                                <button type="button" class="time-chip" data-time="2:00 PM" aria-pressed="false">2:00 PM</button>
+                                <button type="button" class="time-chip" data-time="3:00 PM" aria-pressed="false">3:00 PM</button>
+                                <button type="button" class="time-chip" data-time="4:00 PM" aria-pressed="false">4:00 PM</button>
+                                <button type="button" class="time-chip" data-time="5:00 PM" aria-pressed="false">5:00 PM</button>
+                            </div>
+                            <select id="delivery-time" class="sr-only-select" required tabindex="-1">
+                                <option value="">Pick a time</option>
+                                <option>8:00 AM</option>
+                                <option>9:00 AM</option>
+                                <option>10:00 AM</option>
+                                <option>11:00 AM</option>
+                                <option>12:00 PM</option>
+                                <option>1:00 PM</option>
+                                <option>2:00 PM</option>
+                                <option>3:00 PM</option>
+                                <option>4:00 PM</option>
+                                <option>5:00 PM</option>
+                            </select>
+                        </div>
+
+                        <div class="wizard-actions-row single-action">
+                            <button type="button" class="btn btn-primary btn-shine wizard-next-btn" onclick="goToStep(2)">
+                                <span>Next</span>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ================= STEP 2: PACKAGE ================= -->
+                    <div class="wizard-step-pane" id="wizard-step-2" data-step-index="2">
+                        <div class="form-group">
+                            <div class="pkg-picker-header">
+                                <label for="package-select">Select Package</label>
+                                <div class="dur-pill-toggle" role="group" aria-label="Rental Duration">
+                                    <button type="button" class="dur-pill-btn active" data-hours="12" aria-pressed="true">12 Hrs</button>
+                                    <button type="button" class="dur-pill-btn" data-hours="22" aria-pressed="false">22 Hrs</button>
+                                </div>
                             </div>
 
-                            <div class="form-group">
-                                <div class="pkg-picker-header">
-                                    <label for="package-select">Rental Duration</label>
-                                    <div class="dur-pill-toggle" role="group" aria-label="Rental Duration">
-                                        <button type="button" class="dur-pill-btn active" data-hours="12" aria-pressed="true">12 Hrs</button>
-                                        <button type="button" class="dur-pill-btn" data-hours="22" aria-pressed="false">22 Hrs</button>
+                            <div class="pkg-choice-grid" role="group" aria-label="Select Rental Package">
+                                <button type="button" class="pkg-choice-card" data-tier="Speaker & Mic" aria-pressed="false">
+                                    <strong>Speaker &amp; Mic</strong>
+                                    <span class="choice-equip">JBL 520 &bull; 2 Mics</span>
+                                    <div class="choice-price-row">
+                                        <span class="choice-price peso-inline">₱999</span>
+                                        <small class="choice-hrs">/ 12 hrs</small>
                                     </div>
-                                </div>
-
-                                <div class="pkg-choice-grid" role="group" aria-label="Select Rental Package">
-                                    <button type="button" class="pkg-choice-card" data-tier="Speaker & Mic" aria-pressed="false">
-                                        <strong>Speaker &amp; Mic</strong>
-                                        <span class="choice-equip">JBL 520 &bull; 2 Mics</span>
-                                        <div class="choice-price-row">
-                                            <span class="choice-price peso-inline">₱999</span>
-                                            <small class="choice-hrs">/ 12 hrs</small>
-                                        </div>
-                                    </button>
-
-                                    <button type="button" class="pkg-choice-card active" data-tier="Full Karaoke" aria-pressed="true">
-                                        <strong>Full Karaoke</strong>
-                                        <span class="choice-equip">32" TV &bull; JBL 520 &bull; 2 Mics</span>
-                                        <div class="choice-price-row">
-                                            <span class="choice-price peso-inline">₱1,299</span>
-                                            <small class="choice-hrs">/ 12 hrs</small>
-                                        </div>
-                                    </button>
-
-                                    <button type="button" class="pkg-choice-card" data-tier="Full Karaoke Pro" aria-pressed="false">
-                                        <strong>Full Karaoke Pro</strong>
-                                        <span class="choice-equip">32" TV &bull; 2&times; JBL 520</span>
-                                        <div class="choice-price-row">
-                                            <span class="choice-price peso-inline">₱2,099</span>
-                                            <small class="choice-hrs">/ 12 hrs</small>
-                                        </div>
-                                    </button>
-                                </div>
-
-                                <select id="package-select" class="sr-only-select" required tabindex="-1">
-                                    <option value="">Choose a Package</option>
-                                    <option>Speaker & Mic — ₱999 (12 hrs)</option>
-                                    <option>Speaker & Mic — ₱1,199 (22 hrs)</option>
-                                    <option selected>Full Karaoke — ₱1,299 (12 hrs)</option>
-                                    <option>Full Karaoke — ₱1,499 (22 hrs)</option>
-                                    <option>Full Karaoke Pro — ₱2,099 (12 hrs)</option>
-                                    <option>Full Karaoke Pro — ₱2,299 (22 hrs)</option>
-                                </select>
-                            </div>
-
-                            <!-- DYNAMIC PICKUP TIME HELPER -->
-                            <div id="pickup-helper" class="pickup-helper" style="display:none"></div>
-
-                            <!-- STEP 2 ACTION BUTTONS -->
-                            <div class="wizard-actions-row">
-                                <button type="button" class="btn btn-outline wizard-back-btn" onclick="goToStep(1)">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                                    <span>Back</span>
                                 </button>
-                                <button type="button" class="btn btn-primary btn-shine wizard-next-btn" onclick="goToStep(3)">
-                                    <span>Next: Delivery Venue</span>
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+
+                                <button type="button" class="pkg-choice-card active" data-tier="Full Karaoke" aria-pressed="true">
+                                    <strong>Full Karaoke</strong>
+                                    <span class="choice-equip">32" TV &bull; JBL 520 &bull; 2 Mics</span>
+                                    <div class="choice-price-row">
+                                        <span class="choice-price peso-inline">₱1,299</span>
+                                        <small class="choice-hrs">/ 12 hrs</small>
+                                    </div>
+                                </button>
+
+                                <button type="button" class="pkg-choice-card" data-tier="Full Karaoke Pro" aria-pressed="false">
+                                    <strong>Full Karaoke Pro</strong>
+                                    <span class="choice-equip">32" TV &bull; 2&times; JBL 520</span>
+                                    <div class="choice-price-row">
+                                        <span class="choice-price peso-inline">₱2,099</span>
+                                        <small class="choice-hrs">/ 12 hrs</small>
+                                    </div>
                                 </button>
                             </div>
+
+                            <select id="package-select" class="sr-only-select" required tabindex="-1">
+                                <option value="">Choose a Package</option>
+                                <option>Speaker & Mic — ₱999 (12 hrs)</option>
+                                <option>Speaker & Mic — ₱1,199 (22 hrs)</option>
+                                <option selected>Full Karaoke — ₱1,299 (12 hrs)</option>
+                                <option>Full Karaoke — ₱1,499 (22 hrs)</option>
+                                <option>Full Karaoke Pro — ₱2,099 (12 hrs)</option>
+                                <option>Full Karaoke Pro — ₱2,299 (22 hrs)</option>
+                            </select>
                         </div>
 
-                        <!-- ================= STEP 3: VENUE & MAP PIN ================= -->
-                        <div class="wizard-step-pane" id="wizard-step-3" data-step-index="3">
-                            <div class="step-pane-header">
-                                <span class="step-tag-pill">Step 3 of 4</span>
-                                <h3>Delivery Location in Lapu-Lapu City</h3>
-                                <p class="text-muted">Pin your venue on the map and provide your street / landmark details.</p>
-                            </div>
+                        <div id="pickup-helper" class="pickup-helper" style="display:none"></div>
 
-                            <div class="form-group">
-                                <div class="map-header-row">
-                                    <label for="input-address">Event Venue &amp; Map Pin</label>
-                                    <button type="button" id="map-locate-btn" class="map-gps-btn">
-                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
-                                        <span>My GPS</span>
-                                    </button>
-                                </div>
+                        <div class="wizard-actions-row">
+                            <button type="button" class="btn btn-outline wizard-back-btn" onclick="goToStep(1)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                                <span>Back</span>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-shine wizard-next-btn" onclick="goToStep(3)">
+                                <span>Next</span>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </button>
+                        </div>
+                    </div>
 
-                                <div class="map-search-bar">
-                                    <input
-                                        type="text"
-                                        id="map-search-input"
-                                        placeholder="Search barangay, subdivision, or resort in Lapu-Lapu..."
-                                    >
-                                    <button type="button" id="map-search-btn" class="map-search-btn">Find</button>
-                                </div>
-
-                                <div id="osm-map" class="osm-map-box" aria-label="Lapu-Lapu City Venue Map"></div>
-                                <div id="map-pin-status" class="map-pin-status">
-                                    <span>Tap anywhere on the map or drag the pin to set your delivery location.</span>
-                                </div>
-
+                    <!-- ================= STEP 3: LOCATION ================= -->
+                    <div class="wizard-step-pane" id="wizard-step-3" data-step-index="3">
+                        <div class="form-group">
+                            <label for="input-address">Delivery Address</label>
+                            <div class="unified-address-bar">
                                 <input
                                     type="text"
                                     id="input-address"
-                                    placeholder="House/Street, Barangay, Lapu-Lapu City"
+                                    placeholder="Street, subdivision, or barangay in Lapu-Lapu..."
                                     required
-                                    style="margin-top: 12px;"
                                 >
-                                <input type="hidden" id="input-map-link" value="">
+                                <button type="button" id="map-search-btn" class="address-find-btn" aria-label="Find on map" title="Find on map">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                </button>
                             </div>
+                            <input type="hidden" id="input-map-link" value="">
 
-                            <!-- STEP 3 ACTION BUTTONS -->
-                            <div class="wizard-actions-row">
-                                <button type="button" class="btn btn-outline wizard-back-btn" onclick="goToStep(2)">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                                    <span>Back</span>
+                            <div class="map-stage-wrap">
+                                <button type="button" id="map-locate-btn" class="map-floating-gps">
+                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg>
+                                    <span>Use GPS</span>
                                 </button>
-                                <button type="button" class="btn btn-primary btn-shine wizard-next-btn" onclick="goToStep(4)">
-                                    <span>Next: Contact &amp; Payment</span>
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                                </button>
+                                <div id="osm-map" class="osm-map-box" aria-label="Venue Map"></div>
                             </div>
                         </div>
 
-                        <!-- ================= STEP 4: CONTACT & PAYMENT ================= -->
-                        <div class="wizard-step-pane" id="wizard-step-4" data-step-index="4">
-                            <div class="step-pane-header">
-                                <span class="step-tag-pill">Step 4 of 4</span>
-                                <h3>Contact Information &amp; Downpayment</h3>
-                                <p class="text-muted">Enter your contact info and secure your booking with a ₱200 reservation deposit.</p>
+                        <div class="wizard-actions-row">
+                            <button type="button" class="btn btn-outline wizard-back-btn" onclick="goToStep(2)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                                <span>Back</span>
+                            </button>
+                            <button type="button" class="btn btn-primary btn-shine wizard-next-btn" onclick="goToStep(4)">
+                                <span>Next</span>
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ================= STEP 4: CONFIRM & DEPOSIT ================= -->
+                    <div class="wizard-step-pane" id="wizard-step-4" data-step-index="4">
+
+                        <!-- COMPACT RECAP STRIP -->
+                        <div class="step4-recap-strip">
+                            <div class="recap-item">
+                                <span>Schedule</span>
+                                <strong id="recap-datetime">—</strong>
+                            </div>
+                            <div class="recap-item">
+                                <span>Package</span>
+                                <strong id="recap-pkg" class="text-orange">Full Karaoke (12h)</strong>
+                            </div>
+                            <div class="recap-item">
+                                <span>Package Rate</span>
+                                <strong id="recap-price" class="peso-inline">₱1,299</strong>
+                            </div>
+                        </div>
+
+                        <!-- NAME & PHONE ROW -->
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="input-name">Full Name</label>
+                                <input
+                                    type="text"
+                                    id="input-name"
+                                    placeholder="Juan Dela Cruz"
+                                    required
+                                >
                             </div>
 
-                            <!-- NAME & PHONE ROW -->
-                            <div class="form-row">
-                                <div class="form-group">
-                                    <label for="input-name">Full Name</label>
-                                    <input
-                                        type="text"
-                                        id="input-name"
-                                        placeholder="Juan Dela Cruz"
-                                        required
-                                    >
-                                </div>
-
-                                <div class="form-group">
-                                    <label for="input-phone">Mobile Number</label>
-                                    <input
-                                        type="tel"
-                                        id="input-phone"
-                                        placeholder="09XX XXX XXXX"
-                                        required
-                                    >
-                                </div>
+                            <div class="form-group">
+                                <label for="input-phone">Mobile Number</label>
+                                <input
+                                    type="tel"
+                                    id="input-phone"
+                                    placeholder="09XX XXX XXXX"
+                                    required
+                                >
                             </div>
+                        </div>
 
-                            <!-- PAYMENT CHANNEL TABS & TOGGLE -->
-                            <div class="pay-widget-card">
-                                <div class="pay-title-wrap">
-                                    <h4>Lock Your Reservation</h4>
-                                    <div class="pay-type-toggle">
-                                        <button type="button" class="pay-type-btn active" data-paytype="deposit">₱200 Deposit</button>
-                                        <button type="button" class="pay-type-btn" data-paytype="full">Full Payment</button>
-                                    </div>
+                        <!-- CLEAN ₱200 RESERVATION DEPOSIT QR -->
+                        <div class="pay-widget-card">
+                            <div class="pay-clean-header">
+                                <div class="pay-deposit-title">
+                                    <span>Reservation Deposit</span>
+                                    <strong id="pay-amount-due" class="peso-inline text-orange">₱200</strong>
                                 </div>
-
-                                <div class="pay-channel-tabs">
+                                <div class="pay-channel-tabs compact-tabs">
                                     <button type="button" class="pay-channel-btn active" data-channel="gcash">GCash</button>
-                                    <button type="button" class="pay-channel-btn" data-channel="gotyme">GoTyme Bank</button>
-                                </div>
-
-                                <div class="pay-qr-stage">
-                                    <div class="pay-qr-frame">
-                                        <img id="pay-qr-img" class="pay-qr-img" src="/images/qr-gcash.svg" alt="Payment QR Code">
-                                    </div>
-                                    <div class="pay-qr-details">
-                                        <div class="pay-amount-banner">
-                                            <span>Amount Due:</span>
-                                            <strong id="pay-amount-due" class="peso-inline">₱200</strong>
-                                        </div>
-                                        <div class="pay-acct-card">
-                                            <div>
-                                                <small id="pay-channel-label">GCash</small>
-                                                <strong id="pay-acct-number">0995 985 9549</strong>
-                                                <span class="pay-acct-holder" id="pay-acct-name">Kyle B. (K-SoundRentals)</span>
-                                            </div>
-                                            <button type="button" id="pay-copy-btn" class="btn-micro copy-btn" data-copy="09959859549">Copy</button>
-                                        </div>
-                                        <div class="pay-ref-group">
-                                            <label for="input-pay-ref">Reference No. <small>(Optional / Can send via Messenger)</small></label>
-                                            <input type="text" id="input-pay-ref" placeholder="e.g. 1002 984 123">
-                                        </div>
-                                    </div>
+                                    <button type="button" class="pay-channel-btn" data-channel="gotyme">GoTyme</button>
                                 </div>
                             </div>
 
-                            <!-- STEP 4 ACTION BUTTONS -->
-                            <div class="wizard-actions-row">
-                                <button type="button" class="btn btn-outline wizard-back-btn" onclick="goToStep(3)">
-                                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
-                                    <span>Back</span>
-                                </button>
-                                <button type="submit" class="btn btn-primary btn-shine wizard-submit-btn">
-                                    <span>Complete Reservation</span>
-                                    <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                                </button>
-                            </div>
-
-                            <div class="booking-guarantees-row" style="margin-top: 18px;">
-                                <div class="b-guarantee-item">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#86efac" stroke-width="2.3"><rect x="1" y="3" width="15" height="13" rx="2"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                                    <span>Free Delivery (Lapu-Lapu)</span>
+                            <div class="pay-qr-stage clean-qr-stage">
+                                <div class="pay-qr-frame">
+                                    <img id="pay-qr-img" class="pay-qr-img" src="/images/qr-gcash.svg" alt="Payment QR Code">
                                 </div>
-                                <div class="b-guarantee-item">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#ff8c00" stroke-width="2.3"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="2"/><line x1="15" y1="8" x2="17" y2="8"/><line x1="15" y1="12" x2="17" y2="12"/></svg>
-                                    <span>1 Valid ID Upon Handover</span>
-                                </div>
-                                <div class="b-guarantee-item">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="#38bdf8" stroke-width="2.3"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                                    <span>₱200 Downpayment</span>
+                                <div class="pay-qr-details">
+                                    <div class="pay-acct-card">
+                                        <div>
+                                            <small id="pay-channel-label">GCash</small>
+                                            <strong id="pay-acct-number">0995 985 9549</strong>
+                                            <span class="pay-acct-holder" id="pay-acct-name">Kyle B. (K-SoundRentals)</span>
+                                        </div>
+                                        <button type="button" id="pay-copy-btn" class="btn-micro copy-btn" data-copy="09959859549">Copy</button>
+                                    </div>
+                                    <p class="pay-messenger-note">
+                                        Send your payment screenshot on <strong>Messenger</strong> after clicking Reserve.
+                                    </p>
                                 </div>
                             </div>
                         </div>
 
-                    </form>
-                </div>
-
-                <!-- SUCCESS CONFIRMATION BOX -->
-                <div id="success-message" class="success-box spotlight-card" style="display:none">
-                    <div class="success-icon-badge">
-                        <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                        <div class="wizard-actions-row">
+                            <button type="button" class="btn btn-outline wizard-back-btn" onclick="goToStep(3)">
+                                <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+                                <span>Back</span>
+                            </button>
+                            <button type="submit" class="btn btn-primary btn-shine wizard-submit-btn">
+                                <span>Reserve</span>
+                                <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
+                            </button>
+                        </div>
                     </div>
 
-                    <h3>Reservation Saved!</h3>
-                    <p>Send your booking summary via Messenger to confirm your schedule.</p>
-
-                    <div id="booking-status-banner" style="display:none"></div>
-                    <div id="booking-summary" class="booking-summary-box"></div>
-
-                    <div class="success-actions">
-                        <button type="button" id="copy-booking-summary" class="btn btn-outline">
-                            Copy Summary
-                        </button>
-                        <a
-                            href="https://m.me/KSoundRentals"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            class="btn btn-primary btn-shine"
-                        >
-                            Open Messenger
-                        </a>
-                    </div>
-                </div>
-
+                </form>
             </div>
 
-            <!-- RIGHT COLUMN: STICKY LIVE ORDER SUMMARY CAPSULE -->
-            <aside class="booking-summary-col">
-                <div class="sticky-order-capsule spotlight-card" id="sticky-order-summary">
-                    <div class="summary-card-header">
-                        <div class="summary-header-badge">Live Summary</div>
-                        <h4>Your Reservation</h4>
-                    </div>
-
-                    <div class="summary-details-list">
-                        <div class="sum-row">
-                            <span class="sum-label">Event Date:</span>
-                            <strong class="sum-val" id="sum-date">Tap to select</strong>
-                        </div>
-                        <div class="sum-row">
-                            <span class="sum-label">Delivery Time:</span>
-                            <strong class="sum-val" id="sum-time">Select time</strong>
-                        </div>
-                        <div class="sum-row">
-                            <span class="sum-label">Package:</span>
-                            <strong class="sum-val text-orange" id="sum-pkg">Full Karaoke</strong>
-                        </div>
-                        <div class="sum-row">
-                            <span class="sum-label">Duration:</span>
-                            <strong class="sum-val" id="sum-duration">12 Hours</strong>
-                        </div>
-                        <div class="sum-row">
-                            <span class="sum-label">Venue:</span>
-                            <strong class="sum-val" id="sum-venue">Lapu-Lapu City</strong>
-                        </div>
-                    </div>
-
-                    <div class="summary-divider"></div>
-
-                    <div class="summary-equip-wrap">
-                        <span class="sum-subhead">Included Equipment:</span>
-                        <div class="summary-equip-chips" id="sum-equip-chips">
-                            <span class="equip-chip">32" Karaoke TV</span>
-                            <span class="equip-chip">JBL PartyBox 520</span>
-                            <span class="equip-chip">2 Wireless Mics</span>
-                        </div>
-                    </div>
-
-                    <div class="summary-divider"></div>
-
-                    <div class="summary-pricing-wrap">
-                        <div class="price-line total-price-line">
-                            <span>Package Total</span>
-                            <strong class="peso-inline" id="sum-price">₱1,299</strong>
-                        </div>
-                        <div class="price-line deposit-line">
-                            <span>Deposit to Lock Date</span>
-                            <strong class="peso-inline text-orange" id="sum-deposit">₱200</strong>
-                        </div>
-                    </div>
-
-                    <div class="summary-help-box">
-                        <small>Need to customize? <a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer">Chat with us on Messenger &nearr;</a></small>
-                    </div>
+            <!-- SUCCESS CONFIRMATION BOX -->
+            <div id="success-message" class="success-box spotlight-card" style="display:none">
+                <div class="success-icon-badge">
+                    <svg viewBox="0 0 24 24" width="28" height="28" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
                 </div>
-            </aside>
+
+                <h3>Booking Request Sent</h3>
+                <p>Copy your booking summary below and send it with your ₱200 payment screenshot on Messenger.</p>
+
+                <div id="booking-status-banner" style="display:none"></div>
+                <div id="booking-summary" class="booking-summary-box"></div>
+
+                <div class="success-actions">
+                    <button type="button" id="copy-booking-summary" class="btn btn-outline">
+                        Copy Summary
+                    </button>
+                    <a
+                        href="https://m.me/KSoundRentals"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="btn btn-primary btn-shine"
+                    >
+                        Send Proof on Messenger
+                    </a>
+                </div>
+            </div>
 
         </div>
 

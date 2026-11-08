@@ -1,5 +1,5 @@
 // ===================================================
-// K-SOUNDRENTALS — Simple OpenStreetMap Venue Pin-Picker
+// K-SOUNDRENTALS — Clean OpenStreetMap Venue Pin-Picker
 // ===================================================
 
 const LAPU_LAPU_CENTER = [10.3115, 123.9535];
@@ -11,10 +11,9 @@ export function initVenueMap() {
   const L = window.L;
   const addressInput = document.getElementById('input-address');
   const mapLinkInput = document.getElementById('input-map-link');
-  const searchInput = document.getElementById('map-search-input');
+  const searchInput = document.getElementById('map-search-input') || addressInput;
   const searchBtn = document.getElementById('map-search-btn');
   const locateBtn = document.getElementById('map-locate-btn');
-  const pinStatus = document.getElementById('map-pin-status');
 
   // Initialize Leaflet Map
   const map = L.map(mapContainer, {
@@ -24,18 +23,18 @@ export function initVenueMap() {
     zoomControl: true
   });
 
-  // Official OpenStreetMap tile layer (100% Free Forever, Zero API Key Required)
+  // Official OpenStreetMap tile layer
   L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OpenStreetMap</a>',
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">OSM</a>',
     maxZoom: 19
   }).addTo(map);
 
-  // Simple clean pin marker
+  // Clean pin marker
   const customPinIcon = L.divIcon({
     className: 'simple-map-pin',
     html: `
       <div class="pin-marker">
-        <svg viewBox="0 0 24 24" width="22" height="22" fill="#ff8c00" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <svg viewBox="0 0 24 24" width="24" height="24" fill="#ff8c00" stroke="#ffffff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
           <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/>
           <circle cx="12" cy="10" r="3" fill="#ffffff"/>
         </svg>
@@ -59,13 +58,6 @@ export function initVenueMap() {
       mapLinkInput.value = gmapsUrl;
     }
 
-    if (pinStatus) {
-      pinStatus.innerHTML = `
-        <span>Pinned: <strong>${fixedLat}, ${fixedLng}</strong></span>
-        <a href="${gmapsUrl}" target="_blank" rel="noopener noreferrer" class="map-open-link">Open in Google Maps &nearr;</a>
-      `;
-    }
-
     if (!shouldReverseGeocode) return;
 
     try {
@@ -84,7 +76,6 @@ export function initVenueMap() {
         addressInput.dispatchEvent(new Event('input', { bubbles: true }));
       }
     } catch {
-      // Fallback if offline
       if (addressInput && !addressInput.value.trim()) {
         addressInput.value = `Pinned Venue (${fixedLat}, ${fixedLng}), Lapu-Lapu City`;
       }
@@ -107,16 +98,16 @@ export function initVenueMap() {
     updatePinDetails(pos.lat, pos.lng, true);
   });
 
-  // Simple Search for Lapu-Lapu locations
+  // Search for Lapu-Lapu locations using the unified input
   async function runMapSearch() {
     const query = searchInput?.value?.trim();
     if (!query) return;
 
-    const searchQuery = /lapu|mactan/i.test(query)
+    const searchQuery = /lapu|mactan|cebu/i.test(query)
       ? query
       : `${query}, Lapu-Lapu City, Cebu`;
 
-    if (searchBtn) searchBtn.textContent = '...';
+    if (searchBtn) searchBtn.classList.add('loading');
 
     try {
       const res = await fetch(
@@ -131,7 +122,7 @@ export function initVenueMap() {
         const lat = parseFloat(results[0].lat);
         const lng = parseFloat(results[0].lon);
 
-        map.flyTo([lat, lng], 15, { duration: 0.8 });
+        map.flyTo([lat, lng], 16, { duration: 0.7 });
         marker.setLatLng([lat, lng]);
 
         if (addressInput) {
@@ -144,15 +135,11 @@ export function initVenueMap() {
         }
 
         updatePinDetails(lat, lng, false);
-      } else if (pinStatus) {
-        pinStatus.innerHTML = `<span class="text-orange">Location not found — tap the map directly to drop your pin.</span>`;
       }
     } catch {
-      if (pinStatus) {
-        pinStatus.innerHTML = `<span class="text-orange">Tap the map directly to drop your pin.</span>`;
-      }
+      // Keep typed address as-is if search fails
     } finally {
-      if (searchBtn) searchBtn.textContent = 'Find';
+      if (searchBtn) searchBtn.classList.remove('loading');
     }
   }
 
@@ -169,25 +156,26 @@ export function initVenueMap() {
     });
   }
 
-  // Simple "My GPS" button
+  // Floating "Use GPS" button
   if (locateBtn) {
     locateBtn.addEventListener('click', () => {
       if (!navigator.geolocation) {
         alert('Geolocation is not supported by your browser.');
         return;
       }
-      locateBtn.textContent = 'Locating...';
+      const origHtml = locateBtn.innerHTML;
+      locateBtn.innerHTML = `<span>Locating...</span>`;
       navigator.geolocation.getCurrentPosition(
         (pos) => {
           const { latitude, longitude } = pos.coords;
-          map.flyTo([latitude, longitude], 16, { duration: 0.8 });
+          map.flyTo([latitude, longitude], 16, { duration: 0.7 });
           marker.setLatLng([latitude, longitude]);
           updatePinDetails(latitude, longitude, true);
-          locateBtn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg><span>My GPS</span>`;
+          locateBtn.innerHTML = origHtml;
         },
         () => {
-          locateBtn.innerHTML = `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="12" cy="12" r="3"/><path d="M12 2v3m0 14v3M2 12h3m14 0h3"/></svg><span>My GPS</span>`;
-          alert('Unable to access GPS location. Tap directly on the map to pin your venue.');
+          locateBtn.innerHTML = origHtml;
+          alert('Unable to access GPS. Tap directly on the map to pin your location.');
         },
         { enableHighAccuracy: true, timeout: 8000 }
       );
@@ -196,6 +184,6 @@ export function initVenueMap() {
 
   setTimeout(() => map.invalidateSize(), 250);
   window.refreshVenueMap = () => {
-    setTimeout(() => map.invalidateSize(), 100);
+    setTimeout(() => map.invalidateSize(), 80);
   };
 }

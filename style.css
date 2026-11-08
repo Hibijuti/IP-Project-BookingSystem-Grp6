@@ -6227,14 +6227,14 @@ img {
 
 
 /* ===================================================
-   K-SOUNDRENTALS — 4-STEP BREADCRUMBS WIZARD & STICKY SUMMARY
+   K-SOUNDRENTALS — CLEAN 4-STEP BREADCRUMBS WIZARD
    =================================================== */
 
 .booking-breadcrumbs-wrap {
     display: flex;
     justify-content: center;
     width: 100%;
-    margin-bottom: 28px;
+    margin-bottom: 24px;
     position: relative;
     z-index: 10;
 }
@@ -6243,7 +6243,7 @@ img {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(15, 15, 22, 0.85);
+    background: rgba(15, 15, 22, 0.88);
     backdrop-filter: blur(18px);
     -webkit-backdrop-filter: blur(18px);
     padding: 8px 14px;
@@ -6268,12 +6268,22 @@ img {
     font-size: 13px;
     font-weight: 600;
     font-family: inherit;
-    color: rgba(255, 255, 255, 0.55);
+    color: rgba(255, 255, 255, 0.5);
     background: transparent;
     border: 1px solid transparent;
     cursor: pointer;
-    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
     white-space: nowrap;
+}
+
+.crumb-pill.crumb-pop {
+    animation: crumbPillBounce 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes crumbPillBounce {
+    0% { transform: scale(0.92); }
+    55% { transform: scale(1.06); }
+    100% { transform: scale(1); }
 }
 
 .crumb-badge {
@@ -6286,8 +6296,8 @@ img {
     font-size: 11px;
     font-weight: 700;
     background: rgba(255, 255, 255, 0.08);
-    color: rgba(255, 255, 255, 0.7);
-    transition: all 0.25s ease;
+    color: rgba(255, 255, 255, 0.65);
+    transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
     flex-shrink: 0;
 }
 
@@ -6297,28 +6307,30 @@ img {
 }
 
 .crumb-pill.active {
-    background: linear-gradient(135deg, rgba(255, 140, 0, 0.25), rgba(255, 85, 0, 0.12));
-    border-color: rgba(255, 140, 0, 0.6);
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.24), rgba(255, 85, 0, 0.12));
+    border-color: rgba(255, 140, 0, 0.65);
     color: #ffffff;
-    box-shadow: 0 0 16px rgba(255, 140, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 18px rgba(255, 140, 0, 0.28), inset 0 1px 1px rgba(255, 255, 255, 0.2);
     cursor: default;
 }
 
 .crumb-pill.active .crumb-badge {
     background: linear-gradient(135deg, #ff8c00, #ff4500);
     color: #ffffff;
-    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.6);
+    box-shadow: 0 2px 10px rgba(255, 140, 0, 0.65);
+    transform: scale(1.08);
 }
 
 .crumb-pill.completed {
-    background: rgba(34, 197, 94, 0.08);
-    border-color: rgba(34, 197, 94, 0.25);
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.4);
     color: #86efac;
 }
 
 .crumb-pill.completed .crumb-badge {
     background: #22c55e;
-    color: #0b0f19;
+    color: #07120b;
+    box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
 }
 
 .crumb-pill.completed .crumb-num {
@@ -6327,94 +6339,244 @@ img {
 
 .crumb-pill.completed .crumb-check {
     display: block;
+    animation: crumbCheckIn 0.38s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes crumbCheckIn {
+    0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0deg); opacity: 1; }
 }
 
 .crumb-pill.completed:hover {
-    background: rgba(34, 197, 94, 0.18);
-    border-color: rgba(34, 197, 94, 0.45);
+    background: rgba(34, 197, 94, 0.2);
+    border-color: rgba(34, 197, 94, 0.6);
     transform: translateY(-1px);
     color: #ffffff;
 }
 
 .crumb-pill.disabled {
-    opacity: 0.4;
+    opacity: 0.38;
     cursor: not-allowed;
     pointer-events: none;
 }
 
+/* PURE GREEN ANIMATED CONNECTORS */
 .crumb-connector {
-    width: 22px;
-    height: 2px;
+    width: 26px;
+    height: 3px;
     background: rgba(255, 255, 255, 0.1);
-    border-radius: 2px;
+    border-radius: 999px;
     flex-shrink: 0;
-    transition: background 0.35s ease;
+    position: relative;
+    overflow: hidden;
 }
 
-.crumb-connector.completed {
-    background: linear-gradient(90deg, #22c55e, rgba(255, 140, 0, 0.7));
-    box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+.crumb-connector-fill {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 0%;
+    background: #22c55e;
+    border-radius: 999px;
+    box-shadow: 0 0 8px rgba(34, 197, 94, 0.7);
+    transition: width 0.45s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-/* WORKSPACE 2-COLUMN LAYOUT */
-.booking-flow-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1.35fr) minmax(310px, 0.65fr);
-    gap: 28px;
-    align-items: start;
-    max-width: 1240px;
+.crumb-connector.completed .crumb-connector-fill {
+    width: 100%;
+}
+
+/* SINGLE CENTERED WIZARD CONTAINER */
+.booking-single-container {
+    max-width: 600px;
     margin: 0 auto;
-}
-
-.booking-wizard-col {
-    min-width: 0;
+    width: 100%;
 }
 
 .wizard-step-pane {
     display: none;
-    opacity: 0;
-    transform: translateY(8px);
-    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .wizard-step-pane.active {
     display: block;
-    opacity: 1;
-    transform: translateY(0);
+    animation: stepSlideForward 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.step-pane-header {
-    margin-bottom: 22px;
-    padding-bottom: 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+.wizard-step-pane.active.step-enter-backward {
+    animation: stepSlideBackward 0.36s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
 
-.step-tag-pill {
-    display: inline-block;
-    padding: 3px 11px;
-    border-radius: 9999px;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    background: rgba(255, 140, 0, 0.15);
-    color: var(--orange);
-    border: 1px solid rgba(255, 140, 0, 0.3);
-    margin-bottom: 8px;
+@keyframes stepSlideForward {
+    0% {
+        opacity: 0;
+        transform: translateX(18px) scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
 }
 
-.step-pane-header h3 {
-    font-size: 1.35rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin-bottom: 6px;
+@keyframes stepSlideBackward {
+    0% {
+        opacity: 0;
+        transform: translateX(-18px) scale(0.99);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
 }
 
 .cal-wizard-wrap {
-    background: rgba(0, 0, 0, 0.2);
+    background: rgba(0, 0, 0, 0.22);
     border-radius: 18px;
     padding: 16px;
-    border: 1px solid rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+/* STEP 3: UNIFIED ADDRESS BAR & FLOATING GPS ON MAP */
+.unified-address-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.unified-address-bar input {
+    width: 100%;
+    padding-right: 46px !important;
+}
+
+.address-find-btn {
+    position: absolute;
+    right: 6px;
+    width: 34px;
+    height: 34px;
+    border-radius: 9999px;
+    border: none;
+    background: rgba(255, 140, 0, 0.16);
+    color: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.address-find-btn:hover {
+    background: var(--orange);
+    color: #fff;
+}
+
+.map-stage-wrap {
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.map-floating-gps {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 7px 13px;
+    border-radius: 9999px;
+    font-size: 12px;
+    font-weight: 700;
+    font-family: inherit;
+    background: rgba(15, 15, 22, 0.9);
+    backdrop-filter: blur(10px);
+    color: #fff;
+    border: 1px solid rgba(255, 140, 0, 0.45);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.map-floating-gps:hover {
+    background: var(--orange);
+    border-color: var(--orange);
+    transform: translateY(-1px);
+}
+
+/* STEP 4: COMPACT RECAP STRIP & CLEAN DEPOSIT CARD */
+.step4-recap-strip {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    margin-bottom: 18px;
+}
+
+.recap-item {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.recap-item span {
+    font-size: 11px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.recap-item strong {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.pay-clean-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-bottom: 14px;
+    flex-wrap: wrap;
+}
+
+.pay-deposit-title {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+}
+
+.pay-deposit-title span {
+    font-size: 13px;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.pay-deposit-title strong {
+    font-size: 1.25rem;
+    font-weight: 800;
+}
+
+.pay-channel-tabs.compact-tabs {
+    margin-bottom: 0;
+    display: inline-flex;
+    width: auto;
+}
+
+.pay-messenger-note {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.7);
+    line-height: 1.45;
+    margin: 4px 0 0;
+}
+
+.pay-messenger-note strong {
+    color: #ffffff;
 }
 
 /* WIZARD ACTIONS ROW */
@@ -6422,10 +6584,10 @@ img {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 14px;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    gap: 12px;
+    margin-top: 24px;
+    padding-top: 18px;
+    border-top: 1px solid rgba(255, 255, 255, 0.07);
 }
 
 .wizard-actions-row.single-action {
@@ -6434,158 +6596,13 @@ img {
 
 .wizard-next-btn,
 .wizard-submit-btn {
-    min-width: 190px;
+    min-width: 130px;
     justify-content: center;
 }
 
 .wizard-back-btn {
-    min-width: 110px;
+    min-width: 100px;
     justify-content: center;
-}
-
-/* STICKY LIVE ORDER SUMMARY */
-.booking-summary-col {
-    position: relative;
-}
-
-.sticky-order-capsule {
-    position: sticky;
-    top: 96px;
-    padding: 24px;
-    border-radius: 24px;
-    background: rgba(18, 18, 26, 0.88);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.09);
-    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.5);
-}
-
-.summary-card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 18px;
-}
-
-.summary-card-header h4 {
-    font-size: 1.15rem;
-    font-weight: 700;
-    color: #ffffff;
-    margin: 0;
-}
-
-.summary-header-badge {
-    font-size: 10px;
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    padding: 3px 10px;
-    border-radius: 9999px;
-    background: rgba(34, 197, 94, 0.15);
-    color: #86efac;
-    border: 1px solid rgba(34, 197, 94, 0.35);
-}
-
-.summary-details-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.sum-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-}
-
-.sum-label {
-    color: var(--text-muted);
-}
-
-.sum-val {
-    font-weight: 600;
-    color: #ffffff;
-    text-align: right;
-    max-width: 60%;
-    word-break: break-word;
-}
-
-.summary-divider {
-    height: 1px;
-    background: rgba(255, 255, 255, 0.07);
-    margin: 16px 0;
-}
-
-.sum-subhead {
-    display: block;
-    font-size: 11px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--text-muted);
-    margin-bottom: 8px;
-}
-
-.summary-equip-chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 6px;
-}
-
-.equip-chip {
-    font-size: 11px;
-    padding: 3px 9px;
-    border-radius: 9999px;
-    background: rgba(255, 255, 255, 0.06);
-    color: rgba(255, 255, 255, 0.85);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.summary-pricing-wrap {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.price-line {
-    display: flex;
-    justify-content: space-between;
-    align-items: baseline;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.price-line.total-price-line strong {
-    font-size: 1.15rem;
-    color: #ffffff;
-}
-
-.price-line.deposit-line strong {
-    font-size: 1.35rem;
-    color: var(--orange);
-    font-weight: 800;
-}
-
-.summary-help-box {
-    margin-top: 18px;
-    padding: 11px 14px;
-    background: rgba(255, 140, 0, 0.08);
-    border: 1px solid rgba(255, 140, 0, 0.22);
-    border-radius: 14px;
-    text-align: center;
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.8);
-}
-
-.summary-help-box a {
-    color: var(--orange);
-    font-weight: 600;
-    text-decoration: none;
-}
-
-.summary-help-box a:hover {
-    text-decoration: underline;
 }
 
 /* ===================================================
@@ -6712,19 +6729,6 @@ img {
 
 /* RESPONSIVE BREAKPOINTS */
 @media (max-width: 980px) {
-    .booking-flow-layout {
-        grid-template-columns: 1fr;
-    }
-
-    .booking-summary-col {
-        order: -1;
-    }
-
-    .sticky-order-capsule {
-        position: static;
-        margin-bottom: 24px;
-    }
-
     .admin-grid-layout {
         grid-template-columns: 1fr;
     }
@@ -6752,13 +6756,14 @@ img {
         width: 12px;
     }
 
-    .wizard-actions-row {
-        flex-direction: column-reverse;
+    .step4-recap-strip {
+        grid-template-columns: 1fr;
+        gap: 8px;
     }
 
-    .wizard-next-btn,
-    .wizard-submit-btn,
-    .wizard-back-btn {
-        width: 100%;
+    .recap-item {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
     }
 }
