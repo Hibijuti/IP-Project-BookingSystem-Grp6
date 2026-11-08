@@ -7253,263 +7253,382 @@ img {
     }
 }
 
-/* Confirmation Instructions Card (Send Proof to Facebook Page) */
-.conf-instructions-card {
-    background: rgba(18, 18, 28, 0.88);
-    border: 1px solid rgba(0, 132, 255, 0.28);
-    border-radius: 18px;
-    padding: 18px 20px;
-    margin-bottom: 20px;
+/* ===================================================
+   UNIFIED GCASH PAYMENT & VERIFICATION PASS
+   =================================================== */
+
+.conf-pay-card {
+    background: rgba(18, 18, 28, 0.92);
+    border: 1px solid rgba(0, 132, 255, 0.3);
+    border-radius: 24px;
+    overflow: hidden;
+    margin-bottom: 22px;
+    box-shadow: 0 16px 48px rgba(0, 132, 255, 0.12), 0 24px 60px rgba(0, 0, 0, 0.5);
     text-align: left;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
 }
 
-.conf-instructions-head {
+.conf-pay-head {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-bottom: 12px;
-    margin-bottom: 14px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+    padding: 18px 22px;
+    background: linear-gradient(135deg, rgba(0, 132, 255, 0.18) 0%, rgba(0, 86, 204, 0.08) 100%);
+    border-bottom: 1px solid rgba(0, 132, 255, 0.2);
 }
 
-.instructions-badge {
+.gcash-pill-brand {
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    font-size: 13.5px;
+}
+
+.gcash-logo-text {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 900;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0084ff, #0056cc);
+    box-shadow: 0 2px 10px rgba(0, 132, 255, 0.5);
+    letter-spacing: 0.6px;
+}
+
+.gcash-type-tag {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.75);
+    font-weight: 600;
+}
+
+.conf-pay-due {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.due-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+.due-val {
+    font-size: 1.4rem;
     font-weight: 800;
+    color: var(--orange);
+    font-family: var(--font-display);
+    line-height: 1.1;
+}
+
+.conf-pay-body {
+    padding: 22px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Quick Account Card */
+.pay-acct-card {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.035);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 14px;
+    padding: 14px 18px;
+    gap: 12px;
+}
+
+.pay-acct-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.pay-acct-label {
+    font-size: 10.5px;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 700;
+}
+
+.pay-acct-num {
+    font-size: 1.25rem;
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: 1px;
+    font-family: monospace;
+}
+
+.pay-acct-name {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.65);
+}
+
+.btn-copy-acct {
+    padding: 8px 16px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: 9999px;
+    background: rgba(0, 132, 255, 0.15);
+    border: 1px solid rgba(0, 132, 255, 0.4);
+    color: #38bdf8;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
+}
+
+.btn-copy-acct:hover {
+    background: #0084ff;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 14px rgba(0, 132, 255, 0.4);
+}
+
+/* Or Divider */
+.pay-or-divider {
+    position: relative;
+    width: 100%;
+    text-align: center;
+    margin: 18px 0;
+}
+
+.pay-or-divider::before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: rgba(255, 255, 255, 0.08);
+}
+
+.pay-or-divider span {
+    position: relative;
+    background: #12121c;
+    padding: 0 14px;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--text-muted);
+    font-weight: 700;
+}
+
+/* Centered QR Showcase with Scanner Frame */
+.pay-qr-showcase {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+}
+
+.pay-qr-frame {
+    position: relative;
+    max-width: 220px;
+    width: 100%;
+    background: #ffffff;
+    border-radius: 18px;
+    padding: 10px;
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+    cursor: pointer;
+    overflow: hidden;
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pay-qr-frame:hover {
+    transform: scale(1.02);
+    box-shadow: 0 16px 40px rgba(0, 132, 255, 0.3);
+}
+
+.pay-qr-image {
+    width: 100%;
+    height: auto;
+    max-height: 380px;
+    object-fit: contain;
+    border-radius: 10px;
+    display: block;
+}
+
+/* Scanner Corners */
+.qr-corner {
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    border-color: #0084ff;
+    border-style: solid;
+    pointer-events: none;
+    z-index: 2;
+}
+
+.qr-corner.top-left {
+    top: 6px;
+    left: 6px;
+    border-width: 3px 0 0 3px;
+    border-top-left-radius: 6px;
+}
+
+.qr-corner.top-right {
+    top: 6px;
+    right: 6px;
+    border-width: 3px 3px 0 0;
+    border-top-right-radius: 6px;
+}
+
+.qr-corner.bottom-left {
+    bottom: 6px;
+    left: 6px;
+    border-width: 0 0 3px 3px;
+    border-bottom-left-radius: 6px;
+}
+
+.qr-corner.bottom-right {
+    bottom: 6px;
+    right: 6px;
+    border-width: 0 3px 3px 0;
+    border-bottom-right-radius: 6px;
+}
+
+.qr-zoom-hover-badge {
+    position: absolute;
+    bottom: 12px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(5, 5, 12, 0.85);
+    backdrop-filter: blur(6px);
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 9999px;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    pointer-events: none;
+    white-space: nowrap;
+}
+
+.pay-qr-caption {
+    font-size: 11.5px;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+/* 3-Step Verification Stepper Banner */
+.pay-stepper-box {
+    width: 100%;
+    margin-top: 20px;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 16px;
+}
+
+.stepper-title {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.step-badge {
+    font-size: 9.5px;
+    font-weight: 800;
+    letter-spacing: 0.8px;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: rgba(0, 132, 255, 0.2);
+    color: #38bdf8;
+    border: 1px solid rgba(0, 132, 255, 0.35);
+}
+
+.stepper-title strong {
+    font-size: 12.5px;
     color: #ffffff;
 }
 
-.instructions-badge svg {
-    color: #0084ff;
-    flex-shrink: 0;
-}
-
-.instructions-action-pill {
-    font-size: 10.5px;
-    font-weight: 800;
-    letter-spacing: 0.6px;
-    text-transform: uppercase;
-    padding: 3px 9px;
-    border-radius: 9999px;
-    background: rgba(0, 132, 255, 0.15);
-    color: #38bdf8;
-    border: 1px solid rgba(56, 189, 248, 0.3);
-}
-
-.conf-steps-list {
+.pay-steps-row {
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
 }
 
-.conf-step-item {
+.p-step {
     display: flex;
-    align-items: flex-start;
-    gap: 12px;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
 }
 
-.step-num {
-    width: 26px;
-    height: 26px;
-    flex-shrink: 0;
+.p-step-num {
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
     background: rgba(0, 132, 255, 0.2);
-    border: 1px solid rgba(0, 132, 255, 0.45);
+    border: 1px solid rgba(0, 132, 255, 0.4);
     color: #38bdf8;
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 800;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 1px;
+    flex-shrink: 0;
 }
 
-.step-desc {
+.p-step-text {
     display: flex;
     flex-direction: column;
-    gap: 2px;
 }
 
-.step-desc strong {
-    font-size: 13px;
-    color: #ffffff;
-    font-weight: 700;
-}
-
-.step-desc span,
-.step-desc p {
+.p-step-text strong {
     font-size: 12px;
-    color: var(--text-secondary);
-    line-height: 1.45;
-    margin: 0;
-}
-
-.link-orange {
-    color: var(--orange);
-    text-decoration: underline;
-    font-weight: 700;
-}
-
-.link-orange:hover {
-    color: var(--orange-light);
-}
-
-/* Dedicated GCash Deposit Card */
-.conf-gcash-card {
-    background: rgba(18, 18, 28, 0.88);
-    border: 1px solid rgba(0, 132, 255, 0.25);
-    border-radius: 20px;
-    padding: 18px 20px;
-    margin-bottom: 20px;
-    box-shadow: 0 12px 36px rgba(0, 132, 255, 0.08);
-    text-align: left;
-}
-
-.conf-gcash-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 12px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
-    margin-bottom: 14px;
-}
-
-.conf-gcash-badge {
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: 800;
     color: #ffffff;
-    background: linear-gradient(135deg, #0084ff, #0056cc);
-    box-shadow: 0 2px 10px rgba(0, 132, 255, 0.4);
-    letter-spacing: 0.5px;
+    line-height: 1.2;
 }
 
-.conf-gcash-amt {
-    text-align: right;
-}
-
-.conf-gcash-amt small {
-    display: block;
-    font-size: 11px;
+.p-step-text small {
+    font-size: 10.5px;
     color: var(--text-muted);
-    text-transform: uppercase;
 }
 
-.conf-gcash-amt strong {
-    font-size: 1.25rem;
-    font-weight: 800;
-}
-
-.conf-gcash-body {
-    display: grid;
-    grid-template-columns: 140px 1fr;
-    gap: 16px;
+.p-step-sep {
+    color: rgba(255, 255, 255, 0.25);
+    flex-shrink: 0;
+    display: flex;
     align-items: center;
 }
 
-.conf-qr-preview-wrap {
-    position: relative;
-    border-radius: 14px;
-    overflow: hidden;
-    background: #ffffff;
-    padding: 6px;
-    border: 2px solid rgba(0, 132, 255, 0.3);
-    cursor: pointer;
-    transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.conf-qr-preview-wrap:hover {
-    transform: translateY(-2px);
-    border-color: #0084ff;
-    box-shadow: 0 8px 20px rgba(0, 132, 255, 0.25);
-}
-
-.conf-qr-thumb {
-    width: 100%;
-    height: auto;
-    max-height: 150px;
-    object-fit: contain;
-    border-radius: 8px;
-    display: block;
-}
-
-.conf-qr-zoom-tag {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    display: inline-flex;
-    align-items: center;
-    gap: 4px;
-    padding: 3px 8px;
-    background: rgba(0, 0, 0, 0.75);
-    backdrop-filter: blur(4px);
-    border-radius: 9999px;
-    font-size: 10px;
-    font-weight: 700;
-    color: #ffffff;
-    letter-spacing: 0.3px;
-    white-space: nowrap;
-    pointer-events: none;
-}
-
-.conf-acct-info {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-}
-
-.conf-acct-box {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-}
-
-.conf-acct-box small {
-    font-size: 11px;
-    color: var(--text-muted);
-    text-transform: uppercase;
-    letter-spacing: 0.4px;
-}
-
-.conf-acct-num {
-    font-size: 1.15rem;
-    font-weight: 800;
-    color: #ffffff;
-    letter-spacing: 0.8px;
-}
-
-.conf-acct-name {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.7);
-}
-
-.conf-acct-copy {
-    align-self: flex-start;
-    padding: 6px 14px;
-    font-size: 12px;
-    font-weight: 700;
-    border-radius: 9999px;
-}
-
-@media (max-width: 480px) {
-    .conf-gcash-body {
-        grid-template-columns: 1fr;
-        justify-items: center;
-        text-align: center;
+@media (max-width: 520px) {
+    .pay-acct-card {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
     }
-    .conf-qr-preview-wrap {
-        max-width: 160px;
+    .btn-copy-acct {
+        width: 100%;
+        justify-content: center;
     }
-    .conf-acct-copy {
-        align-self: center;
+    .pay-steps-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+    .p-step-sep {
+        display: none;
     }
 }
 
@@ -7519,6 +7638,7 @@ img {
     flex-direction: column;
     gap: 10px;
     margin-top: 10px;
+    width: 100%;
 }
 
 .conf-messenger-btn {
@@ -7541,15 +7661,23 @@ img {
     transform: translateY(-1px);
 }
 
-.conf-copy-btn {
+.conf-secondary-actions {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
     width: 100%;
-    padding: 12px 20px;
-    justify-content: center;
-    font-size: 13px;
+}
+
+.conf-sub-btn {
+    padding: 11px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
     border-radius: 9999px;
     display: inline-flex;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    gap: 6px;
+    text-decoration: none;
 }
 
 .conf-new-booking {
