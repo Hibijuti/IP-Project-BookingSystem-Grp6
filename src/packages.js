@@ -46,7 +46,7 @@ export const PACKAGES = {
     durationHours: 12,
     durationTag: '12 Hours',
     price: 999,
-    deposit: 200,
+    deposit: 500,
     label: 'Speaker & Mic — ₱999 (12 hrs)',
     image: '/images/pkg-speaker-mic.png',
     equipment: [
@@ -62,7 +62,7 @@ export const PACKAGES = {
     durationHours: 22,
     durationTag: '22 Hours',
     price: 1199,
-    deposit: 200,
+    deposit: 500,
     label: 'Speaker & Mic — ₱1,199 (22 hrs)',
     image: '/images/pkg-speaker-mic.png',
     equipment: [
@@ -78,7 +78,7 @@ export const PACKAGES = {
     durationHours: 12,
     durationTag: '12 Hours',
     price: 1299,
-    deposit: 200,
+    deposit: 500,
     label: 'Full Karaoke — ₱1,299 (12 hrs)',
     image: '/images/pkg-full-karaoke.png',
     equipment: [
@@ -94,7 +94,7 @@ export const PACKAGES = {
     durationHours: 22,
     durationTag: '22 Hours',
     price: 1499,
-    deposit: 200,
+    deposit: 500,
     label: 'Full Karaoke — ₱1,499 (22 hrs)',
     image: '/images/pkg-full-karaoke.png',
     equipment: [
@@ -110,7 +110,7 @@ export const PACKAGES = {
     durationHours: 12,
     durationTag: '12 Hours',
     price: 2099,
-    deposit: 200,
+    deposit: 500,
     label: 'Full Karaoke Pro — ₱2,099 (12 hrs)',
     image: '/images/pkg-full-karaoke-pro.png',
     equipment: [
@@ -126,7 +126,7 @@ export const PACKAGES = {
     durationHours: 22,
     durationTag: '22 Hours',
     price: 2299,
-    deposit: 200,
+    deposit: 500,
     label: 'Full Karaoke Pro — ₱2,299 (22 hrs)',
     image: '/images/pkg-full-karaoke-pro.png',
     equipment: [

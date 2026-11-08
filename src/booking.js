@@ -111,7 +111,7 @@ function updatePaymentQRWidget(selectedPkg) {
     findPackageByLabel(document.getElementById('package-select')?.value) ||
     PACKAGES.pkg2_12;
 
-  const amountDue = pkg.deposit; // Strictly ₱200 reservation deposit
+  const amountDue = pkg.deposit; // Strictly ₱500 reservation deposit
 
   if (qrImg) {
     qrImg.src = method.qrImage;
@@ -303,7 +303,7 @@ function buildBookingSummaryText(data) {
     'Package: ' + data.packageChosen,
     'Venue: ' + data.address,
     'Google Maps: ' + gmapsLink,
-    'Deposit Required: ₱' + Number(data.amountDue || 200).toLocaleString() + ' (GCash 0995 985 9549)',
+    'Deposit Required: ₱' + Number(data.amountDue || 500).toLocaleString() + ' (GCash 0995 985 9549)',
     '----------------------------------------',
     'Screenshot to be sent to Messenger: https://m.me/KSoundRentals'
   ]
@@ -337,7 +337,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
 
   const pkgObj = findPackageByLabel(bookingData.packageChosen) || PACKAGES.pkg2_12;
   const totalPrice = pkgObj.price || 1299;
-  const depositAmt = bookingData.amountDue || 200;
+  const depositAmt = bookingData.amountDue || 500;
   const balanceAmt = Math.max(0, totalPrice - depositAmt);
 
   if (contentEl) {
@@ -348,7 +348,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       '  </div>',
       '  <h3>Reservation Received!</h3>',
       '  <p class="conf-subtitle">',
-      '    Your setup is on hold. Complete your <strong>₱200 GCash deposit</strong> below and send your screenshot on Messenger to lock your date.',
+      '    Your setup is on hold. Complete your <strong>₱500 GCash deposit</strong> below and send your screenshot on Messenger to lock your date.',
       '  </p>',
       '</div>',
       '<!-- MODERN MINIMALIST GLASS ORDER CARD -->',
@@ -545,7 +545,7 @@ async function submitToWeb3Forms(bookingPayload) {
       'Delivery Venue Address': bookingPayload.address,
       'Google Maps Location Link': gmapsLink,
       'Deposit Amount Required': `PHP ${bookingPayload.amountDue}`,
-      'Messenger Action Required': 'Customer will send ₱200 deposit screenshot to Facebook Page (m.me/KSoundRentals)'
+      'Messenger Action Required': 'Customer will send ₱500 deposit screenshot to Facebook Page (m.me/KSoundRentals)'
     })
   });
 
