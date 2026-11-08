@@ -348,57 +348,6 @@
                         <!-- INVISIBLE ANTI-SPAM HONEYPOT TRAP -->
                         <input type="text" id="booking-hp-trap" name="booking_company_trap" style="position:absolute;left:-9999px;opacity:0;pointer-events:none;" tabindex="-1" autocomplete="off">
 
-                        <!-- ELEVATED RESERVATION DOWNPAYMENT & SETTLEMENT CARD -->
-                        <div class="downpayment-card">
-                            <div class="dp-card-head">
-                                <span class="dp-card-title">GCash Downpayment</span>
-                                <div class="dp-due-callout">
-                                    <span class="dp-callout-label">Deposit Due:</span>
-                                    <strong class="dp-callout-num peso-inline"><svg class="peso-svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16"/><path d="M6 4h7a5 5 0 0 1 0 10H6"/><path d="M4 8h16"/><path d="M4 11.5h16"/></svg>500</strong>
-                                </div>
-                            </div>
-
-                            <div class="dp-ledger-strip">
-                                <div class="dp-ledger-col">
-                                    <span class="dp-ledger-lbl">Package Total</span>
-                                    <span class="dp-ledger-val peso-inline" id="dp-recap-total"><svg class="peso-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16"/><path d="M6 4h7a5 5 0 0 1 0 10H6"/><path d="M4 8h16"/><path d="M4 11.5h16"/></svg>1,299</span>
-                                </div>
-                                <div class="dp-ledger-col dp-col-deposit">
-                                    <span class="dp-ledger-lbl">Deposit (Lock Date)</span>
-                                    <strong class="dp-ledger-val dp-deposit-val peso-inline"><svg class="peso-svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16"/><path d="M6 4h7a5 5 0 0 1 0 10H6"/><path d="M4 8h16"/><path d="M4 11.5h16"/></svg>500</strong>
-                                </div>
-                                <div class="dp-ledger-col">
-                                    <span class="dp-ledger-lbl">Balance on Delivery</span>
-                                    <span class="dp-ledger-val peso-inline" id="dp-recap-balance"><svg class="peso-svg" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16"/><path d="M6 4h7a5 5 0 0 1 0 10H6"/><path d="M4 8h16"/><path d="M4 11.5h16"/></svg>799</span>
-                                </div>
-                            </div>
-
-                            <div class="dp-acct-box">
-                                <div class="dp-acct-info">
-                                    <div class="dp-acct-main">
-                                        <span class="dp-acct-label">Official GCash Number</span>
-                                        <div class="dp-number-row">
-                                            <strong class="dp-number">0995 985 9549</strong>
-                                            <button type="button" class="btn-copy-dp" onclick="window.copyGCashNumber(this)" title="Copy GCash Number">
-                                                <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
-                                                <span>Copy</span>
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <span class="dp-recipient">Kyle B. &bull; K-SoundRentals</span>
-                                </div>
-                                <button type="button" class="btn-qr-view" onclick="document.getElementById('qr-lightbox-modal').style.display='flex'" title="View QR Voucher">
-                                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                                    <span>Scan QR</span>
-                                </button>
-                            </div>
-
-                            <div class="dp-guide-strip">
-                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="var(--orange)" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
-                                <p>₱500 downpayment locks your selected event date. Send your GCash payment screenshot to our <a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer">Facebook Messenger (m.me/KSoundRentals ↗)</a> for instant verification.</p>
-                            </div>
-                        </div>
-
                         <div class="wizard-actions-row">
                             <button type="button" class="btn btn-outline wizard-back-btn" onclick="goToStep(3)">
                                 <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
