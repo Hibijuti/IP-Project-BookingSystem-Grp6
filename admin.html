@@ -1,162 +1,197 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Owner Admin &amp; Booking Ledger — K-SoundRentals</title>
+    <title>Owner Command Center | K-SoundRentals Cebu</title>
+    <meta name="description" content="K-SoundRentals — Owner Command Center, Live Cloud Reservations & Availability Calendar.">
     <link rel="icon" type="image/png" href="Logo.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
 </head>
+
 <body class="admin-page">
 
-    <!-- HEADER -->
-    <header class="header">
-        <div class="header-container">
+    <!-- ================= FLOATING PILL NAVBAR (SAME AS INDEX) ================= -->
+    <header class="navbar">
+        <div class="nav-container">
             <a href="index.html" class="logo">
                 <img src="Logo.png" alt="K-SoundRentals Logo">
                 <span class="brand-name">K-Sound<span>Rentals</span></span>
             </a>
-            <div class="admin-nav-right">
-                <span class="admin-mode-pill">🔒 Owner Portal</span>
-                <a href="booking.html" class="btn btn-outline btn-micro">Back to Booking</a>
-            </div>
+
+            <nav class="nav-links" id="nav-links">
+                <a href="index.html">Home</a>
+                <a href="packages.html">Packages</a>
+                <a href="videos.html">Events</a>
+                <a href="admin.html" class="active">Admin</a>
+                <a href="booking.html" class="nav-book">
+                    <span>Book Now</span>
+                    <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                </a>
+            </nav>
+
+            <button class="hamburger" id="hamburger" type="button" aria-label="Toggle Menu" aria-expanded="false">
+                <span class="bar"></span>
+                <span class="bar"></span>
+                <span class="bar"></span>
+            </button>
         </div>
     </header>
 
     <main class="admin-main">
+        <div class="hero-ambient hero-ambient-orange" aria-hidden="true"></div>
+        <div class="hero-ambient hero-ambient-magenta" aria-hidden="true"></div>
+
         <div class="admin-container">
 
-            <!-- SUPABASE AUTH GATE SECTION (Shown until authenticated) -->
+            <!-- ================= SUPABASE AUTH GATE SECTION ================= -->
             <div id="admin-gate-card" class="admin-gate-card spotlight-card">
-                <div class="gate-icon-badge">
-                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.2">
-                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
-                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
-                    </svg>
-                </div>
-                <h2>Owner Security Portal</h2>
-                <p>Sign in with verified Supabase credentials to access customer reservations, analytics, and calendar controls.</p>
-
-                <form class="gate-form" onsubmit="event.preventDefault(); submitAdminUnlock();">
-                    <div class="gate-input-group">
-                        <label class="gate-input-label" for="admin-email">Admin Email</label>
-                        <div class="form-group" style="margin-bottom:12px;">
-                            <input
-                                type="email"
-                                id="admin-email"
-                                placeholder="owner@ksoundrentals.com"
-                                value="ksoundrentals.owner@gmail.com"
-                                class="admin-pw-input"
-                                autocomplete="username"
-                                required
-                            >
-                        </div>
+                <div class="how-card-header" style="margin-bottom: 20px;">
+                    <span class="how-step-num">OWNER PORTAL</span>
+                    <div class="how-icon">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
                     </div>
+                </div>
+
+                <h2>Admin <span class="text-gradient">Sign In.</span></h2>
+                <p>Authenticate with your verified Supabase owner account to manage live reservations and calendar dates.</p>
+
+                <form class="gate-form" onsubmit="event.preventDefault(); submitAdminUnlock();" novalidate>
+                    <div class="gate-input-group">
+                        <label class="gate-input-label" for="admin-email">Email Address</label>
+                        <input
+                            type="email"
+                            id="admin-email"
+                            class="admin-field-input"
+                            autocomplete="username"
+                            required
+                        >
+                    </div>
+
                     <div class="gate-input-group">
                         <label class="gate-input-label" for="admin-pw">Password</label>
-                        <div class="form-group" style="margin-bottom:16px;">
-                            <input
-                                type="password"
-                                id="admin-pw"
-                                placeholder="Enter account password"
-                                value="KSoundOwner2026!"
-                                class="admin-pw-input"
-                                autocomplete="current-password"
-                                required
-                            >
-                        </div>
+                        <input
+                            type="password"
+                            id="admin-pw"
+                            class="admin-field-input"
+                            autocomplete="current-password"
+                            required
+                        >
                     </div>
-                    <button type="submit" id="admin-login-btn" class="btn btn-primary btn-shine" style="width:100%;">
-                        <span>Sign In as Owner</span>
-                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+
+                    <button type="submit" id="admin-login-btn" class="btn btn-primary btn-shine" style="width:100%; margin-top: 8px;">
+                        <span>Sign In to Command Center</span>
+                        <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
                     </button>
+
                     <p id="admin-msg" class="admin-msg"></p>
-                    <p class="gate-hint-note"><small>Verified Admin: <code onclick="window.fillDemoAdmin()" style="cursor:pointer;" title="Click to auto-fill">ksoundrentals.owner@gmail.com</code> &bull; <code onclick="window.fillDemoAdmin()" style="cursor:pointer;">KSoundOwner2026!</code></small></p>
                 </form>
             </div>
 
-            <!-- DASHBOARD SECTION (Shown after unlock) -->
+            <!-- ================= OWNER DASHBOARD SECTION ================= -->
             <div id="admin-dashboard-wrap" class="admin-dashboard-wrap" style="display:none;">
 
+                <!-- DASHBOARD HERO BAR -->
                 <div class="admin-dash-header">
                     <div class="dash-header-title">
-                        <h2>Owner <span class="text-gradient">Command Center</span></h2>
                         <div class="cloud-status-badge">
                             <span class="live-dot"></span>
-                            <span>Supabase Live Sync &bull; kSoundRentals</span>
+                            <span>Supabase Cloud Connected</span>
                         </div>
+                        <h2>Command <span class="text-gradient">Center.</span></h2>
                     </div>
+
                     <div class="admin-top-actions">
-                        <div class="admin-user-pill">
-                            <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                            <span id="user-email-text">ksoundrentals.owner@gmail.com</span>
+                        <div class="admin-user-pill" id="admin-user-pill" style="display:none;">
+                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            <span id="user-email-text"></span>
                         </div>
-                        <button type="button" class="btn btn-outline btn-micro" onclick="lockAdminSession()">
-                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <button type="button" class="btn btn-outline btn-sm-pill" onclick="window.renderAdminLedger()">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                            <span>Sync</span>
+                        </button>
+                        <button type="button" class="btn btn-outline btn-sm-pill" onclick="lockAdminSession()">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
                             <span>Sign Out</span>
                         </button>
                     </div>
                 </div>
 
-                <!-- LIVE CLOUD ANALYTICS METRICS STRIP -->
+                <!-- 4-CARD ANALYTICS STRIP (MATCHING INDEX HOW-CARDS) -->
                 <div class="admin-analytics-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon-wrap icon-purple">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <div class="how-card admin-metric-card spotlight-card">
+                        <div class="how-card-header">
+                            <span class="how-step-num">BOOKINGS</span>
+                            <div class="how-icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            </div>
                         </div>
-                        <div class="stat-meta">
-                            <small>Total Bookings</small>
-                            <strong id="stat-total-bookings">0</strong>
-                            <span class="stat-badge-sub" id="stat-sub-bookings">0 confirmed</span>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon-wrap icon-green">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
-                        </div>
-                        <div class="stat-meta">
-                            <small>Deposits Collected</small>
-                            <strong id="stat-deposits">₱0</strong>
-                            <span class="stat-badge-sub">₱500 per booking</span>
+                        <div class="metric-value" id="stat-total-bookings">0</div>
+                        <p class="metric-label">Total Reservations</p>
+                        <div class="how-card-footer-decor">
+                            <span class="decor-tag" id="stat-sub-bookings">0 active &bull; 0 cancelled</span>
                         </div>
                     </div>
 
-                    <div class="stat-card">
-                        <div class="stat-icon-wrap icon-orange">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <div class="how-card admin-metric-card spotlight-card">
+                        <div class="how-card-header">
+                            <span class="how-step-num">DEPOSITS</span>
+                            <div class="how-icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                            </div>
                         </div>
-                        <div class="stat-meta">
-                            <small>Gross Pipeline</small>
-                            <strong id="stat-contract-val">₱0</strong>
-                            <span class="stat-badge-sub">Total contract value</span>
+                        <div class="metric-value text-orange" id="stat-deposits">₱0</div>
+                        <p class="metric-label">GCash Down Payments</p>
+                        <div class="how-card-footer-decor">
+                            <span class="decor-tag">₱500 per active booking</span>
                         </div>
                     </div>
 
-                    <div class="stat-card">
-                        <div class="stat-icon-wrap icon-blue">
-                            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.3"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <div class="how-card admin-metric-card spotlight-card">
+                        <div class="how-card-header">
+                            <span class="how-step-num">PIPELINE</span>
+                            <div class="how-icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                            </div>
                         </div>
-                        <div class="stat-meta">
-                            <small>Top Package</small>
-                            <strong id="stat-top-pkg" class="stat-text-truncate">—</strong>
-                            <span class="stat-badge-sub" id="stat-sub-top-pkg">Most chosen</span>
+                        <div class="metric-value" id="stat-contract-val">₱0</div>
+                        <p class="metric-label">Gross Package Value</p>
+                        <div class="how-card-footer-decor">
+                            <span class="decor-tag">Confirmed contracts</span>
+                        </div>
+                    </div>
+
+                    <div class="how-card admin-metric-card spotlight-card">
+                        <div class="how-card-header">
+                            <span class="how-step-num">POPULAR</span>
+                            <div class="how-icon">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="3"/><circle cx="12" cy="14" r="4"/><line x1="12" y1="6" x2="12.01" y2="6"/></svg>
+                            </div>
+                        </div>
+                        <div class="metric-value metric-pkg-name" id="stat-top-pkg">None</div>
+                        <p class="metric-label">Most Booked Setup</p>
+                        <div class="how-card-footer-decor">
+                            <span class="decor-tag" id="stat-sub-top-pkg">Awaiting bookings</span>
                         </div>
                     </div>
                 </div>
 
+                <!-- MAIN 2-COLUMN WORKSPACE -->
                 <div class="admin-grid-layout">
 
                     <!-- LEFT: CALENDAR AVAILABILITY CONTROLS -->
                     <div class="admin-calendar-col">
                         <div class="calendar-panel spotlight-card">
                             <div class="panel-header">
-                                <h3>Calendar Date Blocker</h3>
-                                <span class="cal-hint-pill text-orange">Tap date to toggle block</span>
+                                <h3>Date <span class="text-gradient">Blocker.</span></h3>
+                                <span class="cal-hint-pill">Tap date to toggle</span>
                             </div>
                             <div class="cal-legend">
                                 <span class="leg available">Available</span>
@@ -164,8 +199,9 @@
                             </div>
 
                             <div id="calendar-root"></div>
+
                             <div class="cal-admin-instructions">
-                                <p><small>⚡ Tapping an open date locks it in Supabase so customers cannot book it. Tapping a blocked date re-opens it instantly.</small></p>
+                                <p>Tapping any open date locks it in Supabase so customers cannot book it. Tapping a blocked date re-opens it immediately.</p>
                             </div>
                         </div>
                     </div>
@@ -174,21 +210,29 @@
                     <div class="admin-ledger-col">
                         <div class="ledger-panel spotlight-card">
                             <div class="ledger-head-bar">
-                                <h3>Reservations Ledger</h3>
+                                <div>
+                                    <h3>Reservations <span class="text-gradient">Ledger.</span></h3>
+                                    <p class="ledger-subtitle">Live customer bookings synced from Supabase</p>
+                                </div>
                                 <div class="ledger-filter-pills">
                                     <button type="button" class="filter-pill active" data-filter="all" onclick="window.setLedgerFilter('all')">All</button>
                                     <button type="button" class="filter-pill" data-filter="confirmed" onclick="window.setLedgerFilter('confirmed')">Active</button>
                                     <button type="button" class="filter-pill" data-filter="cancelled" onclick="window.setLedgerFilter('cancelled')">Cancelled</button>
-                                    <button type="button" class="btn btn-outline btn-micro export-csv-btn" onclick="window.exportBookingsCsv()" title="Download CSV">
-                                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                    <button type="button" class="btn btn-outline btn-sm-pill" onclick="window.exportBookingsCsv()">
+                                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                         <span>Export CSV</span>
                                     </button>
                                 </div>
                             </div>
-                            <div class="ledger-search-wrap">
-                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-                                <input type="text" id="admin-search-input" placeholder="Filter by customer, phone, or Ref #..." oninput="window.filterAdminLedger()">
+
+                            <div class="ledger-search-bar">
+                                <label for="admin-search-input" class="search-label-icon">
+                                    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                                    <span>Filter</span>
+                                </label>
+                                <input type="search" id="admin-search-input" class="ledger-search-input" oninput="window.filterAdminLedger()" aria-label="Filter reservations">
                             </div>
+
                             <div id="admin-bookings-list" class="admin-bookings-list" style="display:block;"></div>
                         </div>
                     </div>
@@ -200,36 +244,64 @@
         </div>
     </main>
 
+    <!-- ================= FOOTER (SAME AS INDEX) ================= -->
     <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <a href="index.html" class="logo">
+                    <img src="Logo.png" alt="K-SoundRentals Logo">
+                    <span class="brand-name">K-Sound<span>Rentals</span></span>
+                </a>
+                <p style="margin-top: 10px;">Karaoke &amp; Speaker Rental in Lapu-Lapu City, Cebu</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="index.html">Home</a>
+                <a href="packages.html">Packages</a>
+                <a href="videos.html">Events</a>
+                <a href="booking.html">Book Now</a>
+            </div>
+
+            <div class="footer-social">
+                <a href="https://www.facebook.com/KSoundRentals" target="_blank" rel="noopener noreferrer">Facebook</a>
+                <a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer">Messenger</a>
+            </div>
+        </div>
+
         <div class="footer-bottom">
-            <p>&copy; 2026 K-SoundRentals Owner Portal &bull; Strictly Supabase Connected</p>
+            <p>&copy; 2026 K-SoundRentals. All rights reserved.</p>
         </div>
     </footer>
 
     <script type="module">
         import { initCalendar, unlockAdmin, adminSignIn, adminSignOut, getAdminSession } from './src/calendar.js';
+        import { initNavigation } from './src/ui.js';
 
         window.addEventListener('DOMContentLoaded', async () => {
+            initNavigation();
             initCalendar();
-            
-            // Check existing verified Supabase Auth session
+
             try {
                 const session = await getAdminSession();
                 if (session && session.user) {
                     showAdminDashboard(session.user.email);
                 }
             } catch (err) {
-                console.warn('[Admin] Session verification check failed:', err);
+                console.warn('[Admin] Session check failed:', err);
             }
         });
 
         function showAdminDashboard(email) {
             const gate = document.getElementById('admin-gate-card');
             const dash = document.getElementById('admin-dashboard-wrap');
+            const emailPill = document.getElementById('admin-user-pill');
             const emailText = document.getElementById('user-email-text');
             if (gate) gate.style.display = 'none';
             if (dash) dash.style.display = 'block';
-            if (emailText && email) emailText.textContent = email;
+            if (emailPill && email) {
+                emailPill.style.display = 'inline-flex';
+                if (emailText) emailText.textContent = email;
+            }
             unlockAdmin(true);
         }
 
@@ -247,14 +319,14 @@
             if (!email || !password) {
                 if (msg) {
                     msg.style.color = '#fca5a5';
-                    msg.textContent = 'Please enter your email and password.';
+                    msg.textContent = 'Please enter both your email address and password.';
                 }
                 return;
             }
 
             if (btn) {
                 btn.disabled = true;
-                btn.innerHTML = '<span>Verifying credentials...</span>';
+                btn.innerHTML = '<span>Signing in...</span>';
             }
 
             try {
@@ -267,11 +339,9 @@
                 } else if (data?.user) {
                     if (msg) {
                         msg.style.color = '#86efac';
-                        msg.textContent = 'Authenticated successfully!';
+                        msg.textContent = 'Signed in!';
                     }
-                    setTimeout(() => {
-                        showAdminDashboard(data.user.email);
-                    }, 350);
+                    showAdminDashboard(data.user.email);
                 }
             } catch (err) {
                 if (msg) {
@@ -281,7 +351,7 @@
             } finally {
                 if (btn) {
                     btn.disabled = false;
-                    btn.innerHTML = '<span>Sign In as Owner</span><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
+                    btn.innerHTML = '<span>Sign In to Command Center</span><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>';
                 }
             }
         };
@@ -294,13 +364,7 @@
             }
             window.location.reload();
         };
-
-        window.fillDemoAdmin = function() {
-            const emailInput = document.getElementById('admin-email');
-            const pwInput = document.getElementById('admin-pw');
-            if (emailInput) emailInput.value = 'ksoundrentals.owner@gmail.com';
-            if (pwInput) pwInput.value = 'KSoundOwner2026!';
-        };
     </script>
 </body>
+
 </html>

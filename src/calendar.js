@@ -14,6 +14,7 @@ import {
   adminSignOut,
   getAdminSession
 } from './db.js';
+import { findPackageByLabel } from './packages.js';
 
 let isAdmin = false;
 let selectedDate = null;
@@ -257,11 +258,11 @@ function updateAdminAnalytics(bookings) {
     const pkg = findPackageByLabel(b.packageChosen || b.package);
     const rate = pkg ? pkg.price : (Number(b.amountDue || b.amount_due) || 1299);
     totalContractValue += rate;
-    const tier = pkg ? pkg.tier : (b.packageChosen || b.package || 'Standard');
+    const tier = pkg ? pkg.tier : (b.packageChosen || b.package || 'Full Karaoke');
     pkgCounts[tier] = (pkgCounts[tier] || 0) + 1;
   });
 
-  let topPkgName = '—';
+  let topPkgName = 'None';
   let maxCount = 0;
   for (const [tier, count] of Object.entries(pkgCounts)) {
     if (count > maxCount) {
@@ -282,7 +283,7 @@ function updateAdminAnalytics(bookings) {
   if (elDeposits) elDeposits.textContent = `₱${totalDeposits.toLocaleString()}`;
   if (elContract) elContract.textContent = `₱${totalContractValue.toLocaleString()}`;
   if (elTopPkg) elTopPkg.textContent = topPkgName;
-  if (elSubTopPkg) elSubTopPkg.textContent = maxCount > 0 ? `${maxCount} orders` : 'No orders yet';
+  if (elSubTopPkg) elSubTopPkg.textContent = maxCount > 0 ? `${maxCount} confirmed bookings` : 'Awaiting bookings';
 }
 
 function renderFilteredBookingsList() {
@@ -314,7 +315,8 @@ function renderFilteredBookingsList() {
   if (list.length === 0) {
     container.innerHTML = `
       <div class="admin-ledger-empty">
-        <p>No reservations found matching current filter.</p>
+        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        <p>No reservations match the current view.</p>
       </div>
     `;
     return;
@@ -324,71 +326,52 @@ function renderFilteredBookingsList() {
     .map((b) => {
       const isCancelled = b.status === 'cancelled';
       const pkg = findPackageByLabel(b.packageChosen || b.package);
-      const pkgLabel = pkg ? `${pkg.name} — ${pkg.tier}` : (b.packageChosen || b.package || 'Standard Package');
-      const pkgRate = pkg ? `₱${pkg.price.toLocaleString()}` : (b.amountDue ? `₱${Number(b.amountDue).toLocaleString()}` : '₱1,299');
-      const mapUrl = b.map_url || b.mapUrl;
+      const pkgLabel = pkg ? `${pkg.tier} (${pkg.durationTag})` : (b.packageChosen || b.package || 'Full Karaoke');
+      const pkgRate = pkg ? `₱${pkg.price.toLocaleString()}` : (b.amountDue || b.amount_due ? `₱${Number(b.amountDue || b.amount_due).toLocaleString()}` : '₱1,299');
+      const mapUrl = b.map_link || b.mapLink || b.map_url || b.mapUrl;
       const fbName = b.fb_name || b.fbName;
+      const deliveryTime = b.delivery_time || b.deliveryTime || '';
+      const refNo = b.reference_no || b.referenceNo || '';
 
       return `
-        <div class="admin-booking-card ${isCancelled ? 'is-cancelled' : ''}" data-booking-id="${b.id}">
-          <div class="admin-booking-header">
-            <div>
-              <span class="admin-booking-date">${b.date}</span>
-              <span class="admin-booking-id">#${b.id ? b.id.slice(0, 8) : 'REF'}</span>
+        <div class="admin-booking-item ${isCancelled ? 'booking-cancelled' : ''}" data-booking-id="${b.id}">
+          <div class="admin-booking-top">
+            <div class="admin-booking-id-wrap">
+              <span class="admin-booking-date">${b.date}${deliveryTime ? ` • ${deliveryTime}` : ''}</span>
+              <span class="admin-booking-id">#${b.id || 'REF'}</span>
             </div>
-            <div class="admin-booking-badge-wrap">
-              <span class="booking-status-badge ${isCancelled ? 'badge-cancelled' : 'badge-confirmed'}">
-                ${isCancelled ? 'Cancelled' : 'Confirmed'}
-              </span>
+            <span class="admin-status-tag ${isCancelled ? 'status-cancelled' : 'status-confirmed'}">
+              ${isCancelled ? 'Cancelled' : 'Confirmed'}
+            </span>
+          </div>
+
+          <div class="admin-client-info">
+            <span class="admin-client-name">${b.name || 'Customer'}</span>
+            <div class="admin-client-contacts">
+              ${b.phone ? `<a href="tel:${b.phone}" class="admin-phone-link">${b.phone}</a>` : ''}
+              ${fbName ? `<span class="admin-fb-badge">FB: ${fbName}</span>` : ''}
             </div>
           </div>
 
-          <div class="admin-booking-body">
-            <div class="admin-field-row">
-              <span class="field-label">Customer</span>
-              <span class="field-val"><strong>${b.name || 'Anonymous'}</strong></span>
-            </div>
-            <div class="admin-field-row">
-              <span class="field-label">Contact</span>
-              <span class="field-val">${b.phone || 'None provided'}</span>
-            </div>
-            ${
-              fbName
-                ? `<div class="admin-field-row">
-                    <span class="field-label">Facebook</span>
-                    <span class="field-val text-accent">@${fbName}</span>
-                  </div>`
-                : ''
-            }
-            <div class="admin-field-row">
-              <span class="field-label">Package</span>
-              <span class="field-val">${pkgLabel} (<strong>${pkgRate}</strong>)</span>
-            </div>
-            <div class="admin-field-row">
-              <span class="field-label">Deposit</span>
-              <span class="field-val" style="color:var(--secondary); font-weight:700;">₱500 paid via GCash</span>
-            </div>
-            <div class="admin-field-row">
-              <span class="field-label">Venue</span>
-              <span class="field-val">${b.address || 'Lapu-Lapu City'}</span>
-            </div>
-            ${
-              mapUrl
-                ? `<div class="admin-field-row">
-                    <span class="field-label">Pin Location</span>
-                    <span class="field-val"><a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="admin-map-link">Open Google Maps &nearr;</a></span>
-                  </div>`
-                : ''
-            }
+          <div class="admin-pkg-badge-strip">
+            <span class="admin-pkg-title">${pkgLabel}</span>
+            <span class="admin-rate-tag">Total: ${pkgRate}</span>
+            <span class="admin-deposit-tag">₱500 GCash Deposit</span>
+            ${refNo ? `<span class="admin-rate-tag">Ref: ${refNo}</span>` : ''}
+          </div>
+
+          <div class="admin-booking-venue">
+            <span>📍 ${b.address || 'Lapu-Lapu City'}</span>
+            ${mapUrl ? `<a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="admin-pin-pill">Google Maps &nearr;</a>` : ''}
           </div>
 
           <div class="admin-booking-actions">
             ${
               isCancelled
-                ? `<button type="button" class="btn-micro admin-reactivate-btn" onclick="window.reactivateSavedBooking('${b.id}', '${b.date}')">Reactivate</button>`
-                : `<button type="button" class="btn-micro admin-cancel-btn" onclick="window.cancelSavedBooking('${b.id}', '${b.date}')">Cancel &amp; Free Date</button>`
+                ? `<button type="button" class="admin-reactivate-btn" onclick="window.reactivateSavedBooking('${b.id}', '${b.date}')">Reactivate Booking</button>`
+                : `<button type="button" class="admin-cancel-btn" onclick="window.cancelSavedBooking('${b.id}', '${b.date}')">Cancel &amp; Reopen Date</button>`
             }
-            <button type="button" class="btn-micro admin-del-btn" onclick="window.deleteSavedBooking('${b.id}')" title="Permanently delete from database">Delete</button>
+            <button type="button" class="admin-delete-btn" onclick="window.deleteSavedBooking('${b.id}')">Delete</button>
           </div>
         </div>
       `;
@@ -414,14 +397,13 @@ export async function renderAdminLedger() {
       <div class="admin-supabase-notice">
         <div class="supabase-badge">⚡ Supabase Database</div>
         <h4>Database Connection Needed</h4>
-        <p>Bookings are set to be stored strictly in <strong>Supabase</strong>.</p>
         <p>Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> in your <code>.env</code> file.</p>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = '<div style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px;">Loading live reservations from Supabase...</div>';
+  container.innerHTML = '<div style="padding:28px; text-align:center; color:var(--text-muted); font-size:13.5px;">Syncing live reservations from Supabase...</div>';
 
   cachedBookings = await getSavedBookings();
   updateAdminAnalytics(cachedBookings);
