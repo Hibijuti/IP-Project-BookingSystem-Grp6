@@ -9,10 +9,11 @@ import {
   cancelBookingInDB,
   reactivateBookingInDB,
   deleteBookingFromDB,
-  isSupabaseConfigured
+  isSupabaseConfigured,
+  adminSignIn,
+  adminSignOut,
+  getAdminSession
 } from './db.js';
-
-const ADMIN_PASSWORD = 'ksound2026';
 
 let isAdmin = false;
 let selectedDate = null;
@@ -428,26 +429,12 @@ export async function renderAdminLedger() {
 }
 
 export function unlockAdmin(forceState) {
-  const pwInput = document.getElementById('admin-pw');
-  const msg = document.getElementById('admin-msg');
-  if (!pwInput || !msg) return;
-
-  if (pwInput.value === ADMIN_PASSWORD) {
-    isAdmin = typeof forceState === 'boolean' ? forceState : !isAdmin;
-    if (isAdmin) {
-      msg.style.color = '#86efac';
-      msg.textContent = 'Admin mode ON — tap any future date to block/unblock, or manage bookings below.';
-    } else {
-      msg.style.color = 'rgba(255,255,255,0.6)';
-      msg.textContent = 'Admin mode OFF.';
-    }
-    renderCalendar(currentYear, currentMonth);
-    renderAdminLedger();
-  } else {
-    msg.style.color = '#fca5a5';
-    msg.textContent = 'Wrong password.';
-  }
+  isAdmin = typeof forceState === 'boolean' ? forceState : !isAdmin;
+  renderCalendar(currentYear, currentMonth);
+  renderAdminLedger();
 }
+
+export { adminSignIn, adminSignOut, getAdminSession };
 
 export function initCalendar() {
   const root = document.getElementById('calendar-root');

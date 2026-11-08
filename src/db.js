@@ -73,20 +73,15 @@ export async function saveBookingToDB(bookingData) {
     return payload;
   }
 
-  let { data, error } = await supabase
+  let { error } = await supabase
     .from('bookings')
-    .insert([payload])
-    .select()
-    .single();
+    .insert([payload]);
 
   if (error && error.message && error.message.includes('fb_name')) {
     delete payload.fb_name;
     const retry = await supabase
       .from('bookings')
-      .insert([payload])
-      .select()
-      .single();
-    data = retry.data;
+      .insert([payload]);
     error = retry.error;
   }
 
@@ -100,7 +95,7 @@ export async function saveBookingToDB(bookingData) {
     await syncBlockedDateToDB(bookingData.date, true);
   }
 
-  return data || payload;
+  return payload;
 }
 
 // 3. Cancel booking strictly in Supabase (and reopen calendar date)
@@ -198,4 +193,30 @@ export async function syncBlockedDateToDB(dateStr, shouldBlock) {
       console.error('[K-SoundRentals] Error unblocking date in Supabase:', error.message);
     }
   }
+}
+
+// 8. Official Supabase Auth Methods
+export async function adminSignIn(email, password) {
+  const supabase = getSupabase();
+  if (!supabase) throw new Error('Supabase is not configured.');
+  return await supabase.auth.signInWithPassword({ email, password });
+}
+
+export async function adminSignOut() {
+  const supabase = getSupabase();
+  if (!supabase) return;
+  return await supabase.auth.signOut();
+}
+
+export async function getAdminSession() {
+  const supabase = getSupabase();
+  if (!supabase) return null;
+  const { data } = await supabase.auth.getSession();
+  return data?.session || null;
+}
+
+export function onAdminAuthChange(callback) {
+  const supabase = getSupabase();
+  if (!supabase) return { data: { subscription: { unsubscribe: () => {} } } };
+  return supabase.auth.onAuthStateChange(callback);
 }

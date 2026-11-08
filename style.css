@@ -8627,3 +8627,34 @@ img {
   background: rgba(239, 68, 68, 0.85);
   color: #fff;
 }
+
+
+/* Supabase Auth Gate Enhancements */
+.gate-input-group {
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.gate-input-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.admin-user-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--text);
+  font-weight: 500;
+}
+.admin-user-pill svg {
+  color: var(--primary-light, #818cf8);
+}
