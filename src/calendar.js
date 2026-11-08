@@ -249,7 +249,10 @@ function updateAdminAnalytics(bookings) {
   const confirmed = bookings.filter((b) => b.status !== 'cancelled');
   const cancelled = bookings.filter((b) => b.status === 'cancelled');
   const totalCount = bookings.length;
-  const totalDeposits = confirmed.length * 500;
+  const todayStr = new Date().toLocaleDateString('en-CA');
+  const upcoming = confirmed
+    .filter((b) => b.date && b.date >= todayStr)
+    .sort((a, b) => a.date.localeCompare(b.date));
 
   let totalContractValue = 0;
   const pkgCounts = {};
@@ -273,14 +276,20 @@ function updateAdminAnalytics(bookings) {
 
   const elTotal = document.getElementById('stat-total-bookings');
   const elSubTotal = document.getElementById('stat-sub-bookings');
-  const elDeposits = document.getElementById('stat-deposits');
+  const elUpcoming = document.getElementById('stat-upcoming');
+  const elSubUpcoming = document.getElementById('stat-sub-upcoming');
   const elContract = document.getElementById('stat-contract-val');
   const elTopPkg = document.getElementById('stat-top-pkg');
   const elSubTopPkg = document.getElementById('stat-sub-top-pkg');
 
   if (elTotal) elTotal.textContent = totalCount;
   if (elSubTotal) elSubTotal.textContent = `${confirmed.length} active • ${cancelled.length} cancelled`;
-  if (elDeposits) elDeposits.textContent = `₱${totalDeposits.toLocaleString()}`;
+  if (elUpcoming) elUpcoming.textContent = upcoming.length;
+  if (elSubUpcoming) {
+    elSubUpcoming.textContent = upcoming.length
+      ? `Next: ${new Date(upcoming[0].date + 'T00:00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}`
+      : 'No upcoming events';
+  }
   if (elContract) elContract.textContent = `₱${totalContractValue.toLocaleString()}`;
   if (elTopPkg) elTopPkg.textContent = topPkgName;
   if (elSubTopPkg) elSubTopPkg.textContent = maxCount > 0 ? `${maxCount} confirmed bookings` : 'Awaiting bookings';
@@ -356,7 +365,6 @@ function renderFilteredBookingsList() {
           <div class="admin-pkg-badge-strip">
             <span class="admin-pkg-title">${pkgLabel}</span>
             <span class="admin-rate-tag">Total: ${pkgRate}</span>
-            <span class="admin-deposit-tag">₱500 GCash Deposit</span>
             ${refNo ? `<span class="admin-rate-tag">Ref: ${refNo}</span>` : ''}
           </div>
 

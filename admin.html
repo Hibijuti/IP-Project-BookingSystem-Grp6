@@ -27,7 +27,6 @@
                 <a href="index.html">Home</a>
                 <a href="packages.html">Packages</a>
                 <a href="videos.html">Events</a>
-                <a href="admin.html" class="active">Admin</a>
                 <a href="booking.html" class="nav-book">
                     <span>Book Now</span>
                     <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
@@ -142,15 +141,15 @@
 
                     <div class="how-card admin-metric-card spotlight-card">
                         <div class="how-card-header">
-                            <span class="how-step-num">DEPOSITS</span>
+                            <span class="how-step-num">UPCOMING</span>
                             <div class="how-icon">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
                             </div>
                         </div>
-                        <div class="metric-value text-orange" id="stat-deposits">₱0</div>
-                        <p class="metric-label">GCash Down Payments</p>
+                        <div class="metric-value text-orange" id="stat-upcoming">0</div>
+                        <p class="metric-label">Upcoming Events</p>
                         <div class="how-card-footer-decor">
-                            <span class="decor-tag">₱500 per active booking</span>
+                            <span class="decor-tag" id="stat-sub-upcoming">No upcoming events</span>
                         </div>
                     </div>
 
@@ -269,7 +268,7 @@
         </div>
 
         <div class="footer-bottom">
-            <p>&copy; 2026 K-SoundRentals. All rights reserved.</p>
+            <p>&copy; 2026 K-SoundRentals. All rights reserved. <span class="footer-sep">&middot;</span> <a href="admin.html" class="footer-admin-link">Owner login</a></p>
         </div>
     </footer>
 
