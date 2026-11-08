@@ -87,6 +87,13 @@ export function updateLiveSummary() {
     recapPriceEl.innerHTML = `${pesoIconSvg(14)}${selectedPkg.price.toLocaleString()}`;
   }
 
+  const addressInput = document.getElementById('input-address');
+  const recapVenueEl = document.getElementById('recap-venue');
+  if (recapVenueEl) {
+    const addr = addressInput?.value?.trim() || '';
+    recapVenueEl.textContent = addr || 'Lapu-Lapu City';
+  }
+
   updatePaymentQRWidget(selectedPkg);
 }
 
@@ -333,79 +340,109 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
     contentEl.innerHTML = [
       '<div class="conf-hero">',
       '  <div class="conf-badge-pulse">',
-      '    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg>',
+      '    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg>',
       '  </div>',
       '  <h3>Reservation Received!</h3>',
       '  <p class="conf-subtitle">',
-      '    Your slot is reserved in our schedule. Send your ₱200 deposit screenshot on <strong>Messenger</strong> to lock your date.',
+      '    Your setup is on hold. Complete your <strong>₱200 GCash deposit</strong> below and send your screenshot on Messenger to lock your date.',
       '  </p>',
       '</div>',
-      '<div class="receipt-ticket">',
-      '  <div class="receipt-ticket-head">',
-      '    <div class="receipt-ref-row">',
-      '      <span class="receipt-tag">RESERVATION RECEIPT</span>',
-      '      <span class="receipt-ref-code">' + (bookingData.id || 'CONFIRMED') + '</span>',
+      '<!-- MODERN MINIMALIST GLASS ORDER CARD -->',
+      '<div class="conf-glass-card">',
+      '  <div class="conf-card-header">',
+      '    <div class="conf-ref-pill">',
+      '      <span>REF #</span>',
+      '      <strong>' + (bookingData.id || 'CONFIRMED') + '</strong>',
       '    </div>',
-      '    <h4 class="receipt-pkg-title">' + bookingData.packageChosen + '</h4>',
+      '    <span class="conf-status-tag">Pending Deposit</span>',
       '  </div>',
-      '  <div class="receipt-dashed-divider">',
-      '    <span class="notch notch-left"></span>',
-      '    <span class="notch notch-right"></span>',
-      '  </div>',
-      '  <div class="receipt-ticket-body">',
-      '    <div class="receipt-grid">',
-      '      <div class="receipt-cell">',
-      '        <span class="rc-label">Event Date</span>',
-      '        <strong class="rc-val">' + formattedDate + '</strong>',
-      '      </div>',
-      '      <div class="receipt-cell">',
-      '        <span class="rc-label">Delivery Time</span>',
-      '        <strong class="rc-val">' + bookingData.deliveryTime + '</strong>',
-      '      </div>',
-      '      <div class="receipt-cell">',
-      '        <span class="rc-label">Customer</span>',
-      '        <strong class="rc-val">' + bookingData.name + '</strong>',
-      '      </div>',
-      '      <div class="receipt-cell">',
-      '        <span class="rc-label">Mobile</span>',
-      '        <strong class="rc-val"><a href="tel:' + bookingData.phone + '" class="rc-tel-link">' + bookingData.phone + '</a></strong>',
-      '      </div>',
-      '      <div class="receipt-cell full-width">',
-      '        <span class="rc-label">Delivery Venue</span>',
-      '        <strong class="rc-val">' + bookingData.address + '</strong>',
-      bookingData.mapLink ? '        <a href="' + bookingData.mapLink + '" target="_blank" rel="noopener noreferrer" class="rc-pin-link">📍 Open in Google Maps &nearr;</a>' : '',
-      '      </div>',
+      '  <div class="conf-summary-grid">',
+      '    <div class="conf-grid-item">',
+      '      <small>Schedule</small>',
+      '      <strong>' + formattedDate + ' &bull; ' + bookingData.deliveryTime + '</strong>',
       '    </div>',
-      '    <div class="receipt-price-summary">',
-      '      <div class="rc-price-row">',
-      '        <span>Rental Rate</span>',
-      '        <strong>₱' + totalPrice.toLocaleString() + '</strong>',
-      '      </div>',
-      '      <div class="rc-price-row deposit-row">',
-      '        <span>Reservation Deposit</span>',
-      '        <strong class="text-orange">₱' + depositAmt.toLocaleString() + '</strong>',
-      '      </div>',
-      '      <div class="rc-price-row balance-row">',
-      '        <span>Remaining Balance Upon Handover</span>',
-      '        <small>₱' + balanceAmt.toLocaleString() + '</small>',
-      '      </div>',
+      '    <div class="conf-grid-item">',
+      '      <small>Package</small>',
+      '      <strong>' + bookingData.packageChosen + '</strong>',
+      '    </div>',
+      '    <div class="conf-grid-item">',
+      '      <small>Customer</small>',
+      '      <strong>' + bookingData.name + ' (<a href="tel:' + bookingData.phone + '">' + bookingData.phone + '</a>)</strong>',
+      '    </div>',
+      '    <div class="conf-grid-item full-width">',
+      '      <small>Delivery Venue</small>',
+      '      <strong>' + bookingData.address + '</strong>',
+      bookingData.mapLink ? '      <a href="' + bookingData.mapLink + '" target="_blank" rel="noopener noreferrer" class="conf-pin-link">📍 View Pinned Location &nearr;</a>' : '',
+      '    </div>',
+      '  </div>',
+      '  <div class="conf-pricing-breakdown">',
+      '    <div class="conf-price-row">',
+      '      <span>Total Rental Rate</span>',
+      '      <strong>₱' + totalPrice.toLocaleString() + '</strong>',
+      '    </div>',
+      '    <div class="conf-price-row deposit-highlight">',
+      '      <span>Deposit to Lock Date</span>',
+      '      <strong class="text-orange">₱' + depositAmt.toLocaleString() + '</strong>',
+      '    </div>',
+      '    <div class="conf-price-row balance-sub">',
+      '      <span>Remaining Balance Upon Handover</span>',
+      '      <small>₱' + balanceAmt.toLocaleString() + '</small>',
       '    </div>',
       '  </div>',
       '</div>',
+      '<!-- SLEEK DEDICATED GCASH DEPOSIT SECTION -->',
+      '<div class="conf-gcash-card">',
+      '  <div class="conf-gcash-head">',
+      '    <div class="conf-gcash-badge">GCash</div>',
+      '    <div class="conf-gcash-amt">',
+      '      <small>Deposit Amount</small>',
+      '      <strong class="text-orange">₱' + depositAmt.toLocaleString() + '</strong>',
+      '    </div>',
+      '  </div>',
+      '  <div class="conf-gcash-body">',
+      '    <div class="conf-qr-preview-wrap" id="conf-qr-trigger" title="Tap to expand QR code">',
+      '      <img src="/images/gcashref.jpg" alt="GCash Deposit QR" class="conf-qr-thumb">',
+      '      <span class="conf-qr-zoom-tag">',
+      '        <svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>',
+      '        <span>Tap to zoom</span>',
+      '      </span>',
+      '    </div>',
+      '    <div class="conf-acct-info">',
+      '      <div class="conf-acct-box">',
+      '        <small>GCash Mobile Number</small>',
+      '        <strong class="conf-acct-num">0995 985 9549</strong>',
+      '        <span class="conf-acct-name">Kyle B. (K-SoundRentals)</span>',
+      '      </div>',
+      '      <button type="button" class="btn-micro copy-btn conf-acct-copy" data-copy="09959859549">',
+      '        Copy Number',
+      '      </button>',
+      '    </div>',
+      '  </div>',
+      '</div>',
+      '<!-- ACTIONS CONTAINER -->',
       '<div class="conf-actions-container">',
       '  <a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-shine conf-messenger-btn">',
       '    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.914 1.454 5.518 3.734 7.202V22l3.411-1.872c.905.251 1.867.387 2.855.387 5.523 0 10-4.145 10-9.257C22 6.145 17.523 2 12 2zm1.002 12.443-2.56-2.73-4.996 2.73 5.496-5.834 2.624 2.73 4.932-2.73-5.496 5.834z"/></svg>',
-      '    <span>Send Proof on Messenger</span>',
+      '    <span>Open Messenger & Send Screenshot</span>',
       '  </a>',
       '  <button type="button" id="copy-booking-summary" class="btn btn-outline conf-copy-btn">',
       '    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
-      '    <span>Copy Summary</span>',
+      '    <span>Copy Reservation Summary</span>',
       '  </button>',
       '</div>',
       '<div class="conf-new-booking">',
       '  <a href="booking.html" class="conf-reset-link">Make another reservation &rarr;</a>',
       '</div>'
     ].filter(Boolean).join('\n');
+
+    // Attach QR lightbox trigger
+    const qrTrigger = document.getElementById('conf-qr-trigger');
+    const qrModal = document.getElementById('qr-lightbox-modal');
+    if (qrTrigger && qrModal) {
+      qrTrigger.addEventListener('click', () => {
+        qrModal.style.display = 'flex';
+      });
+    }
   }
 
   if (successBox) {
@@ -421,7 +458,7 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
         await navigator.clipboard.writeText(text);
         copySummaryBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="color:#86efac">✓ Copied</span>';
         setTimeout(() => {
-          copySummaryBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy Summary</span>';
+          copySummaryBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy Reservation Summary</span>';
         }, 2200);
       } catch {
         alert(text);

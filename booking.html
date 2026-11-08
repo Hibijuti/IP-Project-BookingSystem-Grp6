@@ -84,7 +84,7 @@
                         <span class="crumb-num">4</span>
                         <span class="crumb-check">✓</span>
                     </span>
-                    <span class="crumb-title">Confirm</span>
+                    <span class="crumb-title">Review</span>
                 </button>
             </nav>
         </div>
@@ -248,22 +248,28 @@
                         </div>
                     </div>
 
-                    <!-- ================= STEP 4: CONFIRM & DEPOSIT ================= -->
+                    <!-- ================= STEP 4: CONTACT & REVIEW ================= -->
                     <div class="wizard-step-pane" id="wizard-step-4" data-step-index="4">
 
-                        <!-- COMPACT RECAP STRIP -->
-                        <div class="step4-recap-strip">
-                            <div class="recap-item">
-                                <span>Schedule</span>
-                                <strong id="recap-datetime">—</strong>
+                        <!-- LIVE ORDER REVIEW CAPSULE -->
+                        <div class="step4-review-capsule">
+                            <div class="review-capsule-head">
+                                <span class="review-head-tag">ORDER REVIEW</span>
+                                <strong class="review-price-val text-orange" id="recap-price">₱1,299</strong>
                             </div>
-                            <div class="recap-item">
-                                <span>Package</span>
-                                <strong id="recap-pkg" class="text-orange">Full Karaoke (12h)</strong>
-                            </div>
-                            <div class="recap-item">
-                                <span>Package Rate</span>
-                                <strong id="recap-price" class="peso-inline">₱1,299</strong>
+                            <div class="review-capsule-grid">
+                                <div class="review-cell">
+                                    <small>Schedule</small>
+                                    <strong id="recap-datetime">—</strong>
+                                </div>
+                                <div class="review-cell">
+                                    <small>Package</small>
+                                    <strong id="recap-pkg">Full Karaoke (12h)</strong>
+                                </div>
+                                <div class="review-cell full-width">
+                                    <small>Delivery Venue</small>
+                                    <strong id="recap-venue">Lapu-Lapu City</strong>
+                                </div>
                             </div>
                         </div>
 
@@ -290,43 +296,9 @@
                             </div>
                         </div>
 
-                        <!-- CLEAN ₱200 RESERVATION DEPOSIT QR -->
-                        <div class="gcash-payment-card">
-                            <div class="gcash-card-top">
-                                <div class="gcash-brand-wrap">
-                                    <span class="gcash-brand-badge">GCash</span>
-                                    <span class="gcash-deposit-label">Reservation Deposit</span>
-                                </div>
-                                <div class="gcash-price-tag">
-                                    <strong id="pay-amount-due" class="peso-inline">₱200</strong>
-                                </div>
-                            </div>
-
-                            <div class="gcash-qr-showcase">
-                                <div class="gcash-qr-frame" id="gcash-qr-trigger" title="Tap to expand QR">
-                                    <img id="pay-qr-img" class="gcash-qr-img" src="/images/gcashref.jpg" alt="GCash QR Code">
-                                    <div class="qr-tap-badge">
-                                        <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
-                                        <span>Tap to expand</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="gcash-acct-bar">
-                                <div class="gcash-acct-meta">
-                                    <small id="pay-channel-label">GCash Mobile Number</small>
-                                    <strong id="pay-acct-number">0995 985 9549</strong>
-                                    <span class="pay-acct-holder" id="pay-acct-name">Kyle B. (K-SoundRentals)</span>
-                                </div>
-                                <button type="button" id="pay-copy-btn" class="btn-micro copy-btn" data-copy="09959859549">
-                                    Copy Number
-                                </button>
-                            </div>
-
-                            <div class="pay-proof-reminder">
-                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="#007dfe" stroke-width="2.3"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
-                                <span>Scan QR to pay ₱200, then send screenshot on <strong>Messenger</strong> after clicking Reserve.</span>
-                            </div>
+                        <div class="step4-deposit-notice">
+                            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22c55e" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><path d="m9 12 2 2 4-4"/></svg>
+                            <span>₱200 GCash reservation deposit instructions will appear on the next screen.</span>
                         </div>
 
                         <div class="wizard-actions-row">
@@ -335,12 +307,11 @@
                                 <span>Back</span>
                             </button>
                             <button type="submit" class="btn btn-primary btn-shine wizard-submit-btn">
-                                <span>Reserve</span>
+                                <span>Confirm &amp; Reserve</span>
                                 <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
                             </button>
                         </div>
                     </div>
-
                 </form>
             </div>
 
