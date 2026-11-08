@@ -97,6 +97,16 @@ export function updateLiveSummary() {
       const bal = Math.max(0, selectedPkg.price - selectedPkg.deposit);
       recapBalanceEl.innerHTML = `${pesoIconSvg(14)}${bal.toLocaleString()}`;
     }
+
+    const dpTotalEl = document.getElementById('dp-recap-total');
+    const dpBalanceEl = document.getElementById('dp-recap-balance');
+    if (dpTotalEl) {
+      dpTotalEl.innerHTML = `${pesoIconSvg(13)}${selectedPkg.price.toLocaleString()}`;
+    }
+    if (dpBalanceEl) {
+      const bal = Math.max(0, selectedPkg.price - selectedPkg.deposit);
+      dpBalanceEl.innerHTML = `${pesoIconSvg(13)}${bal.toLocaleString()}`;
+    }
   }
 
   const addressInput = document.getElementById('input-address');
@@ -356,19 +366,10 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
   if (contentEl) {
     contentEl.innerHTML = [
       '<div class="conf-hero">',
-      '  <div class="conf-celebration-burst" aria-hidden="true">',
-      '    <span class="burst-item burst-n1">♪</span>',
-      '    <span class="burst-item burst-n2">♫</span>',
-      '    <span class="burst-item burst-s1">✦</span>',
-      '    <span class="burst-item burst-s2">★</span>',
-      '    <span class="burst-item burst-m1">🎤</span>',
-      '    <span class="burst-item burst-n3">♬</span>',
-      '    <span class="burst-item burst-s3">✨</span>',
-      '  </div>',
       '  <div class="conf-success-icon" aria-hidden="true">',
       '    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>',
       '  </div>',
-      '  <h3>Reservation Received!</h3>',
+      '  <h3>Reservation Received</h3>',
       '  <p class="conf-subtitle">',
       '    Your setup is on hold. Complete your <strong>₱500 GCash deposit</strong> below and message our Facebook page to lock in your date.',
       '  </p>',
@@ -793,6 +794,13 @@ export async function handleBooking(event) {
     }
   }
 
+  // Honeypot bot protection
+  const honeypot = document.getElementById('booking-hp-trap');
+  if (honeypot && honeypot.value.trim() !== '') {
+    console.warn('Bot submission blocked via honeypot.');
+    return;
+  }
+
   const nameInput = document.getElementById('input-name');
   const phoneInput = document.getElementById('input-phone');
   const fbInput = document.getElementById('input-fb');
@@ -802,20 +810,66 @@ export async function handleBooking(event) {
   const pkgSelect = document.getElementById('package-select');
   const timeSelect = document.getElementById('delivery-time');
 
+  const nameVal = nameInput?.value?.trim() || '';
+  if (nameVal.length < 2) {
+    alert('Please enter your full name.');
+    nameInput?.focus();
+    return;
+  }
+
+  const phoneVal = (phoneInput?.value || '').trim().replace(/[\s-]/g, '');
+  const phPhoneRegex = /^(09|\+639)\d{9}$/;
+  if (!phPhoneRegex.test(phoneVal)) {
+    alert('Please enter a valid 11-digit Philippine mobile number (e.g. 0917 123 4567).');
+    phoneInput?.focus();
+    return;
+  }
+
+  const fbVal = fbInput?.value?.trim() || '';
+  if (fbVal.length < 2) {
+    alert('Please enter your Facebook account name so we can verify your deposit screenshot.');
+    fbInput?.focus();
+    return;
+  }
+
+  const dateVal = dateInput?.value || '';
+  if (!dateVal) {
+    alert('Please select an event date on the calendar.');
+    goToStep(1);
+    return;
+  }
+
+  // Double check if date is already booked
+  if (typeof isBlocked === 'function' && isBlocked(dateVal)) {
+    alert('Sorry, this date is already booked or reserved. Please choose another date on the calendar.');
+    goToStep(1);
+    return;
+  }
+
+  // Device rate limiting / anti-spam cooldown check (120 seconds)
+  const LAST_BOOKING_KEY = 'ksound_last_booking_ts';
+  const lastBookingTs = Number(localStorage.getItem(LAST_BOOKING_KEY) || 0);
+  const now = Date.now();
+  const cooldownSecs = 120;
+  const elapsedSecs = Math.floor((now - lastBookingTs) / 1000);
+  if (lastBookingTs && elapsedSecs < cooldownSecs) {
+    alert(`A reservation was recently submitted from this device. Please wait ${cooldownSecs - elapsedSecs}s before submitting another, or message us directly on Facebook.`);
+    return;
+  }
+
   const selectedPkg = findPackageByLabel(pkgSelect.value) || PACKAGES.pkg2_12;
   const methodObj = PAYMENT_METHODS[activePaymentChannel] || PAYMENT_METHODS.gcash;
   const amountDue = selectedPkg.deposit;
-  const phoneVal = phoneInput.value.trim().replace(/[\s-]/g, '');
   const bookingId = 'KS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
   const addressVal = addressInput.value.trim();
   const mapLinkVal = mapLinkInput?.value?.trim() || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(addressVal || 'Lapu-Lapu City'));
 
   const bookingPayload = {
     id: bookingId,
-    name: nameInput.value.trim(),
-    fbName: fbInput?.value?.trim() || '',
+    name: nameVal,
+    fbName: fbVal,
     phone: phoneVal,
-    date: dateInput.value,
+    date: dateVal,
     deliveryTime: timeSelect.value,
     packageChosen: pkgSelect.value,
     address: addressVal,
@@ -825,6 +879,10 @@ export async function handleBooking(event) {
     amountDue,
     referenceNo: ''
   };
+
+  try {
+    localStorage.setItem(LAST_BOOKING_KEY, String(Date.now()));
+  } catch (e) {}
 
   const submitBtn = document.querySelector('.wizard-submit-btn');
   const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Reserve';
@@ -958,6 +1016,16 @@ export function initBookingForm() {
       qrModal.style.display = 'flex';
     });
   }
+
+  window.copyGCashNumber = function(btn) {
+    navigator.clipboard.writeText('09959859549').then(() => {
+      const orig = btn.innerHTML;
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="color:#22c55e;font-weight:700;">Copied!</span>';
+      setTimeout(() => { btn.innerHTML = orig; }, 2000);
+    }).catch(() => {
+      alert('GCash number: 0995 985 9549');
+    });
+  };
 
   window.handleBooking = handleBooking;
   window.goToStep = goToStep;

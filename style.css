@@ -7876,33 +7876,68 @@ img {
     text-align: left;
 }
 
-/* 1. Gate Sign-In Card (Centered when locked) */
+/* 1. Gate Sign-In Card (Executive Centered Glass) */
 .admin-gate-card {
-    max-width: 440px;
-    margin: 60px auto;
-    padding: 32px 28px;
-    border-radius: 24px;
-    background: var(--bg-card);
-    border: 1px solid var(--border);
-    box-shadow: var(--shadow-card);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    max-width: 400px;
+    margin: 80px auto;
+    padding: 34px 30px;
+    border-radius: 20px;
+    background: rgba(14, 14, 22, 0.88);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
     text-align: left;
 }
 
-.admin-gate-card h2 {
-    font-size: 26px;
+.admin-gate-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 22px;
+}
+
+.admin-lock-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: rgba(255, 140, 0, 0.12);
+    border: 1px solid rgba(255, 140, 0, 0.28);
+    color: var(--orange);
+    flex-shrink: 0;
+}
+
+.admin-gate-header h2 {
+    font-size: 20px;
     font-weight: 800;
-    letter-spacing: -0.8px;
-    margin-bottom: 8px;
+    letter-spacing: -0.4px;
+    margin: 0;
     color: #ffffff;
 }
 
-.admin-gate-card p {
-    font-size: 13.5px;
-    color: var(--text-secondary);
-    line-height: 1.5;
-    margin-bottom: 20px;
+.gate-footer-links {
+    margin-top: 18px;
+    text-align: center;
+    padding-top: 14px;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.gate-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.18s ease;
+}
+
+.gate-back-link:hover {
+    color: var(--orange-light);
 }
 
 .gate-form {
@@ -9562,4 +9597,284 @@ summary:focus-visible,
         transform: translate(calc(var(--tx) * 1.3), calc(var(--ty) * 1.3)) scale(0.7) rotate(var(--rot));
         opacity: 0;
     }
+}
+
+/* ===================================================
+   ELEVATED RESERVATION DOWNPAYMENT & SETTLEMENT CARD
+   =================================================== */
+.downpayment-card {
+    background: rgba(18, 18, 28, 0.9);
+    border: 1px solid rgba(255, 140, 0, 0.22);
+    border-radius: 18px;
+    padding: 18px 20px;
+    margin: 18px 0;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    text-align: left;
+}
+
+.dp-card-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.dp-pill-wrap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dp-secure-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: rgba(34, 197, 94, 0.12);
+    border: 1px solid rgba(34, 197, 94, 0.28);
+    color: #86efac;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.2px;
+}
+
+.dp-channel-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 3px 9px;
+    border-radius: 6px;
+    background: rgba(0, 125, 254, 0.12);
+    border: 1px solid rgba(0, 125, 254, 0.28);
+    color: #60a5fa;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.dp-gcash-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #007dfe;
+    box-shadow: 0 0 6px #007dfe;
+}
+
+.dp-due-callout {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.dp-callout-label {
+    font-size: 12px;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+.dp-callout-num {
+    font-size: 17px;
+    font-weight: 800;
+    color: var(--orange);
+}
+
+.dp-ledger-strip {
+    display: grid;
+    grid-template-columns: 1fr 1.15fr 1fr;
+    background: rgba(5, 5, 10, 0.6);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    border-radius: 12px;
+    padding: 10px 14px;
+    gap: 8px;
+}
+
+.dp-ledger-col {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.dp-col-deposit {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 0 10px;
+}
+
+.dp-ledger-lbl {
+    font-size: 10.5px;
+    font-weight: 600;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.dp-ledger-val {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.dp-deposit-val {
+    color: var(--orange-light);
+    font-size: 15px;
+    font-weight: 800;
+}
+
+.dp-acct-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 125, 254, 0.05);
+    border: 1px solid rgba(0, 125, 254, 0.22);
+    border-radius: 12px;
+    padding: 10px 14px;
+    gap: 12px;
+}
+
+.dp-acct-info {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.dp-acct-label {
+    font-size: 10.5px;
+    font-weight: 700;
+    color: #93c5fd;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.dp-number-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.dp-number {
+    font-family: var(--font-display);
+    font-size: 15px;
+    font-weight: 800;
+    color: #ffffff;
+    letter-spacing: 0.4px;
+}
+
+.btn-copy-dp {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 7px;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+    font-size: 10.5px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.18s ease;
+}
+
+.btn-copy-dp:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: var(--orange);
+}
+
+.dp-recipient {
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.btn-qr-view {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 12px;
+    border-radius: 8px;
+    background: rgba(0, 125, 254, 0.16);
+    border: 1px solid rgba(0, 125, 254, 0.35);
+    color: #ffffff;
+    font-size: 11.5px;
+    font-weight: 700;
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: all 0.18s ease;
+}
+
+.btn-qr-view:hover {
+    background: rgba(0, 125, 254, 0.28);
+    border-color: #3b82f6;
+}
+
+.dp-guide-strip {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    font-size: 11.5px;
+    color: var(--text-secondary);
+    line-height: 1.45;
+}
+
+.dp-guide-strip svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.dp-guide-strip a {
+    color: var(--orange-light);
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+@media (max-width: 520px) {
+    .dp-ledger-strip {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+    .dp-col-deposit {
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 6px 0;
+    }
+    .dp-acct-box {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    .btn-qr-view {
+        width: 100%;
+        justify-content: center;
+    }
+}
+
+/* Admin Stale Hold Pill & Action */
+.admin-badge-expired-hold {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 7px;
+    border-radius: 6px;
+    background: rgba(239, 68, 68, 0.15);
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    color: #fca5a5;
+    font-size: 10px;
+    font-weight: 800;
+    letter-spacing: 0.2px;
+}
+
+.btn-purge-stale {
+    font-size: 11px;
+    color: #f87171;
+    border-color: rgba(239, 68, 68, 0.35);
+}
+
+.btn-purge-stale:hover {
+    background: rgba(239, 68, 68, 0.16);
+    border-color: #ef4444;
 }

@@ -886,6 +886,7 @@ function renderFilteredBookingsList() {
       const st = BOOKING_STATUSES[b.normStatus] || BOOKING_STATUSES.pending_deposit;
       const isCancelled = b.normStatus === 'cancelled';
       const isCompleted = b.normStatus === 'completed';
+      const isHoldExpired = b.normStatus === 'pending_deposit' && b.created_at && (Date.now() - new Date(b.created_at).getTime() > 60 * 60 * 1000);
       const pkg = findPackageByLabel(b.packageChosen || b.package);
       const pkgLabel = pkg ? `${pkg.tier} (${pkg.durationTag})` : (b.packageChosen || b.package || 'Full Karaoke');
       const pkgRate = pkg ? `<span class="peso-inline">${pesoIconSvg(13)}${pkg.price.toLocaleString()}</span>` : (b.amountDue || b.amount_due ? `<span class="peso-inline">${pesoIconSvg(13)}${Number(b.amountDue || b.amount_due).toLocaleString()}</span>` : `<span class="peso-inline">${pesoIconSvg(13)}1,299</span>`);
@@ -918,6 +919,7 @@ function renderFilteredBookingsList() {
               <span class="admin-booking-id">#${b.id || 'REF'}</span>
             </div>
             <div class="admin-status-wrap">
+              ${isHoldExpired ? '<span class="admin-badge-expired-hold" title="Reservation deposit not verified within 1 hour">Hold Expired (>1h)</span>' : ''}
               <span class="admin-status-badge ${st.badgeClass}">
                 <span class="status-indicator"></span>
                 <span>${st.label}</span>
@@ -1095,6 +1097,32 @@ export function switchAdminPage(pageId) {
   }
 }
 
+
+export async function purgeStaleHolds() {
+  const oneHourAgo = Date.now() - 60 * 60 * 1000;
+  const stale = cachedBookings.filter(
+    (b) => b.normStatus === 'pending_deposit' && b.created_at && new Date(b.created_at).getTime() < oneHourAgo
+  );
+
+  if (stale.length === 0) {
+    alert('No stale unverified holds found. All pending reservations are within the active 1-hour window.');
+    return;
+  }
+
+  if (!confirm(`Found ${stale.length} unverified pending hold(s) older than 1 hour.\nCancel them and reopen their calendar dates?`)) {
+    return;
+  }
+
+  try {
+    for (const b of stale) {
+      await updateBookingStatus(b.id, 'cancelled', b.date);
+    }
+    alert(`Successfully released ${stale.length} stale hold(s). Calendar dates are now open for new bookings.`);
+  } catch (err) {
+    alert('Error releasing stale holds: ' + (err.message || 'Error'));
+  }
+}
+
 export function initCalendar() {
   const root = document.getElementById('calendar-root');
   if (!root) return;
@@ -1140,4 +1168,5 @@ export function initCalendar() {
   window.setSortFilter = setSortFilter;
   window.resetAllFilters = resetAllFilters;
   window.filterAdminLedgerSearch = filterAdminLedgerSearch;
+  window.purgeStaleHolds = purgeStaleHolds;
 }
