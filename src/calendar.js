@@ -664,6 +664,29 @@ function updateAdminAnalytics(bookings) {
 
   // Render and sync responsive Chart.js analytics graphs
   updateAdminCharts(normalized, counts, totalContractValue, activeBookings);
+
+  const navCountAll = document.getElementById('nav-count-all');
+  if (navCountAll) navCountAll.textContent = counts.all;
+
+  const overviewNextCard = document.getElementById('overview-next-card');
+  if (overviewNextCard) {
+    if (upcoming.length > 0) {
+      const nextB = upcoming[0];
+      const pkg = findPackageByLabel(nextB.packageChosen || nextB.package);
+      overviewNextCard.innerHTML = `
+        <div class="next-event-badge">NEXT UPCOMING EVENT</div>
+        <div class="next-event-title">${nextB.name || 'Client'} &bull; ${new Date(nextB.date + 'T00:00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
+        <div class="next-event-meta">${pkg ? pkg.tier : (nextB.packageChosen || 'Full Karaoke')} &bull; ${nextB.phone || 'No phone'}</div>
+      `;
+    } else {
+      overviewNextCard.innerHTML = `
+        <div class="next-event-badge">NEXT UPCOMING EVENT</div>
+        <div class="next-event-title">No upcoming events scheduled</div>
+        <div class="next-event-meta">All active bookings fulfilled</div>
+      `;
+    }
+  }
+
 }
 
 function renderFilteredBookingsList() {
@@ -841,6 +864,68 @@ export function unlockAdmin(forceState) {
 
 export { adminSignIn, adminSignOut, getAdminSession };
 
+
+export function toggleMobileSidebar(open) {
+  const sidebar = document.getElementById('dash-sidebar');
+  const backdrop = document.getElementById('dash-sidebar-backdrop');
+  if (!sidebar) return;
+
+  const isOpen = typeof open === 'boolean' ? open : !sidebar.classList.contains('open');
+  sidebar.classList.toggle('open', isOpen);
+  if (backdrop) {
+    backdrop.classList.toggle('open', isOpen);
+  }
+}
+
+export function switchAdminPage(pageId) {
+  const pages = ['view-overview', 'view-analytics', 'view-calendar', 'view-ledger'];
+  const titles = {
+    'view-overview': 'Overview',
+    'view-analytics': 'Analytics & Trends',
+    'view-calendar': 'Calendar Availability',
+    'view-ledger': 'Reservations Ledger'
+  };
+
+  const targetId = pages.includes(pageId) ? pageId : 'view-overview';
+
+  pages.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.style.display = id === targetId ? 'block' : 'none';
+    }
+  });
+
+  // Update sidebar and mobile nav items
+  document.querySelectorAll('.dash-side-link, .dash-bottom-nav-item').forEach((btn) => {
+    btn.classList.toggle('active', btn.dataset.view === targetId);
+  });
+
+  // Update top bar active title
+  const titleEl = document.getElementById('dash-active-page-title');
+  if (titleEl && titles[targetId]) {
+    titleEl.textContent = titles[targetId];
+  }
+
+  // Update URL hash
+  try {
+    const hash = '#' + targetId.replace('view-', '');
+    if (window.location.hash !== hash) {
+      window.history.replaceState(null, '', hash);
+    }
+  } catch (e) {}
+
+  // Close mobile drawer if open
+  toggleMobileSidebar(false);
+
+  // If analytics view, trigger chart resize to fit full container
+  if (targetId === 'view-analytics') {
+    requestAnimationFrame(() => {
+      if (revenueChartInstance) revenueChartInstance.resize();
+      if (statusChartInstance) statusChartInstance.resize();
+    });
+  }
+}
+
 export function initCalendar() {
   const root = document.getElementById('calendar-root');
   if (!root) return;
@@ -879,4 +964,6 @@ export function initCalendar() {
   window.setLedgerFilter = setLedgerFilter;
   window.filterAdminLedger = filterAdminLedger;
   window.updateBookingStatus = updateBookingStatus;
+  window.switchAdminPage = switchAdminPage;
+  window.toggleMobileSidebar = toggleMobileSidebar;
 }

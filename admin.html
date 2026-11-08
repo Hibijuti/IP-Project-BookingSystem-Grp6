@@ -16,7 +16,7 @@
 <body class="admin-page">
 
     <!-- ================= FLOATING PILL NAVBAR (SAME AS INDEX) ================= -->
-    <header class="navbar">
+    <header class="navbar" id="site-header">
         <div class="nav-container">
             <a href="index.html" class="logo">
                 <img src="Logo.png" alt="K-SoundRentals Logo">
@@ -97,215 +97,321 @@
             <!-- ================= OWNER DASHBOARD SECTION ================= -->
             <div id="admin-dashboard-wrap" class="admin-dashboard-wrap" style="display:none;">
 
-            <!-- DASHBOARD TOP HEADER BAR (LEFT ALIGNED) -->
-            <div class="dash-top-bar">
-                <div class="dash-top-brand">
-                    <div class="dash-status-badge">
-                        <span class="live-dot-pulse"></span>
-                        <span>SUPABASE LIVE SYNC</span>
+            <!-- MOBILE SIDEBAR BACKDROP -->
+            <div class="dash-sidebar-backdrop" id="dash-sidebar-backdrop" onclick="window.toggleMobileSidebar(false)"></div>
+
+            <!-- DASHBOARD CONTAINER WITH LEFT-ALIGNED SIDEBAR NAVBAR -->
+            <div class="dash-layout">
+
+                <!-- ================= LEFT-ALIGNED SIDEBAR NAVBAR ================= -->
+                <aside class="dash-sidebar" id="dash-sidebar">
+                    <div class="dash-sidebar-header">
+                        <a href="index.html" class="dash-sidebar-brand">
+                            <img src="Logo.png" alt="K-SoundRentals Logo">
+                            <div class="dash-brand-text">
+                                <span class="brand-title">K-Sound<span>Rentals</span></span>
+                                <span class="brand-badge">OWNER COMMAND</span>
+                            </div>
+                        </a>
+                        <button type="button" class="dash-sidebar-close" id="dash-sidebar-close" onclick="window.toggleMobileSidebar(false)" aria-label="Close navigation">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                        </button>
                     </div>
-                    <h1 class="dash-main-title">Owner Command <span class="text-gradient">Center</span></h1>
-                    <p class="dash-main-subtitle">Live rental operations, availability management, and revenue analytics</p>
-                </div>
 
-                <div class="dash-top-tools">
-                    <div class="admin-user-pill" id="admin-user-pill" style="display:none;">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-                        <span id="user-email-text"></span>
-                    </div>
-                    <button type="button" class="btn btn-outline btn-sm-pill" onclick="window.renderAdminLedger()" title="Sync live reservations from Supabase">
-                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
-                        <span>Sync</span>
-                    </button>
-                    <button type="button" class="btn btn-outline btn-sm-pill btn-export-csv" onclick="window.exportBookingsCsv()" title="Export reservations to CSV">
-                        <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-                        <span>Export CSV</span>
-                    </button>
-                    <button type="button" class="btn btn-outline btn-sm-pill btn-signout" onclick="lockAdminSession()" title="Sign out of owner session">
-                        <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                        <span>Sign Out</span>
-                    </button>
-                </div>
-            </div>
+                    <nav class="dash-sidebar-nav">
+                        <span class="dash-nav-group-label">PAGES</span>
 
-            <!-- DASHBOARD QUICK JUMP NAVIGATION -->
-            <nav class="dash-quick-nav" aria-label="Dashboard Jump Navigation">
-                <a href="#dash-section-overview" class="dash-nav-pill active">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                    <span>Overview</span>
-                </a>
-                <a href="#dash-section-analytics" class="dash-nav-pill">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-                    <span>Analytics &amp; Graphs</span>
-                </a>
-                <a href="#dash-section-calendar" class="dash-nav-pill">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    <span>Calendar Availability</span>
-                </a>
-                <a href="#dash-section-ledger" class="dash-nav-pill">
-                    <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-                    <span>Reservations Ledger</span>
-                </a>
-            </nav>
+                        <button type="button" class="dash-side-link active" data-view="view-overview" onclick="window.switchAdminPage('view-overview')">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                            <span>Overview</span>
+                        </button>
 
-            <!-- ================= SECTION 1: EXECUTIVE OVERVIEW ================= -->
-            <section id="dash-section-overview" class="dash-section">
-                <div class="dash-section-header">
-                    <div>
-                        <span class="dash-section-tag">OVERVIEW</span>
-                        <h2 class="dash-section-title">Executive <span class="text-gradient">Metrics</span></h2>
-                    </div>
-                </div>
+                        <button type="button" class="dash-side-link" data-view="view-analytics" onclick="window.switchAdminPage('view-analytics')">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                            <span>Analytics &amp; Graphs</span>
+                        </button>
 
-                <div class="admin-analytics-grid">
-                    <div class="how-card admin-metric-card spotlight-card">
-                        <div class="how-card-header">
-                            <span class="how-step-num">BOOKINGS</span>
-                            <div class="how-icon">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                        <button type="button" class="dash-side-link" data-view="view-calendar" onclick="window.switchAdminPage('view-calendar')">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                            <span>Calendar Availability</span>
+                        </button>
+
+                        <button type="button" class="dash-side-link" data-view="view-ledger" onclick="window.switchAdminPage('view-ledger')">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                            <span>Reservations Ledger</span>
+                            <span class="dash-nav-counter" id="nav-count-all">0</span>
+                        </button>
+
+                        <span class="dash-nav-group-label" style="margin-top: 18px;">SHORTCUTS</span>
+
+                        <a href="index.html" class="dash-side-link">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            <span>Public Website</span>
+                        </a>
+                        <a href="booking.html" class="dash-side-link">
+                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+                            <span>Book Now Form</span>
+                        </a>
+                    </nav>
+
+                    <div class="dash-sidebar-footer">
+                        <div class="dash-status-pill">
+                            <span class="live-dot-pulse"></span>
+                            <span>Supabase Live</span>
+                        </div>
+                        <div class="dash-user-card" id="admin-user-pill" style="display:none;">
+                            <div class="dash-user-avatar">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                            </div>
+                            <div class="dash-user-info">
+                                <span class="user-role">OWNER</span>
+                                <span class="user-email-text" id="user-email-text"></span>
                             </div>
                         </div>
-                        <div class="metric-value" id="stat-total-bookings">0</div>
-                        <p class="metric-label">Total Reservations</p>
-                        <div class="how-card-footer-decor">
-                            <span class="decor-tag" id="stat-sub-bookings">0 active &bull; 0 cancelled</span>
-                        </div>
+                        <button type="button" class="btn btn-outline btn-sidebar-signout" onclick="lockAdminSession()">
+                            <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                            <span>Sign Out</span>
+                        </button>
                     </div>
+                </aside>
 
-                    <div class="how-card admin-metric-card spotlight-card">
-                        <div class="how-card-header">
-                            <span class="how-step-num">UPCOMING</span>
-                            <div class="how-icon">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+                <!-- ================= MAIN CONTENT AREA ================= -->
+                <div class="dash-main-area">
+
+                    <!-- TOP HEADER APP BAR -->
+                    <header class="dash-top-header">
+                        <div class="dash-header-left">
+                            <button type="button" class="dash-mobile-toggle" id="dash-mobile-toggle" onclick="window.toggleMobileSidebar(true)" aria-label="Open navigation sidebar">
+                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+                            </button>
+                            <div class="dash-header-crumbs">
+                                <span class="crumb-portal">Command Center</span>
+                                <span class="crumb-sep">/</span>
+                                <span class="crumb-active-page" id="dash-active-page-title">Overview</span>
                             </div>
                         </div>
-                        <div class="metric-value text-orange" id="stat-upcoming">0</div>
-                        <p class="metric-label">Upcoming Events</p>
-                        <div class="how-card-footer-decor">
-                            <span class="decor-tag" id="stat-sub-upcoming">No upcoming events</span>
-                        </div>
-                    </div>
 
-                    <div class="how-card admin-metric-card spotlight-card">
-                        <div class="how-card-header">
-                            <span class="how-step-num">PIPELINE</span>
-                            <div class="how-icon">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-                            </div>
+                        <div class="dash-header-actions">
+                            <button type="button" class="btn btn-outline btn-sm-pill" onclick="window.renderAdminLedger()" title="Sync live reservations from Supabase">
+                                <svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+                                <span>Sync</span>
+                            </button>
+                            <button type="button" class="btn btn-outline btn-sm-pill" onclick="window.exportBookingsCsv()" title="Export reservations to CSV">
+                                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                                <span>Export CSV</span>
+                            </button>
                         </div>
-                        <div class="metric-value peso-inline" id="stat-contract-val"><svg class="peso-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16"/><path d="M6 4h7a5 5 0 0 1 0 10H6"/><path d="M4 8h16"/><path d="M4 11.5h16"/></svg>0</div>
-                        <p class="metric-label">Gross Package Value</p>
-                        <div class="how-card-footer-decor">
-                            <span class="decor-tag">Gross Value</span>
-                        </div>
-                    </div>
+                    </header>
 
-                    <div class="how-card admin-metric-card spotlight-card">
-                        <div class="how-card-header">
-                            <span class="how-step-num">POPULAR</span>
-                            <div class="how-icon">
-                                <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="2" width="16" height="20" rx="3"/><circle cx="12" cy="14" r="4"/><line x1="12" y1="6" x2="12.01" y2="6"/></svg>
-                            </div>
-                        </div>
-                        <div class="metric-value metric-pkg-name" id="stat-top-pkg">None</div>
-                        <p class="metric-label">Most Booked Setup</p>
-                        <div class="how-card-footer-decor">
-                            <span class="decor-tag" id="stat-sub-top-pkg">Awaiting bookings</span>
-                        </div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ================= SECTION 2: ANALYTICS & TRENDS (GRAPHS) ================= -->
-            <section id="dash-section-analytics" class="dash-section">
-                <div class="dash-section-header">
-                    <div>
-                        <span class="dash-section-tag">PERFORMANCE</span>
-                        <h2 class="dash-section-title">Analytics &amp; <span class="text-gradient">Trends</span></h2>
-                    </div>
-                </div>
-
-                <div class="dash-graphs-grid">
-                    <!-- GRAPH 1: REVENUE & BOOKING TRAJECTORY -->
-                    <div class="graph-card spotlight-card">
-                        <div class="graph-card-header">
+                    <!-- ================= PAGE 1: OVERVIEW ================= -->
+                    <div id="view-overview" class="dash-page-view" style="display:block;">
+                        <div class="dash-view-header">
                             <div>
-                                <span class="graph-eyebrow">MONTHLY REVENUE &amp; RESERVATIONS</span>
-                                <h3 class="graph-title">Revenue Trajectory</h3>
-                            </div>
-                            <div class="graph-legend-badge">
-                                <span class="legend-dot dot-orange"></span><span>Revenue (₱)</span>
-                                <span class="legend-dot dot-cyan" style="margin-left: 8px;"></span><span>Bookings</span>
+                                <span class="dash-view-tag">EXECUTIVE METRICS</span>
+                                <h2 class="dash-view-title">Dashboard <span class="text-gradient">Overview</span></h2>
+                                <p class="dash-view-desc">Live performance summary across Supabase reservation contracts</p>
                             </div>
                         </div>
-                        <div class="graph-canvas-container">
-                            <canvas id="chart-revenue-trends"></canvas>
-                        </div>
-                        <div class="graph-card-footer">
-                            <div class="graph-stat-pill">
-                                <span class="pill-label">Average Booking Value</span>
-                                <span class="pill-val" id="graph-stat-avg-val">₱0</span>
+
+                        <!-- 4 KPI Cards -->
+                        <div class="admin-analytics-grid">
+                            <div class="how-card admin-metric-card spotlight-card">
+                                <div class="how-card-header">
+                                    <span class="how-step-num">BOOKINGS</span>
+                                    <div class="how-icon">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                    </div>
+                                </div>
+                                <div class="metric-value" id="stat-total-bookings">0</div>
+                                <p class="metric-label">Total Reservations</p>
+                                <div class="how-card-footer-decor">
+                                    <span class="decor-tag" id="stat-sub-bookings">0 active &bull; 0 cancelled</span>
+                                </div>
                             </div>
-                            <div class="graph-stat-pill">
-                                <span class="pill-label">Active Ratio</span>
-                                <span class="pill-val" id="graph-stat-conversion">0%</span>
+
+                            <div class="how-card admin-metric-card spotlight-card">
+                                <div class="how-card-header">
+                                    <span class="how-step-num">UPCOMING</span>
+                                    <div class="how-icon">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+                                    </div>
+                                </div>
+                                <div class="metric-value text-orange" id="stat-upcoming">0</div>
+                                <p class="metric-label">Upcoming Events</p>
+                                <div class="how-card-footer-decor">
+                                    <span class="decor-tag" id="stat-sub-upcoming">No upcoming events</span>
+                                </div>
+                            </div>
+
+                            <div class="how-card admin-metric-card spotlight-card">
+                                <div class="how-card-header">
+                                    <span class="how-step-num">PIPELINE</span>
+                                    <div class="how-icon">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                                    </div>
+                                </div>
+                                <div class="metric-value peso-inline" id="stat-contract-val"><svg class="peso-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16"/><path d="M6 4h7a5 5 0 0 1 0 10H6"/><path d="M4 8h16"/><path d="M4 11.5h16"/></svg>0</div>
+                                <p class="metric-label">Gross Package Value</p>
+                                <div class="how-card-footer-decor">
+                                    <span class="decor-tag">Gross Value</span>
+                                </div>
+                            </div>
+
+                            <div class="how-card admin-metric-card spotlight-card">
+                                <div class="how-card-header">
+                                    <span class="how-step-num">POPULAR</span>
+                                    <div class="how-icon">
+                                        <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="4" y="2" width="16" height="20" rx="3"/><circle cx="12" cy="14" r="4"/><line x1="12" y1="6" x2="12.01" y2="6"/></svg>
+                                    </div>
+                                </div>
+                                <div class="metric-value metric-pkg-name" id="stat-top-pkg">None</div>
+                                <p class="metric-label">Most Booked Setup</p>
+                                <div class="how-card-footer-decor">
+                                    <span class="decor-tag" id="stat-sub-top-pkg">Awaiting bookings</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Hub strip in Overview -->
+                        <div class="overview-hub-grid">
+                            <div class="overview-hub-card spotlight-card" id="overview-next-card">
+                                <div class="next-event-badge">NEXT UPCOMING EVENT</div>
+                                <div class="next-event-title">No upcoming events scheduled</div>
+                                <div class="next-event-meta">All active bookings fulfilled</div>
+                            </div>
+
+                            <div class="overview-quick-actions spotlight-card">
+                                <span class="overview-card-tag">SECTIONS</span>
+                                <div class="quick-module-buttons">
+                                    <button type="button" class="btn-quick-nav" onclick="window.switchAdminPage('view-analytics')">
+                                        <div class="quick-icon-wrap icon-cyan">
+                                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                                        </div>
+                                        <div class="quick-nav-text">
+                                            <strong>Analytics &amp; Graphs</strong>
+                                            <span>Revenue charts &amp; status pipeline</span>
+                                        </div>
+                                        <svg class="quick-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </button>
+
+                                    <button type="button" class="btn-quick-nav" onclick="window.switchAdminPage('view-calendar')">
+                                        <div class="quick-icon-wrap icon-orange">
+                                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        </div>
+                                        <div class="quick-nav-text">
+                                            <strong>Calendar Availability</strong>
+                                            <span>Block dates &amp; manage schedule</span>
+                                        </div>
+                                        <svg class="quick-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </button>
+
+                                    <button type="button" class="btn-quick-nav" onclick="window.switchAdminPage('view-ledger')">
+                                        <div class="quick-icon-wrap icon-purple">
+                                            <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                                        </div>
+                                        <div class="quick-nav-text">
+                                            <strong>Reservations Ledger</strong>
+                                            <span>Manage contracts &amp; advance status</span>
+                                        </div>
+                                        <svg class="quick-arrow" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="9 18 15 12 9 6"/></svg>
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <!-- GRAPH 2: STATUS PIPELINE DOUGHNUT -->
-                    <div class="graph-card spotlight-card">
-                        <div class="graph-card-header">
+                    <!-- ================= PAGE 2: ANALYTICS & TRENDS ================= -->
+                    <div id="view-analytics" class="dash-page-view" style="display:none;">
+                        <div class="dash-view-header">
                             <div>
-                                <span class="graph-eyebrow">LIFECYCLE BREAKDOWN</span>
-                                <h3 class="graph-title">Status Pipeline</h3>
-                            </div>
-                            <div class="graph-total-badge" id="graph-total-status-badge">
-                                0 Total
+                                <span class="dash-view-tag">PERFORMANCE &amp; FINANCIALS</span>
+                                <h2 class="dash-view-title">Analytics &amp; <span class="text-gradient">Trends</span></h2>
+                                <p class="dash-view-desc">Historical revenue trends, booking trajectories, and operational status pipeline</p>
                             </div>
                         </div>
-                        <div class="graph-canvas-container graph-doughnut-container">
-                            <canvas id="chart-status-distribution"></canvas>
+
+                        <div class="dash-graphs-grid">
+                            <!-- GRAPH 1: REVENUE & BOOKING TRAJECTORY -->
+                            <div class="graph-card spotlight-card">
+                                <div class="graph-card-header">
+                                    <div>
+                                        <span class="graph-eyebrow">MONTHLY REVENUE &amp; RESERVATIONS</span>
+                                        <h3 class="graph-title">Revenue Trajectory</h3>
+                                    </div>
+                                    <div class="graph-legend-badge">
+                                        <span class="legend-dot dot-orange"></span><span>Revenue (₱)</span>
+                                        <span class="legend-dot dot-cyan" style="margin-left: 8px;"></span><span>Bookings</span>
+                                    </div>
+                                </div>
+                                <div class="graph-canvas-container">
+                                    <canvas id="chart-revenue-trends"></canvas>
+                                </div>
+                                <div class="graph-card-footer">
+                                    <div class="graph-stat-pill">
+                                        <span class="pill-label">Average Booking Value</span>
+                                        <span class="pill-val" id="graph-stat-avg-val">₱0</span>
+                                    </div>
+                                    <div class="graph-stat-pill">
+                                        <span class="pill-label">Active Ratio</span>
+                                        <span class="pill-val" id="graph-stat-conversion">0%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- GRAPH 2: STATUS PIPELINE DOUGHNUT -->
+                            <div class="graph-card spotlight-card">
+                                <div class="graph-card-header">
+                                    <div>
+                                        <span class="graph-eyebrow">LIFECYCLE BREAKDOWN</span>
+                                        <h3 class="graph-title">Status Pipeline</h3>
+                                    </div>
+                                    <div class="graph-total-badge" id="graph-total-status-badge">
+                                        0 Total
+                                    </div>
+                                </div>
+                                <div class="graph-canvas-container graph-doughnut-container">
+                                    <canvas id="chart-status-distribution"></canvas>
+                                </div>
+                                <div class="graph-status-legend" id="graph-custom-legend"></div>
+                            </div>
                         </div>
-                        <div class="graph-status-legend" id="graph-custom-legend"></div>
                     </div>
-                </div>
-            </section>
 
-            <!-- ================= SECTION 3: AVAILABILITY & OPERATIONS LEDGER WORKSPACE ================= -->
-            <section id="dash-section-workspace" class="dash-section">
-                <div class="dash-section-header">
-                    <div>
-                        <span class="dash-section-tag">OPERATIONS</span>
-                        <h2 class="dash-section-title">Availability &amp; <span class="text-gradient">Ledger</span></h2>
-                    </div>
-                </div>
+                    <!-- ================= PAGE 3: CALENDAR AVAILABILITY ================= -->
+                    <div id="view-calendar" class="dash-page-view" style="display:none;">
+                        <div class="dash-view-header">
+                            <div>
+                                <span class="dash-view-tag">SCHEDULE MANAGEMENT</span>
+                                <h2 class="dash-view-title">Calendar <span class="text-gradient">Availability</span></h2>
+                                <p class="dash-view-desc">Click any date to immediately toggle availability between open and blocked</p>
+                            </div>
+                        </div>
 
-                <div class="admin-grid-layout">
-
-                    <!-- LEFT: CALENDAR AVAILABILITY CONTROLS -->
-                    <div id="dash-section-calendar" class="admin-calendar-col">
-                        <div class="calendar-panel spotlight-card">
+                        <div class="calendar-panel-full spotlight-card">
                             <div class="panel-header">
-                                <h3>Calendar <span class="text-gradient">Availability</span></h3>
-                                <span class="cal-hint-pill">Tap date to toggle</span>
-                            </div>
-                            <div class="cal-legend">
-                                <span class="leg available">Available</span>
-                                <span class="leg booked">Blocked</span>
+                                <h3>Date <span class="text-gradient">Availability</span></h3>
+                                <div class="cal-legend">
+                                    <span class="leg available">Available</span>
+                                    <span class="leg booked">Blocked</span>
+                                </div>
                             </div>
 
                             <div id="calendar-root"></div>
                         </div>
                     </div>
 
-                    <!-- RIGHT: LIVE SUPABASE RESERVATIONS LEDGER -->
-                    <div id="dash-section-ledger" class="admin-ledger-col">
-                        <div class="ledger-panel spotlight-card">
+                    <!-- ================= PAGE 4: RESERVATIONS LEDGER ================= -->
+                    <div id="view-ledger" class="dash-page-view" style="display:none;">
+                        <div class="dash-view-header">
+                            <div>
+                                <span class="dash-view-tag">OPERATIONAL DATABASE</span>
+                                <h2 class="dash-view-title">Reservations <span class="text-gradient">Ledger</span></h2>
+                                <p class="dash-view-desc">Track customer reservations, contact info, Google Maps pins, and advance order status</p>
+                            </div>
+                        </div>
+
+                        <div class="ledger-panel-full spotlight-card">
                             <div class="ledger-head-bar">
-                                <div>
-                                    <h3>Reservations <span class="text-gradient">Ledger</span></h3>
-                                </div>
                                 <div class="ledger-filter-pills" id="admin-filter-pills">
                                     <button type="button" class="filter-pill active" data-filter="all" onclick="window.setLedgerFilter('all')">
                                         <span>All</span>
@@ -339,7 +445,7 @@
                                     <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3"><circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                                     <span>Filter</span>
                                 </label>
-                                <input type="search" id="admin-search-input" class="ledger-search-input" oninput="window.filterAdminLedger()" aria-label="Filter reservations" placeholder="Search by name, phone, FB, reference, or package...">
+                                <input type="search" id="admin-search-input" class="ledger-search-input" oninput="window.filterAdminLedger()" aria-label="Filter reservations" placeholder="Search by name, phone, FB name, reference, or package...">
                             </div>
 
                             <div id="admin-bookings-list" class="admin-bookings-list" style="display:block;"></div>
@@ -347,14 +453,35 @@
                     </div>
 
                 </div>
-            </section>
+
+            </div>
+
+            <!-- MOBILE BOTTOM APP BAR (4 SEPARATE PAGES) -->
+            <nav class="dash-bottom-nav">
+                <button type="button" class="dash-bottom-nav-item active" data-view="view-overview" onclick="window.switchAdminPage('view-overview')">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    <span>Overview</span>
+                </button>
+                <button type="button" class="dash-bottom-nav-item" data-view="view-analytics" onclick="window.switchAdminPage('view-analytics')">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+                    <span>Analytics</span>
+                </button>
+                <button type="button" class="dash-bottom-nav-item" data-view="view-calendar" onclick="window.switchAdminPage('view-calendar')">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    <span>Calendar</span>
+                </button>
+                <button type="button" class="dash-bottom-nav-item" data-view="view-ledger" onclick="window.switchAdminPage('view-ledger')">
+                    <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                    <span>Ledger</span>
+                </button>
+            </nav>
 
         </div>
     </div>
 </main>
 
     <!-- ================= FOOTER (SAME AS INDEX) ================= -->
-    <footer class="footer">
+    <footer class="footer" id="site-footer">
         <div class="footer-container">
             <div class="footer-brand">
                 <a href="index.html" class="logo">
@@ -412,15 +539,29 @@
         function showAdminDashboard(email) {
             const gate = document.getElementById('admin-gate-card');
             const dash = document.getElementById('admin-dashboard-wrap');
+            const siteHeader = document.getElementById('site-header');
+            const siteFooter = document.getElementById('site-footer');
             const emailPill = document.getElementById('admin-user-pill');
             const emailText = document.getElementById('user-email-text');
+
             if (gate) gate.style.display = 'none';
             if (dash) dash.style.display = 'block';
+            if (siteHeader) siteHeader.style.display = 'none';
+            if (siteFooter) siteFooter.style.display = 'none';
+
             if (emailPill && email) {
                 emailPill.style.display = 'inline-flex';
                 if (emailText) emailText.textContent = email;
             }
+
             unlockAdmin(true);
+
+            // Activate initial view from URL hash
+            const hash = window.location.hash.replace('#', '');
+            if (hash === 'analytics') window.switchAdminPage('view-analytics');
+            else if (hash === 'calendar') window.switchAdminPage('view-calendar');
+            else if (hash === 'ledger') window.switchAdminPage('view-ledger');
+            else window.switchAdminPage('view-overview');
         }
 
         window.submitAdminUnlock = async function() {
