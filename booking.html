@@ -264,24 +264,53 @@
                     <!-- ================= STEP 4: CONTACT & REVIEW ================= -->
                     <div class="wizard-step-pane" id="wizard-step-4" data-step-index="4">
 
-                        <!-- LIVE ORDER REVIEW CAPSULE -->
+                        <!-- ELEVATED ORDER SUMMARY CARD -->
                         <div class="step4-review-capsule">
                             <div class="review-capsule-head">
-                                <span class="review-head-tag">ORDER REVIEW</span>
-                                <strong class="review-price-val text-orange" id="recap-price">₱1,299</strong>
+                                <div class="review-head-left">
+                                    <span class="review-head-tag">ORDER REVIEW</span>
+                                    <span class="review-pkg-name" id="recap-pkg-title">Full Karaoke (12 Hours)</span>
+                                </div>
+                                <div class="review-head-right">
+                                    <small class="review-rate-label">Package Rate</small>
+                                    <strong class="review-price-val text-orange" id="recap-price">₱1,299</strong>
+                                </div>
                             </div>
-                            <div class="review-capsule-grid">
-                                <div class="review-cell">
-                                    <small>Schedule</small>
-                                    <strong id="recap-datetime">—</strong>
+
+                            <div class="review-capsule-body">
+                                <div class="review-pkg-media">
+                                    <img src="/images/pkg-full-karaoke.png" alt="Package Setup" id="recap-pkg-img" class="review-pkg-img">
                                 </div>
-                                <div class="review-cell">
-                                    <small>Package</small>
-                                    <strong id="recap-pkg">Full Karaoke (12h)</strong>
+                                <div class="review-info-list">
+                                    <div class="review-info-item">
+                                        <span class="review-item-icon">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                                        </span>
+                                        <div class="review-item-text">
+                                            <small>Schedule</small>
+                                            <strong id="recap-datetime">Select date &amp; time</strong>
+                                        </div>
+                                    </div>
+                                    <div class="review-info-item">
+                                        <span class="review-item-icon">
+                                            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>
+                                        </span>
+                                        <div class="review-item-text">
+                                            <small>Delivery Venue</small>
+                                            <strong id="recap-venue">Lapu-Lapu City</strong>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="review-cell full-width">
-                                    <small>Delivery Venue</small>
-                                    <strong id="recap-venue">Lapu-Lapu City</strong>
+                            </div>
+
+                            <div class="review-deposit-bar">
+                                <div class="deposit-pill-tag">
+                                    <span>Deposit to Lock Date:</span>
+                                    <strong class="text-orange">₱500</strong>
+                                </div>
+                                <div class="balance-pill-tag">
+                                    <span>Balance on Delivery:</span>
+                                    <strong id="recap-balance">₱799</strong>
                                 </div>
                             </div>
                         </div>

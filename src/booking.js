@@ -62,29 +62,41 @@ export function updateLiveSummary() {
   const timeVal = timeSelect?.value || '';
 
   const recapDateTimeEl = document.getElementById('recap-datetime');
-  const recapPkgEl = document.getElementById('recap-pkg');
+  const recapPkgTitleEl = document.getElementById('recap-pkg-title');
+  const recapPkgImgEl = document.getElementById('recap-pkg-img');
   const recapPriceEl = document.getElementById('recap-price');
+  const recapBalanceEl = document.getElementById('recap-balance');
 
   if (recapDateTimeEl) {
     if (dateVal) {
       const [y, m, d] = dateVal.split('-').map(Number);
       const dateObj = new Date(y, m - 1, d);
       const shortDate = dateObj.toLocaleDateString('en-US', {
+        weekday: 'short',
         month: 'short',
         day: 'numeric'
       });
-      recapDateTimeEl.textContent = timeVal ? `${shortDate} • ${timeVal}` : shortDate;
+      recapDateTimeEl.textContent = timeVal ? `${shortDate} @ ${timeVal}` : shortDate;
     } else {
-      recapDateTimeEl.textContent = '—';
+      recapDateTimeEl.textContent = 'Select date & time';
     }
   }
 
-  if (recapPkgEl && selectedPkg) {
-    recapPkgEl.textContent = `${selectedPkg.tier} (${selectedPkg.durationHours}h)`;
-  }
-
-  if (recapPriceEl && selectedPkg) {
-    recapPriceEl.innerHTML = `${pesoIconSvg(14)}${selectedPkg.price.toLocaleString()}`;
+  if (selectedPkg) {
+    if (recapPkgTitleEl) {
+      recapPkgTitleEl.textContent = `${selectedPkg.tier} (${selectedPkg.durationHours} Hours)`;
+    }
+    if (recapPkgImgEl && selectedPkg.image) {
+      recapPkgImgEl.src = selectedPkg.image;
+      recapPkgImgEl.alt = selectedPkg.label;
+    }
+    if (recapPriceEl) {
+      recapPriceEl.innerHTML = `₱${selectedPkg.price.toLocaleString()}`;
+    }
+    if (recapBalanceEl) {
+      const bal = Math.max(0, selectedPkg.price - selectedPkg.deposit);
+      recapBalanceEl.textContent = `₱${bal.toLocaleString()}`;
+    }
   }
 
   const addressInput = document.getElementById('input-address');
@@ -351,53 +363,90 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       '    Your setup is on hold. Complete your <strong>₱500 GCash deposit</strong> below and send your screenshot on Messenger to lock your date.',
       '  </p>',
       '</div>',
-      '<!-- MODERN MINIMALIST GLASS ORDER CARD -->',
+      '<!-- LUXURY GLASS ORDER INVOICE CARD -->',
       '<div class="conf-glass-card">',
       '  <div class="conf-card-header">',
-      '    <div class="conf-ref-pill">',
-      '      <span>REF #</span>',
-      '      <strong>' + (bookingData.id || 'CONFIRMED') + '</strong>',
+      '    <div class="conf-ref-row">',
+      '      <div class="conf-ref-pill">',
+      '        <span class="ref-label">BOOKING REF</span>',
+      '        <strong class="ref-code">#' + (bookingData.id || 'CONFIRMED') + '</strong>',
+      '      </div>',
+      '      <div class="conf-status-tag">',
+      '        <span class="status-pulse-dot"></span>',
+      '        <span>Awaiting ₱' + depositAmt.toLocaleString() + ' Deposit</span>',
+      '      </div>',
       '    </div>',
-      '    <span class="conf-status-tag">Pending Deposit</span>',
-      '  </div>',
-      '  <div class="conf-summary-grid">',
-      '    <div class="conf-grid-item">',
-      '      <small>Schedule</small>',
-      '      <strong>' + formattedDate + ' &bull; ' + bookingData.deliveryTime + '</strong>',
-      '    </div>',
-      '    <div class="conf-grid-item">',
-      '      <small>Package</small>',
-      '      <strong>' + bookingData.packageChosen + '</strong>',
-      '    </div>',
-      '    <div class="conf-grid-item">',
-      '      <small>Customer</small>',
-      '      <strong>' + bookingData.name + ' (<a href="tel:' + bookingData.phone + '">' + bookingData.phone + '</a>)</strong>',
-      '    </div>',
-      '    <div class="conf-grid-item">',
-      '      <small>Facebook Name</small>',
-      '      <strong class="conf-fb-val">',
-      '        <svg viewBox="0 0 24 24" width="13" height="13" fill="#0084ff"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.914 1.454 5.518 3.734 7.202V22l3.411-1.872c.905.251 1.867.387 2.855.387 5.523 0 10-4.145 10-9.257C22 6.145 17.523 2 12 2zm1.002 12.443-2.56-2.73-4.996 2.73 5.496-5.834 2.624 2.73 4.932-2.73-5.496 5.834z"/></svg>',
-      '        <span>' + (bookingData.fbName || '—') + '</span>',
-      '      </strong>',
-      '    </div>',
-      '    <div class="conf-grid-item full-width">',
-      '      <small>Delivery Venue</small>',
-      '      <strong>' + bookingData.address + '</strong>',
-      bookingData.mapLink ? '      <a href="' + bookingData.mapLink + '" target="_blank" rel="noopener noreferrer" class="conf-pin-link">📍 View Pinned Location &nearr;</a>' : '',
+      '    <div class="conf-pkg-hero">',
+      '      <div class="conf-pkg-thumb-wrap">',
+      '        <img src="' + (pkgObj.image || '/images/pkg-full-karaoke.png') + '" alt="' + (pkgObj.label || 'Package') + '" class="conf-pkg-thumb">',
+      '      </div>',
+      '      <div class="conf-pkg-meta">',
+      '        <span class="conf-pkg-tier">' + (pkgObj.tier || 'Karaoke Package') + '</span>',
+      '        <h4 class="conf-pkg-title">' + (pkgObj.label || bookingData.packageChosen) + '</h4>',
+      '        <span class="conf-pkg-dur">' + (pkgObj.durationTag || '12 Hours') + ' Duration</span>',
+      '      </div>',
       '    </div>',
       '  </div>',
-      '  <div class="conf-pricing-breakdown">',
-      '    <div class="conf-price-row">',
-      '      <span>Total Rental Rate</span>',
-      '      <strong>₱' + totalPrice.toLocaleString() + '</strong>',
+      '  <div class="conf-card-body">',
+      '    <div class="conf-summary-grid">',
+      '      <div class="conf-summary-cell">',
+      '        <span class="conf-label">',
+      '          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>',
+      '          <span>Schedule</span>',
+      '        </span>',
+      '        <strong class="conf-val">' + formattedDate + ' • ' + bookingData.deliveryTime + '</strong>',
+      '      </div>',
+      '      <div class="conf-summary-cell">',
+      '        <span class="conf-label">',
+      '          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>',
+      '          <span>Customer</span>',
+      '        </span>',
+      '        <strong class="conf-val">' + bookingData.name + '</strong>',
+      '      </div>',
+      '      <div class="conf-summary-cell">',
+      '        <span class="conf-label">',
+      '          <svg viewBox="0 0 24 24" width="13" height="13" fill="#0084ff"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.914 1.454 5.518 3.734 7.202V22l3.411-1.872c.905.251 1.867.387 2.855.387 5.523 0 10-4.145 10-9.257C22 6.145 17.523 2 12 2zm1.002 12.443-2.56-2.73-4.996 2.73 5.496-5.834 2.624 2.73 4.932-2.73-5.496 5.834z"/></svg>',
+      '          <span>Facebook</span>',
+      '        </span>',
+      '        <strong class="conf-val conf-fb-val">',
+      '          <span>' + (bookingData.fbName || '—') + '</span>',
+      '        </strong>',
+      '      </div>',
+      '      <div class="conf-summary-cell">',
+      '        <span class="conf-label">',
+      '          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+      '          <span>Phone</span>',
+      '        </span>',
+      '        <strong class="conf-val"><a href="tel:' + bookingData.phone + '" class="conf-tel-link">' + bookingData.phone + '</a></strong>',
+      '      </div>',
+      '      <div class="conf-summary-cell full-width">',
+      '        <span class="conf-label">',
+      '          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z"/><circle cx="12" cy="10" r="3"/></svg>',
+      '          <span>Delivery Venue</span>',
+      '        </span>',
+      '        <strong class="conf-val">' + bookingData.address + '</strong>',
+      '        <a href="' + (bookingData.mapLink || ('https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(bookingData.address || 'Lapu-Lapu City'))) + '" target="_blank" rel="noopener noreferrer" class="conf-pin-link">',
+      '          <svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>',
+      '          <span>Open in Google Maps ↗</span>',
+      '        </a>',
+      '      </div>',
       '    </div>',
-      '    <div class="conf-price-row deposit-highlight">',
-      '      <span>Deposit to Lock Date</span>',
-      '      <strong class="text-orange">₱' + depositAmt.toLocaleString() + '</strong>',
-      '    </div>',
-      '    <div class="conf-price-row balance-sub">',
-      '      <span>Remaining Balance Upon Handover</span>',
-      '      <small>₱' + balanceAmt.toLocaleString() + '</small>',
+      '    <div class="conf-pricing-breakdown">',
+      '      <div class="conf-price-row">',
+      '        <span>Package Rental Rate</span>',
+      '        <strong>₱' + totalPrice.toLocaleString() + '</strong>',
+      '      </div>',
+      '      <div class="conf-price-row deposit-highlight">',
+      '        <div class="deposit-label-wrap">',
+      '          <span class="deposit-dot"></span>',
+      '          <span>Required Reservation Deposit</span>',
+      '        </div>',
+      '        <strong class="text-orange">₱' + depositAmt.toLocaleString() + '</strong>',
+      '      </div>',
+      '      <div class="conf-price-row balance-sub">',
+      '        <span>Remaining Balance (Payable Upon Handover)</span>',
+      '        <small>₱' + balanceAmt.toLocaleString() + '</small>',
+      '      </div>',
       '    </div>',
       '  </div>',
       '</div>',
