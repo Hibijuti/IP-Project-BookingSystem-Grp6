@@ -286,15 +286,15 @@ function updatePickupHelper() {
 
 function buildBookingSummaryText(data) {
   return [
-    'K-SoundRentals Booking Summary',
-    `Name: ${data.name}`,
-    `Contact: ${data.phone}`,
-    `Event Date: ${data.date}`,
-    `Delivery Time: ${data.deliveryTime}`,
-    `Package: ${data.packageChosen}`,
-    `Address: ${data.address}`,
-    data.mapLink ? `Map Pin: ${data.mapLink}` : null,
-    `Deposit Channel: ${data.paymentChannel} (₱${data.amountDue.toLocaleString()} Deposit)`
+    'K-SoundRentals Reservation #' + (data.id || 'BOOKING'),
+    '----------------------------------------',
+    'Customer: ' + data.name,
+    'Mobile: ' + data.phone,
+    'Schedule: ' + data.date + ' @ ' + data.deliveryTime,
+    'Package: ' + data.packageChosen,
+    'Venue: ' + data.address,
+    data.mapLink ? 'Map Pin: ' + data.mapLink : null,
+    'Deposit: ₱' + Number(data.amountDue || 200).toLocaleString() + ' via ' + (data.paymentChannel || 'GCash')
   ]
     .filter(Boolean)
     .join('\n');
@@ -303,8 +303,7 @@ function buildBookingSummaryText(data) {
 function showBookingConfirmation(bookingData, isOfflineFallback = false) {
   const formCard = document.getElementById('booking-form-card');
   const successBox = document.getElementById('success-message');
-  const summaryEl = document.getElementById('booking-summary');
-  const statusBanner = document.getElementById('booking-status-banner');
+  const contentEl = document.getElementById('booking-confirmation-content');
   const stepperBar = document.querySelector('.booking-breadcrumbs-wrap');
 
   blockDateLocally(bookingData.date);
@@ -312,31 +311,106 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
 
   if (formCard) formCard.style.display = 'none';
   if (stepperBar) stepperBar.style.display = 'none';
+
+  const dateParts = (bookingData.date || '').split('-').map(Number);
+  const dateObj = dateParts.length === 3 && !dateParts.some(isNaN)
+    ? new Date(dateParts[0], dateParts[1] - 1, dateParts[2])
+    : new Date();
+
+  const formattedDate = dateObj.toLocaleDateString('en-US', {
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric'
+  });
+
+  const pkgObj = findPackageByLabel(bookingData.packageChosen) || PACKAGES.pkg2_12;
+  const totalPrice = pkgObj.price || 1299;
+  const depositAmt = bookingData.amountDue || 200;
+  const balanceAmt = Math.max(0, totalPrice - depositAmt);
+
+  if (contentEl) {
+    contentEl.innerHTML = [
+      '<div class="conf-hero">',
+      '  <div class="conf-badge-pulse">',
+      '    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg>',
+      '  </div>',
+      '  <h3>Reservation Received!</h3>',
+      '  <p class="conf-subtitle">',
+      '    Your slot is reserved in our schedule. Send your ₱200 deposit screenshot on <strong>Messenger</strong> to lock your date.',
+      '  </p>',
+      '</div>',
+      '<div class="receipt-ticket">',
+      '  <div class="receipt-ticket-head">',
+      '    <div class="receipt-ref-row">',
+      '      <span class="receipt-tag">RESERVATION RECEIPT</span>',
+      '      <span class="receipt-ref-code">' + (bookingData.id || 'CONFIRMED') + '</span>',
+      '    </div>',
+      '    <h4 class="receipt-pkg-title">' + bookingData.packageChosen + '</h4>',
+      '  </div>',
+      '  <div class="receipt-dashed-divider">',
+      '    <span class="notch notch-left"></span>',
+      '    <span class="notch notch-right"></span>',
+      '  </div>',
+      '  <div class="receipt-ticket-body">',
+      '    <div class="receipt-grid">',
+      '      <div class="receipt-cell">',
+      '        <span class="rc-label">Event Date</span>',
+      '        <strong class="rc-val">' + formattedDate + '</strong>',
+      '      </div>',
+      '      <div class="receipt-cell">',
+      '        <span class="rc-label">Delivery Time</span>',
+      '        <strong class="rc-val">' + bookingData.deliveryTime + '</strong>',
+      '      </div>',
+      '      <div class="receipt-cell">',
+      '        <span class="rc-label">Customer</span>',
+      '        <strong class="rc-val">' + bookingData.name + '</strong>',
+      '      </div>',
+      '      <div class="receipt-cell">',
+      '        <span class="rc-label">Mobile</span>',
+      '        <strong class="rc-val"><a href="tel:' + bookingData.phone + '" class="rc-tel-link">' + bookingData.phone + '</a></strong>',
+      '      </div>',
+      '      <div class="receipt-cell full-width">',
+      '        <span class="rc-label">Delivery Venue</span>',
+      '        <strong class="rc-val">' + bookingData.address + '</strong>',
+      bookingData.mapLink ? '        <a href="' + bookingData.mapLink + '" target="_blank" rel="noopener noreferrer" class="rc-pin-link">📍 Open in Google Maps &nearr;</a>' : '',
+      '      </div>',
+      '    </div>',
+      '    <div class="receipt-price-summary">',
+      '      <div class="rc-price-row">',
+      '        <span>Rental Rate</span>',
+      '        <strong>₱' + totalPrice.toLocaleString() + '</strong>',
+      '      </div>',
+      '      <div class="rc-price-row deposit-row">',
+      '        <span>Reservation Deposit</span>',
+      '        <strong class="text-orange">₱' + depositAmt.toLocaleString() + '</strong>',
+      '      </div>',
+      '      <div class="rc-price-row balance-row">',
+      '        <span>Remaining Balance Upon Handover</span>',
+      '        <small>₱' + balanceAmt.toLocaleString() + '</small>',
+      '      </div>',
+      '    </div>',
+      '  </div>',
+      '</div>',
+      '<div class="conf-actions-container">',
+      '  <a href="https://m.me/KSoundRentals" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-shine conf-messenger-btn">',
+      '    <svg viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M12 2C6.477 2 2 6.145 2 11.258c0 2.914 1.454 5.518 3.734 7.202V22l3.411-1.872c.905.251 1.867.387 2.855.387 5.523 0 10-4.145 10-9.257C22 6.145 17.523 2 12 2zm1.002 12.443-2.56-2.73-4.996 2.73 5.496-5.834 2.624 2.73 4.932-2.73-5.496 5.834z"/></svg>',
+      '    <span>Send Proof on Messenger</span>',
+      '  </a>',
+      '  <button type="button" id="copy-booking-summary" class="btn btn-outline conf-copy-btn">',
+      '    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>',
+      '    <span>Copy Summary</span>',
+      '  </button>',
+      '</div>',
+      '<div class="conf-new-booking">',
+      '  <a href="booking.html" class="conf-reset-link">Make another reservation &rarr;</a>',
+      '</div>'
+    ].filter(Boolean).join('\n');
+  }
+
   if (successBox) {
     successBox.style.display = 'block';
-    successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
-  }
-
-  if (statusBanner) {
-    statusBanner.style.display = 'none';
-  }
-
-  if (summaryEl) {
-    summaryEl.innerHTML = `
-      <div class="summary-grid">
-        <div><span>Name:</span> <strong>${bookingData.name}</strong></div>
-        <div><span>Contact:</span> <strong>${bookingData.phone}</strong></div>
-        <div><span>Schedule:</span> <strong>${bookingData.date} &bull; ${bookingData.deliveryTime}</strong></div>
-        <div><span>Package:</span> <strong>${bookingData.packageChosen}</strong></div>
-        <div><span>Address:</span> <strong>${bookingData.address}</strong></div>
-        ${
-          bookingData.mapLink
-            ? `<div><span>Map Pin:</span> <a href="${bookingData.mapLink}" target="_blank" rel="noopener noreferrer" class="text-orange">Open Maps Pin &nearr;</a></div>`
-            : ''
-        }
-        <div><span>Deposit:</span> <strong>₱${bookingData.amountDue.toLocaleString()} via ${bookingData.paymentChannel}</strong></div>
-      </div>
-    `;
+    successBox.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 
   const copySummaryBtn = document.getElementById('copy-booking-summary');
@@ -345,11 +419,10 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
       const text = buildBookingSummaryText(bookingData);
       try {
         await navigator.clipboard.writeText(text);
-        const orig = copySummaryBtn.innerHTML;
-        copySummaryBtn.textContent = '✓ Copied';
+        copySummaryBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="#22c55e" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg><span style="color:#86efac">✓ Copied</span>';
         setTimeout(() => {
-          copySummaryBtn.innerHTML = orig;
-        }, 2000);
+          copySummaryBtn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.3"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg><span>Copy Summary</span>';
+        }, 2200);
       } catch {
         alert(text);
       }
@@ -571,8 +644,10 @@ export async function handleBooking(event) {
   const methodObj = PAYMENT_METHODS[activePaymentChannel] || PAYMENT_METHODS.gcash;
   const amountDue = selectedPkg.deposit;
   const phoneVal = phoneInput.value.trim().replace(/[\s-]/g, '');
+  const bookingId = 'KS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
 
   const bookingPayload = {
+    id: bookingId,
     name: nameInput.value.trim(),
     phone: phoneVal,
     date: dateInput.value,
@@ -710,6 +785,14 @@ export function initBookingForm() {
   updatePickupHelper();
   initCopyButtons();
   updateLiveSummary();
+
+  const qrTrigger = document.getElementById('gcash-qr-trigger');
+  const qrModal = document.getElementById('qr-lightbox-modal');
+  if (qrTrigger && qrModal) {
+    qrTrigger.addEventListener('click', () => {
+      qrModal.style.display = 'flex';
+    });
+  }
 
   window.handleBooking = handleBooking;
   window.goToStep = goToStep;

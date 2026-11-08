@@ -46,7 +46,7 @@ export async function getBookingsFromDB() {
 // 2. Insert booking strictly into Supabase
 export async function saveBookingToDB(bookingData) {
   const supabase = getSupabase();
-  const bookingId = 'KS-' + Math.random().toString(36).substring(2, 8).toUpperCase();
+  const bookingId = bookingData.id || ('KS-' + Math.random().toString(36).substring(2, 8).toUpperCase());
 
   const payload = {
     id: bookingId,
