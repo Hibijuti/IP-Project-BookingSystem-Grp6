@@ -8,12 +8,12 @@ export const API_BASE_URL = 'http://localhost:3000';
 export const SUPABASE_URL =
   import.meta.env?.VITE_SUPABASE_URL ||
   localStorage.getItem('supabase_url') ||
-  '';
+  'https://lvbpcbapfdfqrytswaxy.supabase.co';
 
 export const SUPABASE_ANON_KEY =
   import.meta.env?.VITE_SUPABASE_ANON_KEY ||
   localStorage.getItem('supabase_anon_key') ||
-  '';
+  'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx2YnBjYmFwZmRmcXJ5dHN3YXh5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTQwODMzMzMsImV4cCI6MjEwOTY1OTMzM30.0ABqTOcOd44ZjWIvQFzie6HjLfz9WxGoSTWIqg87fJg';
 
 // Google Maps API Key: set in .env (VITE_GOOGLE_MAPS_KEY) or paste your key here
 export const GOOGLE_MAPS_API_KEY =
