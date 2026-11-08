@@ -4,7 +4,9 @@
     { "source": "/packages", "destination": "/packages.html" },
     { "source": "/videos", "destination": "/videos.html" },
     { "source": "/booking", "destination": "/booking.html" },
+    { "source": "/booking/(.*)", "destination": "/booking.html" },
     { "source": "/admin", "destination": "/admin.html" },
+    { "source": "/admin/(.*)", "destination": "/admin.html" },
     { "source": "/events", "destination": "/videos.html" }
   ]
 }

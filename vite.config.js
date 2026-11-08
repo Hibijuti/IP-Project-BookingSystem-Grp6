@@ -1,11 +1,12 @@
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
+import { fileURLToPath } from 'url';
 
-const rootDir = import.meta.dirname;
+const rootDir = fileURLToPath(new URL('.', import.meta.url));
 
 export default defineConfig({
   build: {
-    emptyOutDir: false,
+    emptyOutDir: true,
     rollupOptions: {
       input: {
         main: resolve(rootDir, 'index.html'),
