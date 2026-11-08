@@ -1,5 +1,5 @@
 // ===================================================
-// K-SOUNDRENTALS — Booking, Payment QR & Web3Forms Module
+// K-SOUNDRENTALS — Breadcrumbs Stepper Booking & Payment Module
 // ===================================================
 
 import {
@@ -15,6 +15,8 @@ import { saveBookingToDB } from './db.js';
 
 let activePaymentChannel = 'gcash';
 let activePaymentType = 'deposit'; // 'deposit' | 'full'
+let currentStep = 1;
+let maxStepUnlocked = 1;
 
 function showError(inputEl, message) {
   if (!inputEl) return;
@@ -51,76 +53,77 @@ function formatHour12(hour24) {
   return `${hour12}:00 ${period}`;
 }
 
-function updateLivePackageCard() {
+export function updateLiveSummary() {
   const pkgSelect = document.getElementById('package-select');
   const dateInput = document.getElementById('input-date');
   const timeSelect = document.getElementById('delivery-time');
-  const cardEl = document.getElementById('live-package-card');
+  const addressInput = document.getElementById('input-address');
 
-  if (!cardEl || !pkgSelect) return;
-
-  const selectedPkg = findPackageByLabel(pkgSelect.value);
+  const selectedPkg = findPackageByLabel(pkgSelect?.value) || PACKAGES.pkg2_12;
   const dateVal = dateInput?.value || '';
   const timeVal = timeSelect?.value || '';
+  const addressVal = addressInput?.value?.trim() || '';
 
-  updatePaymentQRWidget(selectedPkg);
+  // 1. Update summary DOM elements
+  const sumDateEl = document.getElementById('sum-date');
+  const sumTimeEl = document.getElementById('sum-time');
+  const sumPkgEl = document.getElementById('sum-pkg');
+  const sumDurEl = document.getElementById('sum-duration');
+  const sumVenueEl = document.getElementById('sum-venue');
+  const sumPriceEl = document.getElementById('sum-price');
+  const sumDepositEl = document.getElementById('sum-deposit');
+  const sumChipsEl = document.getElementById('sum-equip-chips');
 
-  if (!selectedPkg) {
-    cardEl.innerHTML = `
-      <div class="live-pkg-empty">
-        <div class="live-pkg-badge">SELECTED SETUP</div>
-        <h4>Select a Package</h4>
-        <p>Choose a package and duration to view details.</p>
-      </div>
-    `;
-    return;
+  if (sumDateEl) {
+    if (dateVal) {
+      const [y, m, d] = dateVal.split('-').map(Number);
+      const dateObj = new Date(y, m - 1, d);
+      sumDateEl.textContent = dateObj.toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric'
+      });
+      sumDateEl.classList.remove('text-muted');
+    } else {
+      sumDateEl.textContent = 'Tap to select';
+      sumDateEl.classList.add('text-muted');
+    }
   }
 
-  const equipItems = (selectedPkg.equipment || [])
-    .map(
-      (item) => `
-      <li>
-        <svg viewBox="0 0 24 24" width="15" height="15" stroke="currentColor" stroke-width="2.5" fill="none"><polyline points="20 6 9 17 4 12"/></svg>
-        <span>${item}</span>
-      </li>`
-    )
-    .join('');
+  if (sumTimeEl) {
+    sumTimeEl.textContent = timeVal || 'Select time';
+    sumTimeEl.classList.toggle('text-muted', !timeVal);
+  }
 
-  cardEl.innerHTML = `
-    <div class="live-pkg-active">
-      <div class="live-pkg-photo-row">
-        <img src="${selectedPkg.image}" alt="${selectedPkg.tier}" class="live-pkg-thumb">
-        <div class="live-pkg-title-col">
-          <span class="live-pkg-badge">SELECTED SETUP</span>
-          <h4>${selectedPkg.tier}</h4>
-          <span class="live-pkg-duration">${selectedPkg.durationTag}</span>
-        </div>
-        <div class="live-pkg-price">
-          <small>Rate</small>
-          <strong class="peso-inline">${pesoIconSvg(20)}${selectedPkg.price.toLocaleString()}</strong>
-        </div>
-      </div>
+  if (sumPkgEl && selectedPkg) {
+    sumPkgEl.textContent = selectedPkg.tier;
+  }
 
-      <ul class="live-pkg-list">
-        ${equipItems}
-      </ul>
+  if (sumDurEl && selectedPkg) {
+    sumDurEl.textContent = `${selectedPkg.durationHours} Hours`;
+  }
 
-      <div class="live-pkg-meta">
-        <div>
-          <span>Event Date</span>
-          <strong>${dateVal || 'Not selected'}</strong>
-        </div>
-        <div>
-          <span>Delivery Time</span>
-          <strong>${timeVal || 'Not selected'}</strong>
-        </div>
-        <div>
-          <span>Deposit</span>
-          <strong class="peso-inline text-orange">${pesoIconSvg(13)}${selectedPkg.deposit}</strong>
-        </div>
-      </div>
-    </div>
-  `;
+  if (sumVenueEl) {
+    sumVenueEl.textContent = addressVal || 'Lapu-Lapu City';
+  }
+
+  if (sumPriceEl && selectedPkg) {
+    sumPriceEl.innerHTML = `${pesoIconSvg(15)}${selectedPkg.price.toLocaleString()}`;
+  }
+
+  if (sumDepositEl && selectedPkg) {
+    const due = activePaymentType === 'full' ? selectedPkg.price : selectedPkg.deposit;
+    sumDepositEl.innerHTML = `${pesoIconSvg(15)}${due.toLocaleString()}`;
+  }
+
+  if (sumChipsEl && selectedPkg?.equipment) {
+    sumChipsEl.innerHTML = selectedPkg.equipment
+      .map((item) => `<span class="equip-chip">${item}</span>`)
+      .join('');
+  }
+
+  // 2. Also sync QR code widget
+  updatePaymentQRWidget(selectedPkg);
 }
 
 function updatePaymentQRWidget(selectedPkg) {
@@ -164,7 +167,7 @@ function initPaymentFlowControls() {
         b.classList.toggle('active', isMatch);
         b.setAttribute('aria-pressed', String(isMatch));
       });
-      updatePaymentQRWidget();
+      updateLiveSummary();
     });
   });
 
@@ -176,7 +179,7 @@ function initPaymentFlowControls() {
         b.classList.toggle('active', isMatch);
         b.setAttribute('aria-pressed', String(isMatch));
       });
-      updatePaymentQRWidget();
+      updateLiveSummary();
     });
   });
 
@@ -248,61 +251,66 @@ function initInteractiveFormPickers() {
   let activeDuration = 12;
   let activeTier = 'Full Karaoke';
 
-  const initialPkg = pkgSelect ? findPackageByLabel(pkgSelect.value) : null;
-  if (initialPkg) {
-    activeDuration = initialPkg.durationHours;
-    activeTier = initialPkg.tier;
-  }
-
-  function applyPackageSelection(tier, hours) {
-    const match = Object.values(PACKAGES).find(
-      (p) => p.tier === tier && p.durationHours === Number(hours)
-    );
-    if (match && pkgSelect) {
-      pkgSelect.value = match.label;
-      pkgSelect.dispatchEvent(new Event('change', { bubbles: true }));
+  if (pkgSelect && pkgSelect.value) {
+    const current = findPackageByLabel(pkgSelect.value);
+    if (current) {
+      activeDuration = current.durationHours;
+      activeTier = current.tier;
     }
   }
 
-  if (durBtns.length) {
-    durBtns.forEach((btn) => {
-      btn.addEventListener('click', () => {
-        activeDuration = Number(btn.dataset.hours);
-        updateTierCardPrices(activeDuration);
-
-        const currentPkg = pkgSelect ? findPackageByLabel(pkgSelect.value) : null;
-        const tierToUse = currentPkg ? currentPkg.tier : activeTier;
-        applyPackageSelection(tierToUse, activeDuration);
-      });
-    });
+  function applySelection() {
+    const matched = Object.values(PACKAGES).find(
+      (p) => p.tier === activeTier && p.durationHours === activeDuration
+    );
+    if (matched && pkgSelect) {
+      pkgSelect.value = matched.label;
+      pkgSelect.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    syncVisualWidgetsFromInputs();
+    updatePickupHelper();
+    updateLiveSummary();
   }
 
-  if (tierCards.length) {
-    tierCards.forEach((card) => {
-      card.addEventListener('click', () => {
-        activeTier = card.dataset.tier;
-        applyPackageSelection(activeTier, activeDuration);
-      });
+  tierCards.forEach((card) => {
+    card.addEventListener('click', () => {
+      activeTier = card.dataset.tier;
+      applySelection();
     });
-  }
+  });
 
-  if (timeChips.length && timeSelect) {
-    timeChips.forEach((chip) => {
-      chip.addEventListener('click', () => {
-        timeSelect.value = chip.dataset.time;
+  durBtns.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      activeDuration = Number(btn.dataset.hours);
+      updateTierCardPrices(activeDuration);
+      applySelection();
+    });
+  });
+
+  timeChips.forEach((chip) => {
+    chip.addEventListener('click', () => {
+      const selectedTime = chip.dataset.time;
+      if (timeSelect) {
+        timeSelect.value = selectedTime;
         timeSelect.dispatchEvent(new Event('change', { bubbles: true }));
-      });
+      }
+      syncVisualWidgetsFromInputs();
+      updatePickupHelper();
+      updateLiveSummary();
     });
-  }
+  });
+
+  syncVisualWidgetsFromInputs();
+  updateLiveSummary();
 }
 
-export function updatePickupHelper() {
+function updatePickupHelper() {
   const pkgSelect = document.getElementById('package-select');
   const timeSelect = document.getElementById('delivery-time');
   const helperEl = document.getElementById('pickup-helper');
 
   syncVisualWidgetsFromInputs();
-  updateLivePackageCard();
+  updateLiveSummary();
 
   if (!pkgSelect || !timeSelect || !helperEl) return;
 
@@ -344,29 +352,18 @@ function buildBookingSummaryText(data) {
     .join('\n');
 }
 
-export function saveBookingLocally(bookingData) {
-  try {
-    const list = JSON.parse(localStorage.getItem('ksound_bookings') || '[]');
-    const newEntry = {
-      id: 'KS-' + Math.random().toString(36).substring(2, 8).toUpperCase(),
-      createdAt: new Date().toLocaleString(),
-      ...bookingData
-    };
-    list.unshift(newEntry);
-    localStorage.setItem('ksound_bookings', JSON.stringify(list.slice(0, 50)));
-  } catch {}
-}
-
 function showBookingConfirmation(bookingData, isOfflineFallback = false) {
   const formCard = document.getElementById('booking-form-card');
   const successBox = document.getElementById('success-message');
   const summaryEl = document.getElementById('booking-summary');
   const statusBanner = document.getElementById('booking-status-banner');
+  const stepperBar = document.querySelector('.booking-breadcrumbs-wrap');
 
   blockDateLocally(bookingData.date);
   saveBookingToDB(bookingData);
 
   if (formCard) formCard.style.display = 'none';
+  if (stepperBar) stepperBar.style.display = 'none';
   if (successBox) {
     successBox.style.display = 'block';
     successBox.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -461,8 +458,168 @@ async function submitToWeb3Forms(bookingPayload) {
   return Boolean(data && data.success);
 }
 
-export async function handleBooking(e) {
-  e.preventDefault();
+// ===================================================
+// BREADCRUMBS STEPPER NAVIGATION & VALIDATION
+// ===================================================
+
+export function validateStep(stepIndex) {
+  const dateInput = document.getElementById('input-date');
+  const timeSelect = document.getElementById('delivery-time');
+  const pkgSelect = document.getElementById('package-select');
+  const addressInput = document.getElementById('input-address');
+  const nameInput = document.getElementById('input-name');
+  const phoneInput = document.getElementById('input-phone');
+
+  if (stepIndex === 1) {
+    let valid = true;
+    clearError(dateInput);
+    clearError(timeSelect);
+
+    if (!dateInput || !dateInput.value) {
+      const calRoot = document.getElementById('calendar-root');
+      showError(calRoot || dateInput, 'Please tap an available date on the calendar.');
+      valid = false;
+    } else {
+      const [y, m, d] = dateInput.value.split('-').map(Number);
+      const chosenDate = new Date(y, m - 1, d);
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+
+      if (chosenDate < today) {
+        showError(dateInput, 'Event date cannot be in the past.');
+        valid = false;
+      } else if (isBlocked(dateInput.value)) {
+        showError(dateInput, 'This date is already booked. Please choose another date.');
+        valid = false;
+      }
+    }
+
+    if (!timeSelect || !timeSelect.value) {
+      const chipsGrid = document.querySelector('.time-chips-grid');
+      showError(chipsGrid || timeSelect, 'Please pick a target delivery time.');
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  if (stepIndex === 2) {
+    clearError(pkgSelect);
+    if (!pkgSelect || !pkgSelect.value) {
+      showError(pkgSelect, 'Please choose a rental package.');
+      return false;
+    }
+    return true;
+  }
+
+  if (stepIndex === 3) {
+    clearError(addressInput);
+    if (!addressInput || !addressInput.value.trim()) {
+      showError(addressInput, 'Please enter or pin your event address in Lapu-Lapu.');
+      return false;
+    }
+    return true;
+  }
+
+  if (stepIndex === 4) {
+    let valid = true;
+    clearError(nameInput);
+    clearError(phoneInput);
+
+    if (!nameInput || !nameInput.value.trim()) {
+      showError(nameInput, 'Enter your full name.');
+      valid = false;
+    }
+
+    const phoneVal = (phoneInput?.value || '').trim().replace(/[\s-]/g, '');
+    if (!/^09\d{9}$/.test(phoneVal)) {
+      showError(phoneInput, 'Enter a valid 11-digit PH mobile number starting with 09.');
+      valid = false;
+    }
+
+    return valid;
+  }
+
+  return true;
+}
+
+export function goToStep(targetStep) {
+  if (targetStep < 1 || targetStep > 4) return;
+
+  // If attempting to advance forward, validate current step first
+  if (targetStep > currentStep) {
+    for (let s = currentStep; s < targetStep; s++) {
+      if (!validateStep(s)) {
+        return;
+      }
+    }
+  }
+
+  currentStep = targetStep;
+  if (targetStep > maxStepUnlocked) {
+    maxStepUnlocked = targetStep;
+  }
+
+  // 1. Update Panes
+  const panes = document.querySelectorAll('.wizard-step-pane');
+  panes.forEach((pane) => {
+    const paneIndex = Number(pane.dataset.stepIndex);
+    const isActive = paneIndex === currentStep;
+    pane.classList.toggle('active', isActive);
+  });
+
+  // 2. Update Breadcrumb Pills
+  const pills = document.querySelectorAll('.crumb-pill[data-step]');
+  pills.forEach((pill) => {
+    const s = Number(pill.dataset.step);
+    pill.classList.remove('active', 'completed', 'disabled');
+
+    if (s === currentStep) {
+      pill.classList.add('active');
+      pill.setAttribute('aria-current', 'step');
+    } else if (s < currentStep || s <= maxStepUnlocked) {
+      pill.classList.add('completed');
+      pill.removeAttribute('aria-current');
+    } else {
+      pill.classList.add('disabled');
+      pill.removeAttribute('aria-current');
+    }
+  });
+
+  // 3. Update Connectors
+  const connectors = document.querySelectorAll('.crumb-connector[data-connector]');
+  connectors.forEach((conn) => {
+    const cIndex = Number(conn.dataset.connector);
+    conn.classList.toggle('completed', cIndex < currentStep);
+  });
+
+  // 4. Trigger Leaflet map invalidateSize if reaching step 3
+  if (currentStep === 3) {
+    if (typeof window.refreshVenueMap === 'function') {
+      window.refreshVenueMap();
+    }
+  }
+
+  // 5. Update summary
+  updateLiveSummary();
+
+  // 6. Smooth scroll to stepper top on mobile
+  const stepper = document.getElementById('booking-stepper-bar');
+  if (stepper && window.innerWidth < 900) {
+    stepper.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }
+}
+
+export async function handleBooking(event) {
+  event.preventDefault();
+
+  // Validate all steps from 1 to 4
+  for (let s = 1; s <= 4; s++) {
+    if (!validateStep(s)) {
+      goToStep(s);
+      return;
+    }
+  }
 
   const nameInput = document.getElementById('input-name');
   const phoneInput = document.getElementById('input-phone');
@@ -471,66 +628,14 @@ export async function handleBooking(e) {
   const mapLinkInput = document.getElementById('input-map-link');
   const refInput = document.getElementById('input-pay-ref');
   const pkgSelect = document.getElementById('package-select');
-  const timeSelect =
-    document.getElementById('delivery-time') ||
-    document.querySelector('.booking-form select');
-
-  [nameInput, phoneInput, dateInput, timeSelect, addressInput, pkgSelect].forEach(
-    clearError
-  );
-
-  let valid = true;
-
-  if (!nameInput.value.trim()) {
-    showError(nameInput, 'Enter your full name.');
-    valid = false;
-  }
-
-  const phoneVal = phoneInput.value.trim().replace(/[\s-]/g, '');
-  if (!/^09\d{9}$/.test(phoneVal)) {
-    showError(phoneInput, 'Enter a valid 11-digit PH number starting with 09.');
-    valid = false;
-  }
-
-  if (!dateInput.value) {
-    showError(dateInput, 'Select an event date.');
-    valid = false;
-  } else {
-    const [y, m, d] = dateInput.value.split('-').map(Number);
-    const chosenDate = new Date(y, m - 1, d);
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-
-    if (chosenDate < today) {
-      showError(dateInput, 'Event date cannot be in the past.');
-      valid = false;
-    } else if (isBlocked(dateInput.value)) {
-      showError(dateInput, 'This date is unavailable.');
-      valid = false;
-    }
-  }
-
-  if (!timeSelect.value) {
-    showError(timeSelect, 'Select a delivery time.');
-    valid = false;
-  }
-
-  if (!pkgSelect.value) {
-    showError(pkgSelect, 'Select a package.');
-    valid = false;
-  }
-
-  if (!addressInput.value.trim()) {
-    showError(addressInput, 'Enter or pin your event address.');
-    valid = false;
-  }
-
-  if (!valid) return;
+  const timeSelect = document.getElementById('delivery-time');
 
   const selectedPkg = findPackageByLabel(pkgSelect.value) || PACKAGES.pkg2_12;
   const methodObj = PAYMENT_METHODS[activePaymentChannel] || PAYMENT_METHODS.gcash;
   const amountDue =
     activePaymentType === 'full' ? selectedPkg.price : selectedPkg.deposit;
+
+  const phoneVal = phoneInput.value.trim().replace(/[\s-]/g, '');
 
   const bookingPayload = {
     name: nameInput.value.trim(),
@@ -547,10 +652,10 @@ export async function handleBooking(e) {
     referenceNo: refInput?.value?.trim() || ''
   };
 
-  const submitBtn = document.querySelector('.booking-form button[type="submit"]');
-  const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Send Reservation Request';
+  const submitBtn = document.querySelector('.wizard-submit-btn');
+  const origBtnHtml = submitBtn ? submitBtn.innerHTML : 'Complete Reservation';
   if (submitBtn) {
-    submitBtn.textContent = 'Processing Booking...';
+    submitBtn.textContent = 'Securing Reservation in Cloud...';
     submitBtn.disabled = true;
   }
 
@@ -605,8 +710,23 @@ function initCopyButtons() {
   });
 }
 
+function initBreadcrumbsInteraction() {
+  const pills = document.querySelectorAll('.crumb-pill[data-step]');
+  pills.forEach((pill) => {
+    pill.addEventListener('click', () => {
+      const target = Number(pill.dataset.step);
+      // Allow navigation if previously unlocked or jumping backwards
+      if (target <= maxStepUnlocked || target < currentStep) {
+        goToStep(target);
+      } else {
+        goToStep(target); // will trigger validation of current step
+      }
+    });
+  });
+}
+
 export function initBookingForm() {
-  const form = document.querySelector('.booking-form');
+  const form = document.getElementById('booking-stepper-form') || document.querySelector('.booking-form');
   if (!form) return;
 
   const params = new URLSearchParams(window.location.search);
@@ -614,6 +734,7 @@ export function initBookingForm() {
   const pkgSelect = document.getElementById('package-select');
   const timeSelect = document.getElementById('delivery-time');
   const dateInput = document.getElementById('input-date');
+  const addressInput = document.getElementById('input-address');
 
   if (pkgSelect) {
     if (selectedKey && PACKAGES[selectedKey]) {
@@ -623,22 +744,40 @@ export function initBookingForm() {
     }
   }
 
+  if (dateInput) {
+    dateInput.addEventListener('change', () => {
+      const calRoot = document.getElementById('calendar-root');
+      if (calRoot) clearError(calRoot);
+      clearError(dateInput);
+      updateLiveSummary();
+    });
+  }
+
   const watchedInputs = document.querySelectorAll(
     '#input-name, #input-phone, #input-date, #delivery-time, #input-address, #package-select'
   );
   watchedInputs.forEach((input) => {
-    input.addEventListener('input', () => clearError(input));
-    input.addEventListener('change', () => clearError(input));
+    input.addEventListener('input', () => {
+      clearError(input);
+      updateLiveSummary();
+    });
+    input.addEventListener('change', () => {
+      clearError(input);
+      updateLiveSummary();
+    });
   });
 
-  if (pkgSelect) pkgSelect.addEventListener('change', updatePickupHelper);
-  if (timeSelect) timeSelect.addEventListener('change', updatePickupHelper);
-  if (dateInput) dateInput.addEventListener('change', updateLivePackageCard);
+  if (addressInput) {
+    addressInput.addEventListener('input', updateLiveSummary);
+  }
 
   initInteractiveFormPickers();
   initPaymentFlowControls();
+  initBreadcrumbsInteraction();
   updatePickupHelper();
   initCopyButtons();
+  updateLiveSummary();
 
   window.handleBooking = handleBooking;
+  window.goToStep = goToStep;
 }

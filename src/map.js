@@ -195,4 +195,7 @@ export function initVenueMap() {
   }
 
   setTimeout(() => map.invalidateSize(), 250);
+  window.refreshVenueMap = () => {
+    setTimeout(() => map.invalidateSize(), 100);
+  };
 }

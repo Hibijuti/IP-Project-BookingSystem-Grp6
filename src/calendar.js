@@ -321,13 +321,13 @@ export async function renderAdminLedger() {
   `;
 }
 
-export function unlockAdmin() {
+export function unlockAdmin(forceState) {
   const pwInput = document.getElementById('admin-pw');
   const msg = document.getElementById('admin-msg');
   if (!pwInput || !msg) return;
 
   if (pwInput.value === ADMIN_PASSWORD) {
-    isAdmin = !isAdmin;
+    isAdmin = typeof forceState === 'boolean' ? forceState : !isAdmin;
     if (isAdmin) {
       msg.style.color = '#86efac';
       msg.textContent = 'Admin mode ON — tap any future date to block/unblock, or manage bookings below.';

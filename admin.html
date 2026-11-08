@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Admin &amp; Booking Ledger — K-SoundRentals</title>
+    <link rel="icon" type="image/png" href="Logo.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" crossorigin="">
+</head>
+<body class="admin-page">
+
+    <!-- HEADER -->
+    <header class="header">
+        <div class="header-container">
+            <a href="index.html" class="logo">
+                <img src="Logo.png" alt="K-SoundRentals Logo">
+                <span class="brand-name">K-Sound<span>Rentals</span></span>
+            </a>
+            <div class="admin-nav-right">
+                <span class="admin-mode-pill">🔒 Owner Portal</span>
+                <a href="booking.html" class="btn btn-outline btn-micro">Back to Booking</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="admin-main">
+        <div class="admin-container">
+
+            <!-- PIN GATE SECTION (Shown until unlocked) -->
+            <div id="admin-gate-card" class="admin-gate-card spotlight-card">
+                <div class="gate-icon-badge">
+                    <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="2.2">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                </div>
+                <h2>Owner Authentication</h2>
+                <p>Enter your 4-to-9 character admin security PIN to manage live reservations and calendar blocks.</p>
+
+                <form class="gate-form" onsubmit="event.preventDefault(); submitAdminUnlock();">
+                    <div class="form-group">
+                        <input
+                            type="password"
+                            id="admin-pw"
+                            placeholder="Enter Owner PIN (ksound2026)"
+                            class="admin-pw-input"
+                            autocomplete="current-password"
+                            required
+                        >
+                    </div>
+                    <button type="submit" class="btn btn-primary btn-shine" style="width:100%;">
+                        <span>Unlock Dashboard</span>
+                        <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" stroke-width="2.5" fill="none"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                    </button>
+                    <p id="admin-msg" class="admin-msg"></p>
+                </form>
+            </div>
+
+            <!-- DASHBOARD SECTION (Shown after unlock) -->
+            <div id="admin-dashboard-wrap" class="admin-dashboard-wrap" style="display:none;">
+
+                <div class="admin-dash-header">
+                    <div>
+                        <h2>Reservation <span class="text-gradient">Ledger</span> &amp; Calendar</h2>
+                        <p class="text-muted">Manage real-time cloud bookings and toggle date availability for customers.</p>
+                    </div>
+                    <div class="admin-top-actions">
+                        <button type="button" class="btn btn-outline btn-micro" onclick="lockAdminSession()">
+                            Lock Portal
+                        </button>
+                    </div>
+                </div>
+
+                <div class="admin-grid-layout">
+
+                    <!-- LEFT: CALENDAR AVAILABILITY CONTROLS -->
+                    <div class="admin-calendar-col">
+                        <div class="calendar-panel spotlight-card">
+                            <div class="panel-header">
+                                <h3>Calendar Date Blocker</h3>
+                                <span class="cal-hint-pill text-orange">Tap date to toggle block</span>
+                            </div>
+                            <div class="cal-legend">
+                                <span class="leg available">Available</span>
+                                <span class="leg booked">Blocked</span>
+                            </div>
+
+                            <div id="calendar-root"></div>
+                            <div class="cal-admin-instructions">
+                                <p><small>⚡ Tapping an open date locks it in Supabase so customers cannot book it. Tapping a blocked date re-opens it instantly.</small></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- RIGHT: LIVE SUPABASE RESERVATIONS LEDGER -->
+                    <div class="admin-ledger-col">
+                        <div class="ledger-panel spotlight-card">
+                            <div id="admin-bookings-list" class="admin-bookings-list" style="display:block;"></div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2026 K-SoundRentals Owner Portal &bull; Strictly Supabase Connected</p>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { initCalendar, unlockAdmin } from './src/calendar.js';
+
+        // Auto unlock if session is active
+        window.addEventListener('DOMContentLoaded', () => {
+            initCalendar();
+            const savedUnlock = sessionStorage.getItem('ksound_admin_unlocked');
+            if (savedUnlock === 'true') {
+                const pwInput = document.getElementById('admin-pw');
+                if (pwInput) pwInput.value = 'ksound2026';
+                submitAdminUnlock();
+            }
+        });
+
+        window.submitAdminUnlock = function() {
+            const pwInput = document.getElementById('admin-pw');
+            const msg = document.getElementById('admin-msg');
+            const gate = document.getElementById('admin-gate-card');
+            const dash = document.getElementById('admin-dashboard-wrap');
+
+            if (!pwInput) return;
+
+            if (pwInput.value === 'ksound2026') {
+                sessionStorage.setItem('ksound_admin_unlocked', 'true');
+                if (gate) gate.style.display = 'none';
+                if (dash) dash.style.display = 'block';
+                unlockAdmin(true); // sets isAdmin = true, renders ledger & calendar
+            } else {
+                if (msg) {
+                    msg.style.color = '#fca5a5';
+                    msg.textContent = 'Incorrect PIN. Please try again.';
+                }
+            }
+        };
+
+        window.lockAdminSession = function() {
+            sessionStorage.removeItem('ksound_admin_unlocked');
+            window.location.reload();
+        };
+    </script>
+</body>
+</html>

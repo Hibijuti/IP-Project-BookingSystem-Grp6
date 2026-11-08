@@ -6225,3 +6225,540 @@ img {
 }
 
 
+
+/* ===================================================
+   K-SOUNDRENTALS — 4-STEP BREADCRUMBS WIZARD & STICKY SUMMARY
+   =================================================== */
+
+.booking-breadcrumbs-wrap {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 10;
+}
+
+.booking-breadcrumbs {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(15, 15, 22, 0.85);
+    backdrop-filter: blur(18px);
+    -webkit-backdrop-filter: blur(18px);
+    padding: 8px 14px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 10px 32px rgba(0, 0, 0, 0.45);
+    max-width: 100%;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.booking-breadcrumbs::-webkit-scrollbar {
+    display: none;
+}
+
+.crumb-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 9px;
+    padding: 7px 15px;
+    border-radius: 9999px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    color: rgba(255, 255, 255, 0.55);
+    background: transparent;
+    border: 1px solid transparent;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    white-space: nowrap;
+}
+
+.crumb-badge {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.7);
+    transition: all 0.25s ease;
+    flex-shrink: 0;
+}
+
+.crumb-check {
+    display: none;
+    font-weight: 800;
+}
+
+.crumb-pill.active {
+    background: linear-gradient(135deg, rgba(255, 140, 0, 0.25), rgba(255, 85, 0, 0.12));
+    border-color: rgba(255, 140, 0, 0.6);
+    color: #ffffff;
+    box-shadow: 0 0 16px rgba(255, 140, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+    cursor: default;
+}
+
+.crumb-pill.active .crumb-badge {
+    background: linear-gradient(135deg, #ff8c00, #ff4500);
+    color: #ffffff;
+    box-shadow: 0 2px 8px rgba(255, 140, 0, 0.6);
+}
+
+.crumb-pill.completed {
+    background: rgba(34, 197, 94, 0.08);
+    border-color: rgba(34, 197, 94, 0.25);
+    color: #86efac;
+}
+
+.crumb-pill.completed .crumb-badge {
+    background: #22c55e;
+    color: #0b0f19;
+}
+
+.crumb-pill.completed .crumb-num {
+    display: none;
+}
+
+.crumb-pill.completed .crumb-check {
+    display: block;
+}
+
+.crumb-pill.completed:hover {
+    background: rgba(34, 197, 94, 0.18);
+    border-color: rgba(34, 197, 94, 0.45);
+    transform: translateY(-1px);
+    color: #ffffff;
+}
+
+.crumb-pill.disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    pointer-events: none;
+}
+
+.crumb-connector {
+    width: 22px;
+    height: 2px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 2px;
+    flex-shrink: 0;
+    transition: background 0.35s ease;
+}
+
+.crumb-connector.completed {
+    background: linear-gradient(90deg, #22c55e, rgba(255, 140, 0, 0.7));
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+}
+
+/* WORKSPACE 2-COLUMN LAYOUT */
+.booking-flow-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1.35fr) minmax(310px, 0.65fr);
+    gap: 28px;
+    align-items: start;
+    max-width: 1240px;
+    margin: 0 auto;
+}
+
+.booking-wizard-col {
+    min-width: 0;
+}
+
+.wizard-step-pane {
+    display: none;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: opacity 0.3s cubic-bezier(0.16, 1, 0.3, 1), transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.wizard-step-pane.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.step-pane-header {
+    margin-bottom: 22px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.step-tag-pill {
+    display: inline-block;
+    padding: 3px 11px;
+    border-radius: 9999px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    background: rgba(255, 140, 0, 0.15);
+    color: var(--orange);
+    border: 1px solid rgba(255, 140, 0, 0.3);
+    margin-bottom: 8px;
+}
+
+.step-pane-header h3 {
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 6px;
+}
+
+.cal-wizard-wrap {
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 18px;
+    padding: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+/* WIZARD ACTIONS ROW */
+.wizard-actions-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.wizard-actions-row.single-action {
+    justify-content: flex-end;
+}
+
+.wizard-next-btn,
+.wizard-submit-btn {
+    min-width: 190px;
+    justify-content: center;
+}
+
+.wizard-back-btn {
+    min-width: 110px;
+    justify-content: center;
+}
+
+/* STICKY LIVE ORDER SUMMARY */
+.booking-summary-col {
+    position: relative;
+}
+
+.sticky-order-capsule {
+    position: sticky;
+    top: 96px;
+    padding: 24px;
+    border-radius: 24px;
+    background: rgba(18, 18, 26, 0.88);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.09);
+    box-shadow: 0 16px 44px rgba(0, 0, 0, 0.5);
+}
+
+.summary-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 18px;
+}
+
+.summary-card-header h4 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 0;
+}
+
+.summary-header-badge {
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    background: rgba(34, 197, 94, 0.15);
+    color: #86efac;
+    border: 1px solid rgba(34, 197, 94, 0.35);
+}
+
+.summary-details-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.sum-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 13px;
+}
+
+.sum-label {
+    color: var(--text-muted);
+}
+
+.sum-val {
+    font-weight: 600;
+    color: #ffffff;
+    text-align: right;
+    max-width: 60%;
+    word-break: break-word;
+}
+
+.summary-divider {
+    height: 1px;
+    background: rgba(255, 255, 255, 0.07);
+    margin: 16px 0;
+}
+
+.sum-subhead {
+    display: block;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+}
+
+.summary-equip-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.equip-chip {
+    font-size: 11px;
+    padding: 3px 9px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.06);
+    color: rgba(255, 255, 255, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.summary-pricing-wrap {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.price-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.price-line.total-price-line strong {
+    font-size: 1.15rem;
+    color: #ffffff;
+}
+
+.price-line.deposit-line strong {
+    font-size: 1.35rem;
+    color: var(--orange);
+    font-weight: 800;
+}
+
+.summary-help-box {
+    margin-top: 18px;
+    padding: 11px 14px;
+    background: rgba(255, 140, 0, 0.08);
+    border: 1px solid rgba(255, 140, 0, 0.22);
+    border-radius: 14px;
+    text-align: center;
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.summary-help-box a {
+    color: var(--orange);
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.summary-help-box a:hover {
+    text-decoration: underline;
+}
+
+/* ===================================================
+   OWNER ADMIN PORTAL (admin.html)
+   =================================================== */
+
+.admin-page {
+    background: #09090f;
+    min-height: 100vh;
+}
+
+.admin-nav-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.admin-mode-pill {
+    padding: 4px 12px;
+    border-radius: 9999px;
+    background: rgba(255, 140, 0, 0.15);
+    color: var(--orange);
+    font-size: 12px;
+    font-weight: 700;
+    border: 1px solid rgba(255, 140, 0, 0.3);
+}
+
+.admin-main {
+    padding: 40px 20px 80px;
+}
+
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.admin-gate-card {
+    max-width: 440px;
+    margin: 60px auto;
+    padding: 40px 32px;
+    text-align: center;
+    border-radius: 28px;
+    background: rgba(18, 18, 26, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+}
+
+.gate-icon-badge {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    margin: 0 auto 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 140, 0, 0.15);
+    color: var(--orange);
+    border: 1px solid rgba(255, 140, 0, 0.3);
+}
+
+.admin-gate-card h2 {
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.admin-gate-card p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-bottom: 24px;
+    line-height: 1.5;
+}
+
+.admin-pw-input {
+    text-align: center;
+    letter-spacing: 2px;
+    font-size: 16px;
+    width: 100%;
+    padding: 12px 16px;
+    border-radius: 9999px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: rgba(0, 0, 0, 0.3);
+    color: #fff;
+    margin-bottom: 16px;
+}
+
+.admin-dash-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 28px;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+
+.admin-grid-layout {
+    display: grid;
+    grid-template-columns: minmax(320px, 390px) 1fr;
+    gap: 28px;
+    align-items: start;
+}
+
+.cal-admin-instructions {
+    margin-top: 14px;
+    padding: 10px 14px;
+    background: rgba(255, 140, 0, 0.08);
+    border-radius: 12px;
+    border: 1px solid rgba(255, 140, 0, 0.2);
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.footer-admin-link,
+.admin-quiet-link {
+    color: var(--text-muted);
+    font-size: 12px;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.footer-admin-link:hover,
+.admin-quiet-link:hover {
+    color: var(--orange);
+}
+
+/* RESPONSIVE BREAKPOINTS */
+@media (max-width: 980px) {
+    .booking-flow-layout {
+        grid-template-columns: 1fr;
+    }
+
+    .booking-summary-col {
+        order: -1;
+    }
+
+    .sticky-order-capsule {
+        position: static;
+        margin-bottom: 24px;
+    }
+
+    .admin-grid-layout {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 640px) {
+    .booking-breadcrumbs {
+        padding: 6px 10px;
+        gap: 6px;
+    }
+
+    .crumb-pill {
+        padding: 6px 11px;
+        font-size: 12px;
+        gap: 6px;
+    }
+
+    .crumb-badge {
+        width: 18px;
+        height: 18px;
+        font-size: 10px;
+    }
+
+    .crumb-connector {
+        width: 12px;
+    }
+
+    .wizard-actions-row {
+        flex-direction: column-reverse;
+    }
+
+    .wizard-next-btn,
+    .wizard-submit-btn,
+    .wizard-back-btn {
+        width: 100%;
+    }
+}
