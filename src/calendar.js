@@ -1,3 +1,11 @@
+
+export function filterAdminLedgerSearch(id) {
+  const searchInput = document.getElementById('admin-search-input');
+  if (searchInput) {
+    searchInput.value = id;
+    filterAdminLedger();
+  }
+}
 import Chart from 'chart.js/auto';
 // ===================================================
 // K-SOUNDRENTALS — Availability Calendar Module
@@ -712,21 +720,46 @@ function updateAdminAnalytics(bookings) {
   const navCountAll = document.getElementById('nav-count-all');
   if (navCountAll) navCountAll.textContent = counts.all;
 
-  const overviewNextCard = document.getElementById('overview-next-card');
-  if (overviewNextCard) {
-    if (upcoming.length > 0) {
-      const nextB = upcoming[0];
-      const pkg = findPackageByLabel(nextB.packageChosen || nextB.package);
-      overviewNextCard.innerHTML = `
-        <div class="next-event-badge">NEXT UPCOMING EVENT</div>
-        <div class="next-event-title">${nextB.name || 'Client'} &bull; ${new Date(nextB.date + 'T00:00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' })}</div>
-        <div class="next-event-meta">${pkg ? pkg.tier : (nextB.packageChosen || 'Full Karaoke')} &bull; ${nextB.phone || 'No phone'}</div>
+  const upcomingContainer = document.getElementById('overview-upcoming-container');
+  if (upcomingContainer) {
+    if (upcoming.length === 0) {
+      upcomingContainer.innerHTML = `
+        <div class="overview-empty-schedule">
+          <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><polyline points="12 7 12 12 15 14"/></svg>
+          <span>No upcoming reservations scheduled. All active bookings are fulfilled.</span>
+        </div>
       `;
     } else {
-      overviewNextCard.innerHTML = `
-        <div class="next-event-badge">NEXT UPCOMING EVENT</div>
-        <div class="next-event-title">No upcoming events scheduled</div>
-        <div class="next-event-meta">All active bookings fulfilled</div>
+      const nextList = upcoming.slice(0, 4);
+      upcomingContainer.innerHTML = `
+        <div class="upcoming-table">
+          <div class="upcoming-table-row upcoming-head">
+            <span>Event Date</span>
+            <span>Customer</span>
+            <span>Package</span>
+            <span>Contact</span>
+            <span>Status</span>
+            <span></span>
+          </div>
+          ${nextList.map((b) => {
+            const st = BOOKING_STATUSES[b.normStatus] || BOOKING_STATUSES.pending_deposit;
+            const pkg = findPackageByLabel(b.packageChosen || b.package);
+            const pkgName = pkg ? pkg.tier : (b.packageChosen || b.package || 'Full Karaoke');
+            const dateFmt = new Date(b.date + 'T00:00:00').toLocaleDateString('en-PH', { month: 'short', day: 'numeric', year: 'numeric' });
+            return `
+              <div class="upcoming-table-row">
+                <span class="cell-date"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>${dateFmt}</span>
+                <strong class="cell-name">${b.name || 'Client'}</strong>
+                <span class="cell-pkg">${pkgName}</span>
+                <span class="cell-phone">${b.phone || '—'}</span>
+                <span class="admin-status-badge ${st.badgeClass}"><span class="status-indicator"></span>${st.shortLabel}</span>
+                <span class="cell-action">
+                  <button type="button" class="btn-compact-sm" onclick="window.switchAdminPage('view-ledger'); window.filterAdminLedgerSearch('${b.id}')">Manage</button>
+                </span>
+              </div>
+            `;
+          }).join('')}
+        </div>
       `;
     }
   }
@@ -1065,4 +1098,5 @@ export function initCalendar() {
   window.setDateFilter = setDateFilter;
   window.setSortFilter = setSortFilter;
   window.resetAllFilters = resetAllFilters;
+  window.filterAdminLedgerSearch = filterAdminLedgerSearch;
 }

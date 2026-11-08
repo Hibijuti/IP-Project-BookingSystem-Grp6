@@ -7748,135 +7748,6 @@ img {
     justify-content: center;
 }
 
-/* ===================================================
-   OWNER ADMIN PORTAL (admin.html)
-   =================================================== */
-
-.admin-page {
-    background: #09090f;
-    min-height: 100vh;
-}
-
-.admin-nav-right {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.admin-mode-pill {
-    padding: 4px 12px;
-    border-radius: 9999px;
-    background: rgba(255, 140, 0, 0.15);
-    color: var(--orange);
-    font-size: 12px;
-    font-weight: 700;
-    border: 1px solid rgba(255, 140, 0, 0.3);
-}
-
-.admin-main {
-    padding: 40px 20px 80px;
-}
-
-.admin-container {
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.admin-gate-card {
-    max-width: 440px;
-    margin: 60px auto;
-    padding: 40px 32px;
-    text-align: center;
-    border-radius: 28px;
-    background: rgba(18, 18, 26, 0.9);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
-}
-
-.gate-icon-badge {
-    width: 64px;
-    height: 64px;
-    border-radius: 50%;
-    margin: 0 auto 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(255, 140, 0, 0.15);
-    color: var(--orange);
-    border: 1px solid rgba(255, 140, 0, 0.3);
-}
-
-.admin-gate-card h2 {
-    font-size: 1.5rem;
-    font-weight: 800;
-    margin-bottom: 8px;
-}
-
-.admin-gate-card p {
-    font-size: 13px;
-    color: var(--text-muted);
-    margin-bottom: 24px;
-    line-height: 1.5;
-}
-
-.admin-pw-input {
-    text-align: center;
-    letter-spacing: 2px;
-    font-size: 16px;
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 9999px;
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    background: rgba(0, 0, 0, 0.3);
-    color: #fff;
-    margin-bottom: 16px;
-}
-
-.admin-dash-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 28px;
-    flex-wrap: wrap;
-    gap: 16px;
-}
-
-.admin-grid-layout {
-    display: grid;
-    grid-template-columns: minmax(320px, 390px) 1fr;
-    gap: 28px;
-    align-items: start;
-}
-
-.cal-admin-instructions {
-    margin-top: 14px;
-    padding: 10px 14px;
-    background: rgba(255, 140, 0, 0.08);
-    border-radius: 12px;
-    border: 1px solid rgba(255, 140, 0, 0.2);
-    color: rgba(255, 255, 255, 0.75);
-}
-
-.footer-admin-link,
-.admin-quiet-link {
-    color: var(--text-muted);
-    font-size: 12px;
-    text-decoration: none;
-    transition: color 0.2s ease;
-}
-
-.footer-admin-link:hover,
-.admin-quiet-link:hover {
-    color: var(--orange);
-}
-
-/* RESPONSIVE BREAKPOINTS */
-@media (max-width: 980px) {
-    .admin-grid-layout {
-        grid-template-columns: 1fr;
-    }
-}
-
 @media (max-width: 640px) {
     .booking-breadcrumbs {
         padding: 6px 10px;
@@ -7972,37 +7843,43 @@ img {
 }
 
 /* =========================================================
-   OWNER ADMIN PORTAL & COMMAND CENTER (COMPACT HIGH-FUNCTION DASHBOARD)
+   OWNER ADMIN PORTAL & COMMAND CENTER (FULL-WIDTH EDGE-TO-EDGE DASHBOARD)
    ========================================================= */
 
 .admin-page {
     background-color: var(--bg-obsidian);
     min-height: 100vh;
+    margin: 0 !important;
+    padding: 0 !important;
     display: flex;
     flex-direction: column;
+    overflow-x: hidden;
 }
 
-.admin-main {
+.admin-page .admin-main {
     position: relative;
     flex: 1;
-    padding: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+    max-width: 100% !important;
+    width: 100% !important;
     overflow-x: hidden;
-    width: 100%;
 }
 
-.admin-container {
+.admin-page .admin-container {
     position: relative;
     z-index: 2;
-    width: 100%;
-    max-width: 100%;
-    margin: 0;
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
     text-align: left;
 }
 
-/* 1. Gate Sign-In Card */
+/* 1. Gate Sign-In Card (Centered when locked) */
 .admin-gate-card {
     max-width: 440px;
-    margin: 50px auto;
+    margin: 60px auto;
     padding: 32px 28px;
     border-radius: 24px;
     background: var(--bg-card);
@@ -8074,19 +7951,24 @@ img {
     margin: 0;
 }
 
-/* 2. Fullscreen Dashboard Shell */
+/* 2. Fullscreen Dashboard Shell (Zero Negative Space) */
 .dash-layout {
     display: flex;
     min-height: 100vh;
     width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
     position: relative;
     background: #09090f;
+    box-sizing: border-box;
 }
 
-/* 3. Left-Aligned Sidebar Navigation */
+/* 3. Left-Aligned Sidebar Navigation (Anchored Left) */
 .dash-sidebar {
     width: 220px;
     min-width: 220px;
+    flex-shrink: 0;
     background: rgba(14, 14, 20, 0.98);
     border-right: 1px solid var(--border);
     display: flex;
@@ -8095,6 +7977,7 @@ img {
     height: 100vh;
     position: sticky;
     top: 0;
+    left: 0;
     padding: 18px 14px;
     z-index: 950;
     box-sizing: border-box;
@@ -8117,8 +8000,8 @@ img {
 }
 
 .dash-sidebar-brand img {
-    width: 30px;
-    height: 30px;
+    width: 28px;
+    height: 28px;
     object-fit: contain;
 }
 
@@ -8154,7 +8037,7 @@ img {
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 8px 12px;
+    padding: 9px 12px;
     border-radius: 10px;
     font-size: 13px;
     font-weight: 600;
@@ -8260,13 +8143,14 @@ img {
     color: #fca5a5 !important;
 }
 
-/* 4. Main View Area */
+/* 4. Main View Area (Expands to Fill Screen) */
 .dash-main-area {
     flex: 1;
     min-width: 0;
+    width: calc(100% - 220px);
     display: flex;
     flex-direction: column;
-    padding: 16px 24px 40px;
+    padding: 20px 28px 40px;
     box-sizing: border-box;
 }
 
@@ -8276,7 +8160,7 @@ img {
     justify-content: space-between;
     padding-bottom: 12px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    margin-bottom: 16px;
+    margin-bottom: 18px;
     gap: 12px;
 }
 
@@ -8298,7 +8182,7 @@ img {
 
 .dash-active-page-title {
     font-family: var(--font-display);
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
     color: #ffffff;
     letter-spacing: -0.4px;
@@ -8321,23 +8205,25 @@ img {
     gap: 6px;
 }
 
-/* 5. Compact KPI Strip */
+/* 5. Compact KPI Strip (Spans 100% Width) */
 .dash-kpi-strip {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 12px;
-    margin-bottom: 14px;
+    gap: 14px;
+    margin-bottom: 16px;
+    width: 100%;
 }
 
 .kpi-mini-card {
     background: rgba(18, 18, 26, 0.85);
     border: 1px solid var(--border);
     border-radius: 14px;
-    padding: 12px 16px;
+    padding: 14px 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     text-align: left;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .kpi-label {
@@ -8350,7 +8236,7 @@ img {
 
 .kpi-val {
     font-family: var(--font-display);
-    font-size: 22px;
+    font-size: 24px;
     font-weight: 900;
     color: #ffffff;
     line-height: 1.1;
@@ -8365,38 +8251,40 @@ img {
 }
 
 .kpi-sub {
-    font-size: 11px;
+    font-size: 11.5px;
     color: var(--text-secondary);
 }
 
-/* 6. Compact Overview Charts (Fits on Screen) */
+/* 6. Overview Embedded Charts (Spans 100% Width) */
 .overview-charts-grid {
     display: grid;
-    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
-    gap: 12px;
-    margin-bottom: 12px;
+    grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+    width: 100%;
 }
 
 .chart-panel {
     background: rgba(18, 18, 26, 0.85);
     border: 1px solid var(--border);
     border-radius: 16px;
-    padding: 14px 16px;
+    padding: 16px 18px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     text-align: left;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .chart-panel-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 6px;
+    margin-bottom: 8px;
 }
 
 .chart-panel-title {
-    font-size: 13.5px;
+    font-size: 14px;
     font-weight: 800;
     color: #ffffff;
 }
@@ -8437,18 +8325,18 @@ img {
 .chart-canvas-wrap {
     position: relative;
     width: 100%;
-    height: 210px;
+    height: 220px;
     margin: 4px 0 8px;
 }
 
 .chart-canvas-wrap-doughnut {
-    height: 180px;
+    height: 190px;
 }
 
 .chart-footer-row {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
+    font-size: 11.5px;
     color: var(--text-muted);
     border-top: 1px solid rgba(255, 255, 255, 0.05);
     padding-top: 8px;
@@ -8490,50 +8378,171 @@ img {
     margin-left: 2px;
 }
 
-.overview-next-strip {
+/* 7. Upcoming Schedule Table (Overview Page Bottom) */
+.overview-upcoming-card {
+    background: rgba(18, 18, 26, 0.85);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 16px 20px;
+    width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+}
+
+.overview-card-header {
     display: flex;
+    justify-content: space-between;
     align-items: center;
-    gap: 10px;
-    padding: 8px 14px;
-    border-radius: 10px;
-    background: rgba(255, 140, 0, 0.08);
-    border: 1px solid rgba(255, 140, 0, 0.22);
+    margin-bottom: 12px;
 }
 
-.next-event-tag {
-    font-size: 10px;
+.overview-card-title {
+    font-size: 14px;
     font-weight: 800;
-    letter-spacing: 0.08em;
-    color: var(--orange);
-    background: rgba(255, 140, 0, 0.15);
-    padding: 2px 7px;
-    border-radius: 6px;
-}
-
-.next-event-title {
-    font-size: 12.5px;
-    font-weight: 600;
     color: #ffffff;
 }
 
-/* 7. Dedicated Calendar Page */
+.btn-text-link {
+    background: transparent;
+    border: none;
+    color: var(--orange-light);
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: color 0.18s ease;
+}
+
+.btn-text-link:hover {
+    color: #ffffff;
+    text-decoration: underline;
+}
+
+.upcoming-table {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    overflow-x: auto;
+}
+
+.upcoming-table-row {
+    display: grid;
+    grid-template-columns: 140px 1.2fr 1.2fr 130px 110px 80px;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 12px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    font-size: 12.5px;
+    transition: background 0.15s ease;
+}
+
+.upcoming-table-row:hover:not(.upcoming-head) {
+    background: rgba(255, 255, 255, 0.025);
+    border-radius: 8px;
+}
+
+.upcoming-head {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    letter-spacing: 0.06em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    padding-bottom: 8px;
+}
+
+.cell-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    color: #94a3b8;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.cell-date svg {
+    color: var(--orange);
+    flex-shrink: 0;
+}
+
+.cell-name {
+    color: #ffffff;
+    font-weight: 700;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cell-pkg {
+    color: var(--text-secondary);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cell-phone {
+    color: var(--text-muted);
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.cell-action {
+    text-align: right;
+}
+
+.btn-compact-sm {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--border);
+    color: var(--text-secondary);
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-compact-sm:hover {
+    background: rgba(255, 140, 0, 0.15);
+    border-color: rgba(255, 140, 0, 0.4);
+    color: #ffffff;
+}
+
+.overview-empty-schedule {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 18px 14px;
+    color: var(--text-muted);
+    font-size: 13px;
+    justify-content: center;
+}
+
+.overview-empty-schedule svg {
+    color: rgba(255, 255, 255, 0.25);
+}
+
+/* 8. Dedicated Calendar Page (Full-Width) */
 .calendar-panel-full {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 22px;
-    max-width: 860px;
+    border-radius: 16px;
+    padding: 22px 24px;
+    width: 100%;
+    box-sizing: border-box;
     text-align: left;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
-/* 8. Dedicated Reservations Ledger Page */
+/* 9. Dedicated Reservations Ledger Page (Full-Width) */
 .ledger-panel-full {
     background: var(--bg-card);
     border: 1px solid var(--border);
-    border-radius: 20px;
-    padding: 20px;
+    border-radius: 16px;
+    padding: 22px 24px;
     text-align: left;
     width: 100%;
+    box-sizing: border-box;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
 }
 
 .ledger-filter-pills {
@@ -8682,7 +8691,7 @@ img {
     margin-bottom: 12px;
 }
 
-/* 9. Booking Cards */
+/* 10. Booking Cards */
 .admin-bookings-list {
     display: flex;
     flex-direction: column;
@@ -9013,7 +9022,7 @@ img {
     color: rgba(255, 255, 255, 0.2);
 }
 
-/* 10. Mobile Bottom App Bar */
+/* 11. Mobile Bottom App Bar */
 .dash-bottom-nav {
     display: none;
     position: fixed;
@@ -9071,7 +9080,7 @@ img {
     z-index: 940;
 }
 
-/* 11. Responsive Breakpoints */
+/* 12. Responsive Breakpoints */
 @media (max-width: 1100px) {
     .overview-charts-grid {
         grid-template-columns: 1fr;
@@ -9101,6 +9110,7 @@ img {
         display: block;
     }
     .dash-main-area {
+        width: 100% !important;
         padding: 14px 16px 50px;
     }
     .dash-kpi-strip {
@@ -9120,6 +9130,16 @@ img {
     }
     .chart-canvas-wrap-doughnut {
         height: 170px;
+    }
+    .upcoming-table-row {
+        grid-template-columns: 110px 1fr 90px;
+        gap: 8px;
+    }
+    .upcoming-head span:nth-child(3),
+    .upcoming-head span:nth-child(4),
+    .upcoming-table-row .cell-pkg,
+    .upcoming-table-row .cell-phone {
+        display: none;
     }
     .filter-controls-group {
         width: 100%;
@@ -9153,7 +9173,8 @@ img {
     }
     .calendar-panel-full,
     .ledger-panel-full,
-    .chart-panel {
+    .chart-panel,
+    .overview-upcoming-card {
         padding: 14px 12px;
         border-radius: 14px;
     }
@@ -9166,8 +9187,7 @@ img {
 /* Consistent page-top spacing below the floating navbar */
 .packages,
 .videos,
-.booking,
-.admin-main {
+.booking {
     padding-top: 56px;
 }
 
@@ -9336,8 +9356,7 @@ summary:focus-visible,
 
     .packages,
     .videos,
-    .booking,
-    .admin-main {
+    .booking {
         padding-top: 36px;
         padding-left: 16px;
         padding-right: 16px;

@@ -238,10 +238,15 @@
                             </div>
                         </div>
 
-                        <!-- NEXT SCHEDULED EVENT STRIP -->
-                        <div class="overview-next-strip" id="overview-next-card">
-                            <span class="next-event-tag">NEXT EVENT</span>
-                            <span class="next-event-title">No upcoming events scheduled</span>
+                        <!-- UPCOMING SCHEDULE TABLE -->
+                        <div class="overview-upcoming-card">
+                            <div class="overview-card-header">
+                                <span class="overview-card-title">Upcoming Schedule</span>
+                                <button type="button" class="btn-text-link" onclick="window.switchAdminPage('view-ledger')">View All in Ledger &rarr;</button>
+                            </div>
+                            <div id="overview-upcoming-container">
+                                <!-- Populated by src/calendar.js -->
+                            </div>
                         </div>
 
                     </div>
