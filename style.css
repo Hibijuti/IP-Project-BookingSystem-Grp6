@@ -3850,9 +3850,6 @@ img {
 .brand-eq-bar:nth-child(4) { animation-delay: 0.35s; animation-duration: 1.15s; }
 .brand-eq-bar:nth-child(5) { animation-delay: 0.15s; animation-duration: 0.95s; }
 
-.dash-sidebar-brand .brand-eq {
-    margin-left: 2px;
-}
 
 .brand-eq-bar:nth-child(even) {
     background: var(--orange-light);

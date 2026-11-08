@@ -420,11 +420,9 @@
     <script type="module">
         import { initCalendar, unlockAdmin, adminSignIn, adminSignOut, getAdminSession } from './src/calendar.js';
         import { initNavigation } from './src/ui.js';
-        import { initVisualizers } from './src/visualizer.js';
 
         window.addEventListener('DOMContentLoaded', async () => {
             initNavigation();
-            initVisualizers();
 
         // Quick navigation active pill toggle
         document.querySelectorAll('.dash-nav-pill').forEach(pill => {
