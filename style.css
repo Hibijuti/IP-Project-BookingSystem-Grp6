@@ -7530,3 +7530,63 @@ img {
         align-items: center;
     }
 }
+
+/* Clickable Facebook Links across Booking Flow */
+.notice-fb-link {
+    color: #38bdf8;
+    text-decoration: underline;
+    font-weight: 700;
+    transition: color 0.2s ease;
+}
+
+.notice-fb-link:hover {
+    color: #7dd3fc;
+}
+
+.link-facebook-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 3px 10px;
+    margin: 3px 2px;
+    border-radius: 8px;
+    background: rgba(0, 132, 255, 0.14);
+    border: 1px solid rgba(0, 132, 255, 0.35);
+    color: #38bdf8;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 11.5px;
+    transition: all 0.2s ease;
+}
+
+.link-facebook-pill:hover {
+    background: rgba(0, 132, 255, 0.28);
+    border-color: #0084ff;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.btn-facebook {
+    background: rgba(24, 119, 242, 0.14);
+    border: 1px solid rgba(24, 119, 242, 0.45);
+    color: #ffffff;
+    justify-content: center;
+    border-radius: 9999px;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    padding: 12px 20px;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+.btn-facebook:hover {
+    background: #1877f2;
+    border-color: #1877f2;
+    color: #ffffff;
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(24, 119, 242, 0.45);
+}
