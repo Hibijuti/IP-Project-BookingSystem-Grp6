@@ -1,3 +1,4 @@
+import Chart from 'chart.js/auto';
 // ===================================================
 // K-SOUNDRENTALS — Availability Calendar Module
 // ===================================================
@@ -305,6 +306,284 @@ export function filterAdminLedger() {
   renderFilteredBookingsList();
 }
 
+
+let revenueChartInstance = null;
+let statusChartInstance = null;
+
+function updateAdminCharts(bookings, counts, totalContractValue, activeBookings) {
+  const revCanvas = document.getElementById('chart-revenue-trends');
+  const statusCanvas = document.getElementById('chart-status-distribution');
+  if (!revCanvas || !statusCanvas) return;
+
+  // 1. Monthly Revenue & Booking Trajectory
+  const now = new Date();
+  const currentY = now.getFullYear();
+  const currentM = now.getMonth();
+
+  const monthKeysSet = new Set();
+  // Window: 2 months back to 3 months forward
+  for (let i = -2; i <= 3; i++) {
+    const d = new Date(currentY, currentM + i, 1);
+    const k = d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0');
+    monthKeysSet.add(k);
+  }
+
+  // Include any extra months from bookings
+  bookings.forEach((b) => {
+    if (b.date && b.date.length >= 7) {
+      monthKeysSet.add(b.date.substring(0, 7));
+    }
+  });
+
+  const sortedMonths = Array.from(monthKeysSet).sort();
+  const revByMonth = {};
+  const countByMonth = {};
+  sortedMonths.forEach((m) => {
+    revByMonth[m] = 0;
+    countByMonth[m] = 0;
+  });
+
+  bookings.forEach((b) => {
+    if (b.normStatus === 'cancelled') return;
+    const m = b.date ? b.date.substring(0, 7) : null;
+    if (m && revByMonth.hasOwnProperty(m)) {
+      const pkg = findPackageByLabel(b.packageChosen || b.package);
+      const rate = pkg ? pkg.price : (Number(b.amountDue || b.amount_due) || 1299);
+      revByMonth[m] += rate;
+      countByMonth[m] += 1;
+    }
+  });
+
+  const monthLabels = sortedMonths.map((mStr) => {
+    const parts = mStr.split('-').map(Number);
+    const d = new Date(parts[0], parts[1] - 1, 1);
+    return d.toLocaleDateString('en-PH', { month: 'short', year: '2-digit' });
+  });
+
+  const revenueData = sortedMonths.map((m) => revByMonth[m]);
+  const bookingData = sortedMonths.map((m) => countByMonth[m]);
+
+  if (revenueChartInstance) {
+    try { revenueChartInstance.destroy(); } catch (e) {}
+    revenueChartInstance = null;
+  }
+
+  const ctxRev = revCanvas.getContext('2d');
+  revenueChartInstance = new Chart(ctxRev, {
+    type: 'line',
+    data: {
+      labels: monthLabels,
+      datasets: [
+        {
+          label: 'Gross Revenue (₱)',
+          data: revenueData,
+          borderColor: '#ff8c00',
+          backgroundColor: 'rgba(255, 140, 0, 0.16)',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#ff8c00',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 1.5,
+          pointRadius: 4,
+          pointHoverRadius: 6,
+          fill: true,
+          tension: 0.35,
+          yAxisID: 'yRevenue'
+        },
+        {
+          label: 'Bookings',
+          data: bookingData,
+          borderColor: '#06b6d4',
+          backgroundColor: 'rgba(6, 182, 212, 0.1)',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointBackgroundColor: '#06b6d4',
+          pointBorderColor: '#ffffff',
+          pointBorderWidth: 1.5,
+          pointRadius: 3.5,
+          pointHoverRadius: 5.5,
+          fill: false,
+          tension: 0.3,
+          yAxisID: 'yCount'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: {
+        mode: 'index',
+        intersect: false
+      },
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          backgroundColor: 'rgba(15, 23, 42, 0.94)',
+          titleColor: '#ffffff',
+          bodyColor: '#cbd5e1',
+          borderColor: 'rgba(255, 255, 255, 0.12)',
+          borderWidth: 1,
+          padding: 12,
+          boxPadding: 6,
+          usePointStyle: true,
+          callbacks: {
+            label(context) {
+              if (context.datasetIndex === 0) {
+                return ' Gross Revenue: ₱' + Number(context.raw).toLocaleString();
+              }
+              return ' Reservations: ' + context.raw;
+            }
+          }
+        }
+      },
+      scales: {
+        x: {
+          grid: {
+            color: 'rgba(255, 255, 255, 0.04)',
+            drawTicks: false
+          },
+          ticks: {
+            color: '#94a3b8',
+            font: {
+              family: "'Plus Jakarta Sans', sans-serif",
+              size: 11.5
+            },
+            padding: 8
+          }
+        },
+        yRevenue: {
+          type: 'linear',
+          position: 'left',
+          beginAtZero: true,
+          grid: {
+            color: 'rgba(255, 255, 255, 0.05)'
+          },
+          ticks: {
+            color: '#ff8c00',
+            font: {
+              family: "'Plus Jakarta Sans', sans-serif",
+              size: 11
+            },
+            padding: 8,
+            callback(val) {
+              return '₱' + Number(val).toLocaleString();
+            }
+          }
+        },
+        yCount: {
+          type: 'linear',
+          position: 'right',
+          beginAtZero: true,
+          grid: {
+            drawOnChartArea: false
+          },
+          ticks: {
+            color: '#06b6d4',
+            stepSize: 1,
+            precision: 0,
+            font: {
+              family: "'Plus Jakarta Sans', sans-serif",
+              size: 11
+            },
+            padding: 8
+          }
+        }
+      }
+    }
+  });
+
+  // Footer metric pills for Chart 1
+  const avgVal = activeBookings.length ? Math.round(totalContractValue / activeBookings.length) : 0;
+  const activeRatio = bookings.length ? Math.round((activeBookings.length / bookings.length) * 100) : 0;
+  const avgValEl = document.getElementById('graph-stat-avg-val');
+  const convEl = document.getElementById('graph-stat-conversion');
+  if (avgValEl) avgValEl.innerHTML = '<span class="peso-inline">' + pesoIconSvg(14) + avgVal.toLocaleString() + '</span>';
+  if (convEl) convEl.textContent = activeRatio + '% active';
+
+  // 2. Status Pipeline Doughnut
+  if (statusChartInstance) {
+    try { statusChartInstance.destroy(); } catch (e) {}
+    statusChartInstance = null;
+  }
+
+  const hasAnyBookings = counts.all > 0;
+  const doughnutLabels = ['Pending Deposit', 'Deposit Verified', 'In Transit', 'Completed', 'Cancelled'];
+  const doughnutData = hasAnyBookings
+    ? [counts.pending_deposit, counts.deposit_verified, counts.out_for_delivery, counts.completed, counts.cancelled]
+    : [1];
+  const doughnutColors = hasAnyBookings
+    ? ['#f59e0b', '#10b981', '#06b6d4', '#8b5cf6', '#f43f5e']
+    : ['rgba(255, 255, 255, 0.1)'];
+
+  const ctxStatus = statusCanvas.getContext('2d');
+  statusChartInstance = new Chart(ctxStatus, {
+    type: 'doughnut',
+    data: {
+      labels: hasAnyBookings ? doughnutLabels : ['No Reservations'],
+      datasets: [
+        {
+          data: doughnutData,
+          backgroundColor: doughnutColors,
+          borderColor: '#09090f',
+          borderWidth: 2.5,
+          hoverOffset: 6
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '66%',
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          enabled: hasAnyBookings,
+          backgroundColor: 'rgba(15, 23, 42, 0.94)',
+          borderColor: 'rgba(255, 255, 255, 0.12)',
+          borderWidth: 1,
+          padding: 10,
+          callbacks: {
+            label(context) {
+              const count = context.raw;
+              const total = counts.all || 1;
+              const pct = Math.round((count / total) * 100);
+              return ' ' + context.label + ': ' + count + ' (' + pct + '%)';
+            }
+          }
+        }
+      }
+    }
+  });
+
+  // Custom Legend & Total Badge for Chart 2
+  const totalBadgeEl = document.getElementById('graph-total-status-badge');
+  if (totalBadgeEl) totalBadgeEl.textContent = counts.all + ' Total';
+
+  const customLegendEl = document.getElementById('graph-custom-legend');
+  if (customLegendEl) {
+    const statusMeta = [
+      { label: 'Pending', count: counts.pending_deposit, color: '#f59e0b' },
+      { label: 'Verified', count: counts.deposit_verified, color: '#10b981' },
+      { label: 'In Transit', count: counts.out_for_delivery, color: '#06b6d4' },
+      { label: 'Completed', count: counts.completed, color: '#8b5cf6' },
+      { label: 'Cancelled', count: counts.cancelled, color: '#f43f5e' }
+    ];
+    customLegendEl.innerHTML = statusMeta
+      .map(
+        (s) =>
+          '<div class="graph-legend-item">' +
+          '<span class="legend-color-dot" style="background:' + s.color + ';"></span>' +
+          '<span>' + s.label + '</span>' +
+          '<strong class="legend-count-val">' + s.count + '</strong>' +
+          '</div>'
+      )
+      .join('');
+  }
+}
+
 function updateAdminAnalytics(bookings) {
   const normalized = bookings.map((b) => ({
     ...b,
@@ -382,6 +661,9 @@ function updateAdminAnalytics(bookings) {
   if (elContract) elContract.innerHTML = `<span class="peso-inline">${pesoIconSvg(22)}${totalContractValue.toLocaleString()}</span>`;
   if (elTopPkg) elTopPkg.textContent = topPkgName;
   if (elSubTopPkg) elSubTopPkg.textContent = maxCount > 0 ? `${maxCount} reservations` : 'Awaiting bookings';
+
+  // Render and sync responsive Chart.js analytics graphs
+  updateAdminCharts(normalized, counts, totalContractValue, activeBookings);
 }
 
 function renderFilteredBookingsList() {
