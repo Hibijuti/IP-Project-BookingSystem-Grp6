@@ -180,23 +180,42 @@ export async function getSavedBookings() {
   return await getBookingsFromDB();
 }
 
-export async function deleteSavedBooking(id) {
+export async function deleteSavedBooking(id, dateStr) {
   if (!confirm('Permanently delete this reservation record from Supabase?')) return;
-  await deleteBookingFromDB(id);
-  await renderAdminLedger();
+  try {
+    const target = cachedBookings.find((b) => b.id === id);
+    const theDate = dateStr || (target ? target.date : null);
+
+    await deleteBookingFromDB(id, theDate);
+    cachedBookings = cachedBookings.filter((b) => b.id !== id);
+
+    if (theDate) {
+      const hasOtherActive = cachedBookings.some(
+        (b) => b.date === theDate && b.status !== 'cancelled'
+      );
+      if (!hasOtherActive) {
+        const idx = blockedDates.indexOf(theDate);
+        if (idx !== -1) {
+          blockedDates.splice(idx, 1);
+        }
+      }
+      renderCalendar(currentYear, currentMonth);
+    }
+
+    updateAdminAnalytics(cachedBookings);
+    renderFilteredBookingsList();
+  } catch (err) {
+    alert('Failed to delete reservation: ' + (err.message || 'Error'));
+  }
 }
 
 export async function cancelSavedBooking(id, dateStr) {
   if (!confirm(`Cancel this reservation? This will reopen ${dateStr} on the Supabase calendar.`)) return;
-  await cancelBookingInDB(id, dateStr);
-  await syncBlockedDatesFromServer();
-  await renderAdminLedger();
+  await updateBookingStatus(id, 'cancelled', dateStr);
 }
 
 export async function reactivateSavedBooking(id, dateStr) {
-  await reactivateBookingInDB(id, dateStr);
-  await syncBlockedDatesFromServer();
-  await renderAdminLedger();
+  await updateBookingStatus(id, 'deposit_verified', dateStr);
 }
 
 export function clearAllSavedBookings() {
@@ -937,7 +956,7 @@ function renderFilteredBookingsList() {
                 ? `<button type="button" class="admin-reactivate-btn" onclick="window.updateBookingStatus('${b.id}', 'deposit_verified', '${b.date}')">Reactivate</button>`
                 : `<button type="button" class="admin-cancel-btn" onclick="window.updateBookingStatus('${b.id}', 'cancelled', '${b.date}')">Cancel</button>`
             }
-            <button type="button" class="admin-delete-btn" onclick="window.deleteSavedBooking('${b.id}')" title="Permanently delete">Delete</button>
+            <button type="button" class="admin-delete-btn" onclick="window.deleteSavedBooking('${b.id}', '${b.date}')" title="Permanently delete">Delete</button>
           </div>
         </div>
       `;
@@ -949,11 +968,33 @@ function renderFilteredBookingsList() {
 
 export async function updateBookingStatus(id, newStatus, dateStr) {
   try {
-    await updateBookingStatusInDB(id, newStatus, dateStr);
     const target = cachedBookings.find((b) => b.id === id);
+    const theDate = dateStr || (target ? target.date : null);
+
+    await updateBookingStatusInDB(id, newStatus, theDate);
     if (target) {
       target.status = newStatus;
     }
+
+    if (theDate) {
+      if (newStatus === 'cancelled') {
+        const hasOtherActive = cachedBookings.some(
+          (b) => b.id !== id && b.date === theDate && b.status !== 'cancelled'
+        );
+        if (!hasOtherActive) {
+          const idx = blockedDates.indexOf(theDate);
+          if (idx !== -1) {
+            blockedDates.splice(idx, 1);
+          }
+        }
+      } else {
+        if (!blockedDates.includes(theDate)) {
+          blockedDates.push(theDate);
+        }
+      }
+      renderCalendar(currentYear, currentMonth);
+    }
+
     updateAdminAnalytics(cachedBookings);
     renderFilteredBookingsList();
   } catch (err) {

@@ -113,10 +113,19 @@ export async function updateBookingStatusInDB(id, newStatus, dateStr) {
     throw error;
   }
 
-  // If status is cancelled, release date; otherwise ensure date is locked
+  // If status is cancelled, check if any other active reservation exists on dateStr
   if (dateStr) {
     if (newStatus === 'cancelled') {
-      await syncBlockedDateToDB(dateStr, false);
+      const { data: remainingActive } = await supabase
+        .from('bookings')
+        .select('id')
+        .eq('date', dateStr)
+        .neq('status', 'cancelled')
+        .neq('id', id);
+
+      if (!remainingActive || remainingActive.length === 0) {
+        await syncBlockedDateToDB(dateStr, false);
+      }
     } else {
       await syncBlockedDateToDB(dateStr, true);
     }
@@ -125,48 +134,16 @@ export async function updateBookingStatusInDB(id, newStatus, dateStr) {
 
 // 3. Cancel booking strictly in Supabase (and reopen calendar date)
 export async function cancelBookingInDB(id, dateStr) {
-  const supabase = getSupabase();
-  if (!supabase) return;
-
-  const { error } = await supabase
-    .from('bookings')
-    .update({ status: 'cancelled' })
-    .eq('id', id);
-
-  if (error) {
-    console.error('[K-SoundRentals] Error updating booking status in Supabase:', error.message);
-    throw error;
-  }
-
-  // Reopen the date for other customers
-  if (dateStr) {
-    await syncBlockedDateToDB(dateStr, false);
-  }
+  await updateBookingStatusInDB(id, 'cancelled', dateStr);
 }
 
 // 4. Reactivate booking strictly in Supabase (and relock calendar date)
 export async function reactivateBookingInDB(id, dateStr) {
-  const supabase = getSupabase();
-  if (!supabase) return;
-
-  const { error } = await supabase
-    .from('bookings')
-    .update({ status: 'confirmed' })
-    .eq('id', id);
-
-  if (error) {
-    console.error('[K-SoundRentals] Error reactivating booking in Supabase:', error.message);
-    throw error;
-  }
-
-  // Relock the date
-  if (dateStr) {
-    await syncBlockedDateToDB(dateStr, true);
-  }
+  await updateBookingStatusInDB(id, 'deposit_verified', dateStr);
 }
 
 // 5. Delete booking record permanently from Supabase
-export async function deleteBookingFromDB(id) {
+export async function deleteBookingFromDB(id, dateStr) {
   const supabase = getSupabase();
   if (!supabase) return;
 
@@ -177,6 +154,19 @@ export async function deleteBookingFromDB(id) {
 
   if (error) {
     console.error('[K-SoundRentals] Error deleting booking from Supabase:', error.message);
+    throw error;
+  }
+
+  if (dateStr) {
+    const { data: remainingActive } = await supabase
+      .from('bookings')
+      .select('id')
+      .eq('date', dateStr)
+      .neq('status', 'cancelled');
+
+    if (!remainingActive || remainingActive.length === 0) {
+      await syncBlockedDateToDB(dateStr, false);
+    }
   }
 }
 
