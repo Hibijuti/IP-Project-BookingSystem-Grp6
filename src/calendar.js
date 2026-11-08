@@ -225,6 +225,178 @@ export async function exportBookingsCsv() {
   document.body.removeChild(link);
 }
 
+let currentLedgerFilter = 'all';
+let currentSearchQuery = '';
+let cachedBookings = [];
+
+export function setLedgerFilter(filter) {
+  currentLedgerFilter = filter;
+  document.querySelectorAll('.filter-pill').forEach((p) => {
+    p.classList.toggle('active', p.dataset.filter === filter);
+  });
+  renderFilteredBookingsList();
+}
+
+export function filterAdminLedger() {
+  const searchInput = document.getElementById('admin-search-input');
+  currentSearchQuery = (searchInput?.value || '').trim().toLowerCase();
+  renderFilteredBookingsList();
+}
+
+function updateAdminAnalytics(bookings) {
+  const confirmed = bookings.filter((b) => b.status !== 'cancelled');
+  const cancelled = bookings.filter((b) => b.status === 'cancelled');
+  const totalCount = bookings.length;
+  const totalDeposits = confirmed.length * 500;
+
+  let totalContractValue = 0;
+  const pkgCounts = {};
+
+  confirmed.forEach((b) => {
+    const pkg = findPackageByLabel(b.packageChosen || b.package);
+    const rate = pkg ? pkg.price : (Number(b.amountDue || b.amount_due) || 1299);
+    totalContractValue += rate;
+    const tier = pkg ? pkg.tier : (b.packageChosen || b.package || 'Standard');
+    pkgCounts[tier] = (pkgCounts[tier] || 0) + 1;
+  });
+
+  let topPkgName = '—';
+  let maxCount = 0;
+  for (const [tier, count] of Object.entries(pkgCounts)) {
+    if (count > maxCount) {
+      maxCount = count;
+      topPkgName = tier;
+    }
+  }
+
+  const elTotal = document.getElementById('stat-total-bookings');
+  const elSubTotal = document.getElementById('stat-sub-bookings');
+  const elDeposits = document.getElementById('stat-deposits');
+  const elContract = document.getElementById('stat-contract-val');
+  const elTopPkg = document.getElementById('stat-top-pkg');
+  const elSubTopPkg = document.getElementById('stat-sub-top-pkg');
+
+  if (elTotal) elTotal.textContent = totalCount;
+  if (elSubTotal) elSubTotal.textContent = `${confirmed.length} active • ${cancelled.length} cancelled`;
+  if (elDeposits) elDeposits.textContent = `₱${totalDeposits.toLocaleString()}`;
+  if (elContract) elContract.textContent = `₱${totalContractValue.toLocaleString()}`;
+  if (elTopPkg) elTopPkg.textContent = topPkgName;
+  if (elSubTopPkg) elSubTopPkg.textContent = maxCount > 0 ? `${maxCount} orders` : 'No orders yet';
+}
+
+function renderFilteredBookingsList() {
+  const container = document.getElementById('admin-bookings-list');
+  if (!container) return;
+
+  let list = cachedBookings;
+
+  if (currentLedgerFilter === 'confirmed') {
+    list = list.filter((b) => b.status !== 'cancelled');
+  } else if (currentLedgerFilter === 'cancelled') {
+    list = list.filter((b) => b.status === 'cancelled');
+  }
+
+  if (currentSearchQuery) {
+    list = list.filter((b) => {
+      const q = currentSearchQuery;
+      return (
+        (b.id || '').toLowerCase().includes(q) ||
+        (b.name || '').toLowerCase().includes(q) ||
+        (b.phone || '').includes(q) ||
+        (b.fb_name || b.fbName || '').toLowerCase().includes(q) ||
+        (b.packageChosen || b.package || '').toLowerCase().includes(q) ||
+        (b.address || '').toLowerCase().includes(q)
+      );
+    });
+  }
+
+  if (list.length === 0) {
+    container.innerHTML = `
+      <div class="admin-ledger-empty">
+        <p>No reservations found matching current filter.</p>
+      </div>
+    `;
+    return;
+  }
+
+  const cardsHtml = list
+    .map((b) => {
+      const isCancelled = b.status === 'cancelled';
+      const pkg = findPackageByLabel(b.packageChosen || b.package);
+      const pkgLabel = pkg ? `${pkg.name} — ${pkg.tier}` : (b.packageChosen || b.package || 'Standard Package');
+      const pkgRate = pkg ? `₱${pkg.price.toLocaleString()}` : (b.amountDue ? `₱${Number(b.amountDue).toLocaleString()}` : '₱1,299');
+      const mapUrl = b.map_url || b.mapUrl;
+      const fbName = b.fb_name || b.fbName;
+
+      return `
+        <div class="admin-booking-card ${isCancelled ? 'is-cancelled' : ''}" data-booking-id="${b.id}">
+          <div class="admin-booking-header">
+            <div>
+              <span class="admin-booking-date">${b.date}</span>
+              <span class="admin-booking-id">#${b.id ? b.id.slice(0, 8) : 'REF'}</span>
+            </div>
+            <div class="admin-booking-badge-wrap">
+              <span class="booking-status-badge ${isCancelled ? 'badge-cancelled' : 'badge-confirmed'}">
+                ${isCancelled ? 'Cancelled' : 'Confirmed'}
+              </span>
+            </div>
+          </div>
+
+          <div class="admin-booking-body">
+            <div class="admin-field-row">
+              <span class="field-label">Customer</span>
+              <span class="field-val"><strong>${b.name || 'Anonymous'}</strong></span>
+            </div>
+            <div class="admin-field-row">
+              <span class="field-label">Contact</span>
+              <span class="field-val">${b.phone || 'None provided'}</span>
+            </div>
+            ${
+              fbName
+                ? `<div class="admin-field-row">
+                    <span class="field-label">Facebook</span>
+                    <span class="field-val text-accent">@${fbName}</span>
+                  </div>`
+                : ''
+            }
+            <div class="admin-field-row">
+              <span class="field-label">Package</span>
+              <span class="field-val">${pkgLabel} (<strong>${pkgRate}</strong>)</span>
+            </div>
+            <div class="admin-field-row">
+              <span class="field-label">Deposit</span>
+              <span class="field-val" style="color:var(--secondary); font-weight:700;">₱500 paid via GCash</span>
+            </div>
+            <div class="admin-field-row">
+              <span class="field-label">Venue</span>
+              <span class="field-val">${b.address || 'Lapu-Lapu City'}</span>
+            </div>
+            ${
+              mapUrl
+                ? `<div class="admin-field-row">
+                    <span class="field-label">Pin Location</span>
+                    <span class="field-val"><a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="admin-map-link">Open Google Maps &nearr;</a></span>
+                  </div>`
+                : ''
+            }
+          </div>
+
+          <div class="admin-booking-actions">
+            ${
+              isCancelled
+                ? `<button type="button" class="btn-micro admin-reactivate-btn" onclick="window.reactivateSavedBooking('${b.id}', '${b.date}')">Reactivate</button>`
+                : `<button type="button" class="btn-micro admin-cancel-btn" onclick="window.cancelSavedBooking('${b.id}', '${b.date}')">Cancel &amp; Free Date</button>`
+            }
+            <button type="button" class="btn-micro admin-del-btn" onclick="window.deleteSavedBooking('${b.id}')" title="Permanently delete from database">Delete</button>
+          </div>
+        </div>
+      `;
+    })
+    .join('');
+
+  container.innerHTML = `<div class="admin-ledger-scroll">${cardsHtml}</div>`;
+}
+
 export async function renderAdminLedger() {
   const container = document.getElementById('admin-bookings-list');
   if (!container) return;
@@ -236,89 +408,23 @@ export async function renderAdminLedger() {
 
   container.style.display = 'block';
 
-  // Check if Supabase credentials are configured
   if (!isSupabaseConfigured()) {
     container.innerHTML = `
       <div class="admin-supabase-notice">
         <div class="supabase-badge">⚡ Supabase Database</div>
         <h4>Database Connection Needed</h4>
-        <p>Bookings &amp; calendar blocks are set to be stored strictly in <strong>Supabase</strong>.</p>
-        <p>Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> in your <code>.env</code> file or Vercel Environment Variables to activate real-time cloud tracking.</p>
-        <a href="https://supabase.com" target="_blank" rel="noopener noreferrer" class="supabase-doc-link">Get Free Supabase Project &nearr;</a>
+        <p>Bookings are set to be stored strictly in <strong>Supabase</strong>.</p>
+        <p>Set <code>VITE_SUPABASE_URL</code> and <code>VITE_SUPABASE_ANON_KEY</code> in your <code>.env</code> file.</p>
       </div>
     `;
     return;
   }
 
-  container.innerHTML = '<div style="padding:16px; text-align:center; color:var(--text-muted); font-size:12px;">Loading live reservations from Supabase...</div>';
+  container.innerHTML = '<div style="padding:24px; text-align:center; color:var(--text-muted); font-size:13px;">Loading live reservations from Supabase...</div>';
 
-  const bookings = await getSavedBookings();
-
-  if (bookings.length === 0) {
-    container.innerHTML = `
-      <div class="admin-ledger-empty">
-        <p>No customer reservations recorded yet in Supabase.</p>
-        <small style="color:var(--text-muted)">Live bookings submitted on any phone or laptop will instantly appear here.</small>
-      </div>
-    `;
-    return;
-  }
-
-  const confirmedCount = bookings.filter((b) => b.status !== 'cancelled').length;
-  const cancelledCount = bookings.filter((b) => b.status === 'cancelled').length;
-
-  const cardsHtml = bookings
-    .map((b) => {
-      const isCancelled = b.status === 'cancelled';
-      const pkgName = b.packageChosen || b.package || 'Standard Setup';
-      const amt = Number(b.amountDue || b.amount_due || 0).toLocaleString();
-      const channel = b.paymentChannel || b.payment_channel || 'GCash';
-      const delTime = b.deliveryTime || b.delivery_time || '';
-      const mapUrl = b.mapLink || b.map_link;
-      const refNo = b.referenceNo || b.reference_no;
-
-      return `
-        <div class="admin-booking-item ${isCancelled ? 'booking-cancelled' : ''}">
-          <div class="admin-booking-top">
-            <span class="admin-booking-id">${b.id || 'BOOKING'}</span>
-            <span class="admin-status-tag ${isCancelled ? 'status-cancelled' : 'status-confirmed'}">
-              ${isCancelled ? '✕ Cancelled' : '✓ Confirmed'}
-            </span>
-            <span class="admin-booking-date">📅 ${b.date} &bull; ${delTime}</span>
-            <button type="button" class="admin-del-btn" onclick="window.deleteSavedBooking('${b.id}')" title="Delete from Supabase">&times;</button>
-          </div>
-          <div class="admin-booking-body">
-            <strong>${b.name}</strong> &bull; <a href="tel:${b.phone}" class="admin-phone-link">${b.phone}</a>
-            <div class="admin-booking-pkg">${pkgName} — ₱${amt} (${channel})</div>
-            <div class="admin-booking-addr">📍 ${b.address || 'Lapu-Lapu City'}</div>
-            ${mapUrl ? `<a href="${mapUrl}" target="_blank" rel="noopener noreferrer" class="admin-pin-link">Open GPS Pin &nearr;</a>` : ''}
-            ${refNo ? `<div class="admin-ref">Ref: <code>${refNo}</code></div>` : ''}
-          </div>
-          <div class="admin-booking-actions-row">
-            ${
-              isCancelled
-                ? `<button type="button" class="btn-micro" onclick="window.reactivateSavedBooking('${b.id}', '${b.date}')">Reactivate Booking</button>`
-                : `<button type="button" class="btn-micro text-danger" onclick="window.cancelSavedBooking('${b.id}', '${b.date}')">Cancel Booking</button>`
-            }
-          </div>
-        </div>
-      `;
-    })
-    .join('');
-
-  container.innerHTML = `
-    <div class="admin-ledger-header">
-      <div>
-        <h4>Supabase Reservations (${confirmedCount} Active, ${cancelledCount} Cancelled)</h4>
-      </div>
-      <div class="admin-ledger-actions">
-        <button type="button" class="btn-micro" onclick="window.exportBookingsCsv()">Export CSV</button>
-      </div>
-    </div>
-    <div class="admin-ledger-scroll">
-      ${cardsHtml}
-    </div>
-  `;
+  cachedBookings = await getSavedBookings();
+  updateAdminAnalytics(cachedBookings);
+  renderFilteredBookingsList();
 }
 
 export function unlockAdmin(forceState) {
@@ -378,4 +484,6 @@ export function initCalendar() {
   window.clearAllSavedBookings = clearAllSavedBookings;
   window.exportBookingsCsv = exportBookingsCsv;
   window.renderAdminLedger = renderAdminLedger;
+  window.setLedgerFilter = setLedgerFilter;
+  window.filterAdminLedger = filterAdminLedger;
 }
