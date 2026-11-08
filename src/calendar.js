@@ -289,6 +289,9 @@ export function normalizeBookingStatus(status) {
 }
 
 let currentLedgerFilter = 'all';
+let currentPackageFilter = 'all';
+let currentDateFilter = 'all';
+let currentSortFilter = 'date_asc';
 let currentSearchQuery = '';
 let cachedBookings = [];
 
@@ -300,9 +303,50 @@ export function setLedgerFilter(filter) {
   renderFilteredBookingsList();
 }
 
+export function setPackageFilter(pkg) {
+  currentPackageFilter = pkg;
+  renderFilteredBookingsList();
+}
+
+export function setDateFilter(dateMode) {
+  currentDateFilter = dateMode;
+  renderFilteredBookingsList();
+}
+
+export function setSortFilter(sortMode) {
+  currentSortFilter = sortMode;
+  renderFilteredBookingsList();
+}
+
 export function filterAdminLedger() {
   const searchInput = document.getElementById('admin-search-input');
   currentSearchQuery = (searchInput?.value || '').trim().toLowerCase();
+  renderFilteredBookingsList();
+}
+
+export function resetAllFilters() {
+  currentLedgerFilter = 'all';
+  currentPackageFilter = 'all';
+  currentDateFilter = 'all';
+  currentSortFilter = 'date_asc';
+  currentSearchQuery = '';
+
+  const searchInput = document.getElementById('admin-search-input');
+  if (searchInput) searchInput.value = '';
+
+  const pkgSelect = document.getElementById('filter-pkg-select');
+  if (pkgSelect) pkgSelect.value = 'all';
+
+  const dateSelect = document.getElementById('filter-date-select');
+  if (dateSelect) dateSelect.value = 'all';
+
+  const sortSelect = document.getElementById('filter-sort-select');
+  if (sortSelect) sortSelect.value = 'date_asc';
+
+  document.querySelectorAll('.filter-pill').forEach((p) => {
+    p.classList.toggle('active', p.dataset.filter === 'all');
+  });
+
   renderFilteredBookingsList();
 }
 
@@ -698,10 +742,37 @@ function renderFilteredBookingsList() {
     normStatus: normalizeBookingStatus(b.status)
   }));
 
+  // 1. Status Filter
   if (currentLedgerFilter !== 'all') {
     list = list.filter((b) => b.normStatus === currentLedgerFilter);
   }
 
+  // 2. Package Filter
+  if (currentPackageFilter !== 'all') {
+    list = list.filter((b) => {
+      const pkg = findPackageByLabel(b.packageChosen || b.package);
+      const tier = pkg ? pkg.tier : (b.packageChosen || b.package || '');
+      return tier.toLowerCase().includes(currentPackageFilter.toLowerCase());
+    });
+  }
+
+  // 3. Date Window Filter
+  if (currentDateFilter !== 'all') {
+    const todayStr = new Date().toLocaleDateString('en-CA');
+    const thisMonthStr = todayStr.substring(0, 7);
+
+    if (currentDateFilter === 'upcoming') {
+      list = list.filter((b) => b.date && b.date >= todayStr && b.normStatus !== 'completed' && b.normStatus !== 'cancelled');
+    } else if (currentDateFilter === 'today') {
+      list = list.filter((b) => b.date === todayStr);
+    } else if (currentDateFilter === 'this_month') {
+      list = list.filter((b) => b.date && b.date.startsWith(thisMonthStr));
+    } else if (currentDateFilter === 'past') {
+      list = list.filter((b) => b.date && (b.date < todayStr || b.normStatus === 'completed'));
+    }
+  }
+
+  // 4. Text Search Query
   if (currentSearchQuery) {
     const q = currentSearchQuery;
     list = list.filter((b) => {
@@ -713,18 +784,48 @@ function renderFilteredBookingsList() {
         (b.fb_name || b.fbName || '').toLowerCase().includes(q) ||
         (b.packageChosen || b.package || '').toLowerCase().includes(q) ||
         (b.address || '').toLowerCase().includes(q) ||
+        (b.reference_no || b.referenceNo || '').toLowerCase().includes(q) ||
         (statusMeta.label || '').toLowerCase().includes(q)
       );
     });
   }
 
+  // 5. Sorting
+  list.sort((a, b) => {
+    const getAmt = (x) => {
+      const pkg = findPackageByLabel(x.packageChosen || x.package);
+      return pkg ? pkg.price : (Number(x.amountDue || x.amount_due) || 1299);
+    };
+
+    if (currentSortFilter === 'date_desc') {
+      return (b.date || '').localeCompare(a.date || '');
+    }
+    if (currentSortFilter === 'amount_desc') {
+      return getAmt(b) - getAmt(a);
+    }
+    if (currentSortFilter === 'amount_asc') {
+      return getAmt(a) - getAmt(b);
+    }
+    if (currentSortFilter === 'newest') {
+      return (b.created_at || b.id || '').localeCompare(a.created_at || a.id || '');
+    }
+    return (a.date || '').localeCompare(b.date || '');
+  });
+
+  // Update Result Count & Reset Button
+  const countEl = document.getElementById('ledger-result-count');
+  const resetBtn = document.getElementById('btn-reset-filters');
+  const isFiltered = currentLedgerFilter !== 'all' || currentPackageFilter !== 'all' || currentDateFilter !== 'all' || currentSearchQuery !== '' || currentSortFilter !== 'date_asc';
+
+  if (countEl) {
+    countEl.textContent = list.length + ' of ' + cachedBookings.length + ' reservations';
+  }
+  if (resetBtn) {
+    resetBtn.style.display = isFiltered ? 'inline-flex' : 'none';
+  }
+
   if (list.length === 0) {
-    container.innerHTML = `
-      <div class="admin-ledger-empty">
-        <svg viewBox="0 0 24 24" width="32" height="32" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-        <p>No reservations match this filter.</p>
-      </div>
-    `;
+    container.innerHTML = '<div class="admin-ledger-empty"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg><p>No reservations match your filters.</p></div>';
     return;
   }
 
@@ -878,15 +979,14 @@ export function toggleMobileSidebar(open) {
 }
 
 export function switchAdminPage(pageId) {
-  const pages = ['view-overview', 'view-analytics', 'view-calendar', 'view-ledger'];
+  const pages = ['view-overview', 'view-calendar', 'view-ledger'];
   const titles = {
     'view-overview': 'Overview',
-    'view-analytics': 'Analytics & Trends',
-    'view-calendar': 'Calendar Availability',
-    'view-ledger': 'Reservations Ledger'
+    'view-calendar': 'Calendar',
+    'view-ledger': 'Reservations'
   };
 
-  const targetId = pages.includes(pageId) ? pageId : 'view-overview';
+  const targetId = (pageId === 'view-analytics' || !pages.includes(pageId)) ? 'view-overview' : pageId;
 
   pages.forEach((id) => {
     const el = document.getElementById(id);
@@ -895,18 +995,15 @@ export function switchAdminPage(pageId) {
     }
   });
 
-  // Update sidebar and mobile nav items
   document.querySelectorAll('.dash-side-link, .dash-bottom-nav-item').forEach((btn) => {
     btn.classList.toggle('active', btn.dataset.view === targetId);
   });
 
-  // Update top bar active title
   const titleEl = document.getElementById('dash-active-page-title');
   if (titleEl && titles[targetId]) {
     titleEl.textContent = titles[targetId];
   }
 
-  // Update URL hash
   try {
     const hash = '#' + targetId.replace('view-', '');
     if (window.location.hash !== hash) {
@@ -914,11 +1011,9 @@ export function switchAdminPage(pageId) {
     }
   } catch (e) {}
 
-  // Close mobile drawer if open
   toggleMobileSidebar(false);
 
-  // If analytics view, trigger chart resize to fit full container
-  if (targetId === 'view-analytics') {
+  if (targetId === 'view-overview') {
     requestAnimationFrame(() => {
       if (revenueChartInstance) revenueChartInstance.resize();
       if (statusChartInstance) statusChartInstance.resize();
@@ -966,4 +1061,8 @@ export function initCalendar() {
   window.updateBookingStatus = updateBookingStatus;
   window.switchAdminPage = switchAdminPage;
   window.toggleMobileSidebar = toggleMobileSidebar;
+  window.setPackageFilter = setPackageFilter;
+  window.setDateFilter = setDateFilter;
+  window.setSortFilter = setSortFilter;
+  window.resetAllFilters = resetAllFilters;
 }
