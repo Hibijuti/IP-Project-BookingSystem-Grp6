@@ -6931,32 +6931,31 @@ img {
     margin: 0 auto;
 }
 
+/* =========================================================
+   CONFIRMATION STAGE & VIP RESERVATION PASS REDESIGN
+   ========================================================= */
+
 .conf-hero {
     margin-bottom: 22px;
+    text-align: center;
 }
 
-.conf-badge-pulse {
-    width: 60px;
-    height: 60px;
+.conf-success-icon {
+    width: 58px;
+    height: 58px;
     border-radius: 50%;
     margin: 0 auto 14px;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: rgba(34, 197, 94, 0.16);
+    background: rgba(34, 197, 94, 0.12);
     color: #22c55e;
-    border: 2px solid rgba(34, 197, 94, 0.4);
-    box-shadow: 0 0 24px rgba(34, 197, 94, 0.35);
-    animation: confBadgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes confBadgePop {
-    0% { transform: scale(0.6); opacity: 0; }
-    100% { transform: scale(1); opacity: 1; }
+    border: 1px solid rgba(34, 197, 94, 0.35);
+    box-shadow: 0 4px 20px rgba(34, 197, 94, 0.18);
 }
 
 .conf-hero h3 {
-    font-size: 1.55rem;
+    font-size: 1.6rem;
     font-weight: 800;
     color: #ffffff;
     margin-bottom: 6px;
@@ -6965,9 +6964,9 @@ img {
 }
 
 .conf-subtitle {
-    font-size: 13px;
+    font-size: 13.5px;
     color: var(--text-secondary);
-    max-width: 460px;
+    max-width: 480px;
     margin: 0 auto;
     line-height: 1.55;
 }
@@ -6976,30 +6975,27 @@ img {
     color: #ffffff;
 }
 
-/* Luxury Glass Order Invoice Card */
-.conf-glass-card {
-    background: rgba(20, 20, 30, 0.92);
-    border: 1px solid rgba(255, 255, 255, 0.12);
+/* Unified VIP Reservation Pass Card */
+.conf-pass-card {
+    background: rgba(18, 18, 26, 0.95);
+    border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 22px;
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55), 0 0 0 1px rgba(255, 255, 255, 0.04);
     text-align: left;
-    margin-bottom: 22px;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
+    margin-bottom: 20px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
-.conf-card-header {
-    padding: 20px 22px;
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.04) 0%, rgba(255, 255, 255, 0.01) 100%);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.conf-ref-row {
+/* Pass Header */
+.conf-pass-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 14px;
+    padding: 16px 22px;
+    background: rgba(255, 255, 255, 0.02);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
     gap: 12px;
 }
 
@@ -7009,10 +7005,10 @@ img {
     gap: 6px;
     font-size: 12px;
     color: #ffffff;
-    background: rgba(255, 140, 0, 0.14);
+    background: rgba(255, 140, 0, 0.12);
     border: 1px solid rgba(255, 140, 0, 0.35);
     padding: 4px 12px;
-    border-radius: 10px;
+    border-radius: 999px;
 }
 
 .conf-ref-pill .ref-label {
@@ -7025,47 +7021,35 @@ img {
 .conf-ref-pill .ref-code {
     font-weight: 800;
     color: #ffffff;
-    letter-spacing: 0.8px;
+    letter-spacing: 0.6px;
 }
 
 .conf-status-tag {
     display: inline-flex;
     align-items: center;
-    gap: 6px;
-    font-size: 11px;
+    font-size: 11.5px;
     font-weight: 700;
     color: #fde047;
     background: rgba(234, 179, 8, 0.12);
     border: 1px solid rgba(234, 179, 8, 0.35);
-    padding: 4px 11px;
+    padding: 4px 12px;
     border-radius: 9999px;
 }
 
-.status-pulse-dot {
-    width: 6px;
-    height: 6px;
-    border-radius: 50%;
-    background: #eab308;
-    box-shadow: 0 0 8px #eab308;
-    animation: statusPulse 1.8s infinite ease-in-out;
-}
-
-@keyframes statusPulse {
-    0%, 100% { opacity: 0.5; transform: scale(0.9); }
-    50% { opacity: 1; transform: scale(1.2); }
-}
-
-.conf-pkg-hero {
+/* Package Highlight Strip */
+.conf-pkg-strip {
     display: flex;
     align-items: center;
     gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
-.conf-pkg-thumb-wrap {
-    width: 76px;
-    height: 64px;
+.conf-pkg-thumb-box {
+    width: 72px;
+    height: 60px;
     border-radius: 12px;
-    background: radial-gradient(circle at center, rgba(255, 140, 0, 0.15) 0%, rgba(18, 18, 26, 0.6) 80%);
+    background: radial-gradient(circle at center, rgba(255, 140, 0, 0.14) 0%, rgba(18, 18, 26, 0.6) 80%);
     border: 1px solid rgba(255, 255, 255, 0.08);
     display: flex;
     align-items: center;
@@ -7073,29 +7057,30 @@ img {
     flex-shrink: 0;
 }
 
-.conf-pkg-thumb {
-    max-height: 54px;
+.conf-pkg-strip-img {
+    max-height: 50px;
     max-width: 90%;
     object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+    filter: drop-shadow(0 3px 6px rgba(0, 0, 0, 0.4));
 }
 
-.conf-pkg-meta {
+.conf-pkg-strip-info {
+    flex: 1;
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.conf-pkg-tier {
-    font-size: 11px;
+.conf-pkg-strip-tier {
+    font-size: 10.5px;
     font-weight: 800;
     color: var(--orange);
     text-transform: uppercase;
     letter-spacing: 0.8px;
 }
 
-.conf-pkg-title {
-    font-size: 1.25rem;
+.conf-pkg-strip-name {
+    font-size: 1.18rem;
     font-weight: 800;
     color: #ffffff;
     font-family: var(--font-display);
@@ -7103,24 +7088,42 @@ img {
     line-height: 1.2;
 }
 
-.conf-pkg-dur {
+.conf-pkg-strip-dur {
     font-size: 12px;
     color: var(--text-muted);
 }
 
-.conf-card-body {
-    padding: 20px 22px;
+.conf-pkg-strip-price {
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
 }
 
-.conf-summary-grid {
+.conf-rate-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.conf-rate-val {
+    font-size: 1.15rem;
+    font-weight: 800;
+    color: #ffffff;
+}
+
+/* Event Details Grid */
+.conf-pass-details {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 10px;
+    padding: 16px 22px;
 }
 
-.conf-summary-cell {
-    background: rgba(255, 255, 255, 0.03);
+.conf-detail-cell {
+    background: rgba(255, 255, 255, 0.025);
     border: 1px solid rgba(255, 255, 255, 0.06);
     border-radius: 12px;
     padding: 10px 14px;
@@ -7129,11 +7132,11 @@ img {
     gap: 4px;
 }
 
-.conf-summary-cell.full-width {
+.conf-detail-cell.full-width {
     grid-column: 1 / -1;
 }
 
-.conf-label {
+.conf-cell-label {
     display: inline-flex;
     align-items: center;
     gap: 6px;
@@ -7144,12 +7147,12 @@ img {
     font-weight: 700;
 }
 
-.conf-label svg {
+.conf-cell-label svg {
     color: var(--orange);
 }
 
-.conf-val {
-    font-size: 13.5px;
+.conf-cell-val {
+    font-size: 13px;
     color: #ffffff;
     font-weight: 600;
     line-height: 1.4;
@@ -7166,192 +7169,241 @@ img {
     text-decoration: underline;
 }
 
-.conf-pin-link {
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    font-size: 12px;
-    color: var(--orange);
-    text-decoration: none;
-    margin-top: 4px;
-    font-weight: 600;
-    transition: color 0.2s ease;
-}
-
-.conf-pin-link:hover {
-    color: var(--orange-light);
-    text-decoration: underline;
-}
-
-.conf-pricing-breakdown {
-    background: rgba(0, 0, 0, 0.4);
-    border-radius: 14px;
-    padding: 14px 18px;
-    border: 1px solid rgba(255, 255, 255, 0.08);
+.conf-venue-line {
     display: flex;
-    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     gap: 10px;
 }
 
-.conf-price-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 13px;
-    color: rgba(255, 255, 255, 0.75);
-}
-
-.conf-price-row strong {
-    color: #ffffff;
-    font-size: 14px;
-}
-
-.conf-price-row.deposit-highlight {
-    padding: 10px 0;
-    border-top: 1px solid rgba(255, 255, 255, 0.08);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-.deposit-label-wrap {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    font-weight: 700;
-    color: #ffffff;
-}
-
-.deposit-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: var(--orange);
-    box-shadow: 0 0 8px var(--orange);
-}
-
-.conf-price-row.deposit-highlight strong {
-    font-size: 1.25rem;
-    font-weight: 800;
-}
-
-.conf-price-row.balance-sub {
-    font-size: 12px;
-}
-
-.conf-price-row.balance-sub small {
-    font-size: 13px;
-    font-weight: 700;
-    color: rgba(255, 255, 255, 0.9);
-}
-
-@media (max-width: 520px) {
-    .conf-ref-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    .conf-summary-grid {
-        grid-template-columns: 1fr;
-    }
-}
-
-/* ===================================================
-   UNIFIED GCASH PAYMENT & VERIFICATION PASS
-   =================================================== */
-
-.conf-pay-card {
-    background: rgba(18, 18, 28, 0.92);
-    border: 1px solid rgba(0, 132, 255, 0.3);
-    border-radius: 24px;
-    overflow: hidden;
-    margin-bottom: 22px;
-    box-shadow: 0 16px 48px rgba(0, 132, 255, 0.12), 0 24px 60px rgba(0, 0, 0, 0.5);
-    text-align: left;
-    backdrop-filter: blur(16px);
-    -webkit-backdrop-filter: blur(16px);
-}
-
-.conf-pay-head {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 18px 22px;
-    background: linear-gradient(135deg, rgba(0, 132, 255, 0.18) 0%, rgba(0, 86, 204, 0.08) 100%);
-    border-bottom: 1px solid rgba(0, 132, 255, 0.2);
-}
-
-.gcash-pill-brand {
+.conf-map-pill {
     display: inline-flex;
     align-items: center;
-    gap: 8px;
-}
-
-.gcash-logo-text {
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 13px;
-    font-weight: 900;
-    color: #ffffff;
-    background: linear-gradient(135deg, #0084ff, #0056cc);
-    box-shadow: 0 2px 10px rgba(0, 132, 255, 0.5);
-    letter-spacing: 0.6px;
-}
-
-.gcash-type-tag {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.75);
-    font-weight: 600;
-}
-
-.conf-pay-due {
-    text-align: right;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-end;
-}
-
-.due-label {
-    font-size: 10px;
-    text-transform: uppercase;
-    letter-spacing: 0.6px;
-    color: var(--text-muted);
+    gap: 5px;
+    font-size: 11px;
     font-weight: 700;
-}
-
-.due-val {
-    font-size: 1.4rem;
-    font-weight: 800;
     color: var(--orange);
-    font-family: var(--font-display);
-    line-height: 1.1;
+    background: rgba(255, 140, 0, 0.1);
+    border: 1px solid rgba(255, 140, 0, 0.3);
+    padding: 3px 9px;
+    border-radius: 999px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    flex-shrink: 0;
 }
 
-.conf-pay-body {
-    padding: 22px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+.conf-map-pill:hover {
+    background: rgba(255, 140, 0, 0.2);
+    color: #ffffff;
 }
 
-/* Quick Account Card */
-.pay-acct-card {
-    width: 100%;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background: rgba(255, 255, 255, 0.035);
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    border-radius: 14px;
-    padding: 14px 18px;
-    gap: 12px;
+/* Financial Breakdown Bar */
+.conf-financial-bar {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 0 22px 16px;
+    padding: 12px 14px;
+    background: rgba(0, 0, 0, 0.38);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 12px;
+    text-align: center;
 }
 
-.pay-acct-meta {
+.conf-fin-col {
     display: flex;
     flex-direction: column;
     gap: 2px;
 }
 
-.pay-acct-label {
+.conf-fin-col.highlight {
+    border-left: 1px solid rgba(255, 255, 255, 0.08);
+    border-right: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fin-label {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-muted);
+}
+
+.fin-val {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.85);
+}
+
+.fin-val.highlight-val {
+    color: var(--orange);
+    font-size: 14.5px;
+    font-weight: 800;
+}
+
+/* Ticket Notch Tear Divider */
+.conf-pass-tear {
+    position: relative;
+    display: flex;
+    align-items: center;
+    margin: 4px 0 16px;
+    overflow: hidden;
+}
+
+.tear-dashed-line {
+    flex: 1;
+    border-top: 1px dashed rgba(255, 255, 255, 0.16);
+    margin: 0 16px;
+}
+
+.tear-notch {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: #0f0f17;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.7);
+    flex-shrink: 0;
+}
+
+.tear-notch.left {
+    margin-left: -10px;
+}
+
+.tear-notch.right {
+    margin-right: -10px;
+}
+
+/* GCash Instant Deposit Hub */
+.conf-gcash-hub {
+    padding: 0 22px 22px;
+}
+
+.conf-gcash-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.gcash-badge-wrap {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gcash-logo-pill {
+    padding: 3px 11px;
+    border-radius: 9999px;
+    font-size: 12.5px;
+    font-weight: 900;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0084ff, #0056cc);
+    box-shadow: 0 2px 10px rgba(0, 132, 255, 0.45);
+    letter-spacing: 0.5px;
+}
+
+.gcash-head-text {
+    font-size: 13px;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+.gcash-due-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: rgba(0, 132, 255, 0.12);
+    border: 1px solid rgba(0, 132, 255, 0.35);
+    padding: 4px 12px;
+    border-radius: 999px;
+}
+
+.gcash-due-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.7);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.gcash-due-num {
+    font-size: 14px;
+    font-weight: 800;
+    color: #38bdf8;
+}
+
+/* Two Clean Payment Paths */
+.conf-gcash-methods {
+    display: grid;
+    grid-template-columns: 180px 1fr;
+    gap: 14px;
+    align-items: stretch;
+    margin-bottom: 16px;
+}
+
+.conf-qr-card {
+    background: #ffffff;
+    border-radius: 14px;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    box-shadow: 0 10px 28px rgba(0, 0, 0, 0.5);
+    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
+}
+
+.conf-qr-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 14px 34px rgba(0, 132, 255, 0.35);
+}
+
+.conf-qr-media {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.conf-qr-img {
+    width: 100%;
+    max-width: 155px;
+    height: auto;
+    border-radius: 8px;
+    display: block;
+}
+
+.conf-qr-hint {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 6px;
+    font-size: 11px;
+    font-weight: 700;
+    color: #1e293b;
+}
+
+.conf-acct-card {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.07);
+    border-radius: 14px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+}
+
+.acct-data-block {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.acct-field-label {
     font-size: 10.5px;
     color: var(--text-muted);
     text-transform: uppercase;
@@ -7359,25 +7411,27 @@ img {
     font-weight: 700;
 }
 
-.pay-acct-num {
-    font-size: 1.25rem;
+.acct-num-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+}
+
+.acct-num-display {
+    font-size: 1.3rem;
     color: #ffffff;
     font-weight: 800;
     letter-spacing: 1px;
     font-family: monospace;
 }
 
-.pay-acct-name {
-    font-size: 12px;
-    color: rgba(255, 255, 255, 0.65);
-}
-
 .btn-copy-acct {
-    padding: 8px 16px;
+    padding: 6px 14px;
     font-size: 12px;
     font-weight: 700;
     border-radius: 9999px;
-    background: rgba(0, 132, 255, 0.15);
+    background: rgba(0, 132, 255, 0.16);
     border: 1px solid rgba(0, 132, 255, 0.4);
     color: #38bdf8;
     cursor: pointer;
@@ -7395,242 +7449,70 @@ img {
     box-shadow: 0 4px 14px rgba(0, 132, 255, 0.4);
 }
 
-/* Or Divider */
-.pay-or-divider {
-    position: relative;
-    width: 100%;
-    text-align: center;
-    margin: 18px 0;
-}
-
-.pay-or-divider::before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: 0;
-    right: 0;
-    height: 1px;
-    background: rgba(255, 255, 255, 0.08);
-}
-
-.pay-or-divider span {
-    position: relative;
-    background: #12121c;
-    padding: 0 14px;
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-    color: var(--text-muted);
-    font-weight: 700;
-}
-
-/* Centered QR Showcase with Scanner Frame */
-.pay-qr-showcase {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-}
-
-.pay-qr-frame {
-    position: relative;
-    max-width: 220px;
-    width: 100%;
-    background: #ffffff;
-    border-radius: 18px;
-    padding: 10px;
-    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
-    cursor: pointer;
-    overflow: hidden;
-    transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.25s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.pay-qr-frame:hover {
-    transform: scale(1.02);
-    box-shadow: 0 16px 40px rgba(0, 132, 255, 0.3);
-}
-
-.pay-qr-image {
-    width: 100%;
-    height: auto;
-    max-height: 380px;
-    object-fit: contain;
-    border-radius: 10px;
-    display: block;
-}
-
-/* Scanner Corners */
-.qr-corner {
-    position: absolute;
-    width: 16px;
-    height: 16px;
-    border-color: #0084ff;
-    border-style: solid;
-    pointer-events: none;
-    z-index: 2;
-}
-
-.qr-corner.top-left {
-    top: 6px;
-    left: 6px;
-    border-width: 3px 0 0 3px;
-    border-top-left-radius: 6px;
-}
-
-.qr-corner.top-right {
-    top: 6px;
-    right: 6px;
-    border-width: 3px 3px 0 0;
-    border-top-right-radius: 6px;
-}
-
-.qr-corner.bottom-left {
-    bottom: 6px;
-    left: 6px;
-    border-width: 0 0 3px 3px;
-    border-bottom-left-radius: 6px;
-}
-
-.qr-corner.bottom-right {
-    bottom: 6px;
-    right: 6px;
-    border-width: 0 3px 3px 0;
-    border-bottom-right-radius: 6px;
-}
-
-.qr-zoom-hover-badge {
-    position: absolute;
-    bottom: 12px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(5, 5, 12, 0.85);
-    backdrop-filter: blur(6px);
-    color: #ffffff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 4px 12px;
-    border-radius: 9999px;
-    display: inline-flex;
-    align-items: center;
-    gap: 5px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
-    pointer-events: none;
-    white-space: nowrap;
-}
-
-.pay-qr-caption {
-    font-size: 11.5px;
-    color: var(--text-muted);
-    text-align: center;
-}
-
-/* 3-Step Verification Stepper Banner */
-.pay-stepper-box {
-    width: 100%;
-    margin-top: 20px;
-    padding: 16px;
-    background: rgba(0, 0, 0, 0.3);
-    border: 1px solid rgba(255, 255, 255, 0.07);
-    border-radius: 16px;
-}
-
-.stepper-title {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-}
-
-.step-badge {
-    font-size: 9.5px;
-    font-weight: 800;
-    letter-spacing: 0.8px;
-    padding: 2px 7px;
-    border-radius: 6px;
-    background: rgba(0, 132, 255, 0.2);
-    color: #38bdf8;
-    border: 1px solid rgba(0, 132, 255, 0.35);
-}
-
-.stepper-title strong {
+.acct-name-display {
     font-size: 12.5px;
-    color: #ffffff;
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
 }
 
-.pay-steps-row {
+.acct-balance-info {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+    padding-top: 8px;
+}
+
+.acct-balance-val {
+    font-size: 13px;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+/* Minimal 3-Step Flow Strip */
+.conf-steps-strip {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 8px;
+    background: rgba(0, 0, 0, 0.32);
+    border: 1px solid rgba(255, 255, 255, 0.06);
+    border-radius: 12px;
+    padding: 9px 14px;
+    gap: 6px;
 }
 
-.p-step {
-    display: flex;
+.conf-step-node {
+    display: inline-flex;
     align-items: center;
-    gap: 8px;
-    flex: 1;
+    gap: 7px;
 }
 
-.p-step-num {
-    width: 24px;
-    height: 24px;
+.conf-step-idx {
+    width: 20px;
+    height: 20px;
     border-radius: 50%;
     background: rgba(0, 132, 255, 0.2);
     border: 1px solid rgba(0, 132, 255, 0.4);
     color: #38bdf8;
-    font-size: 11px;
+    font-size: 10.5px;
     font-weight: 800;
-    display: flex;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
     flex-shrink: 0;
 }
 
-.p-step-text {
-    display: flex;
-    flex-direction: column;
+.conf-step-label {
+    font-size: 11.5px;
+    color: rgba(255, 255, 255, 0.82);
 }
 
-.p-step-text strong {
-    font-size: 12px;
+.conf-step-label strong {
     color: #ffffff;
-    line-height: 1.2;
 }
 
-.p-step-text small {
-    font-size: 10.5px;
-    color: var(--text-muted);
-}
-
-.p-step-sep {
+.conf-step-arrow {
     color: rgba(255, 255, 255, 0.25);
+    font-size: 13px;
+    font-weight: 800;
     flex-shrink: 0;
-    display: flex;
-    align-items: center;
-}
-
-@media (max-width: 520px) {
-    .pay-acct-card {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .btn-copy-acct {
-        width: 100%;
-        justify-content: center;
-    }
-    .pay-steps-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 10px;
-    }
-    .p-step-sep {
-        display: none;
-    }
 }
 
 /* Confirmation Actions */
@@ -7638,7 +7520,6 @@ img {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    margin-top: 10px;
     width: 100%;
 }
 
@@ -7655,6 +7536,8 @@ img {
     align-items: center;
     gap: 8px;
     text-decoration: none;
+    color: #ffffff;
+    transition: all 0.25s ease;
 }
 
 .conf-messenger-btn:hover {
@@ -7683,6 +7566,7 @@ img {
 
 .conf-new-booking {
     margin-top: 16px;
+    text-align: center;
 }
 
 .conf-reset-link {
@@ -7694,6 +7578,54 @@ img {
 
 .conf-reset-link:hover {
     color: #ffffff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 560px) {
+    .conf-pass-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .conf-pkg-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+    }
+    .conf-pkg-strip-price {
+        align-items: flex-start;
+    }
+    .conf-pass-details {
+        grid-template-columns: 1fr;
+    }
+    .conf-financial-bar {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .conf-fin-col.highlight {
+        border-left: none;
+        border-right: none;
+        border-top: 1px solid rgba(255, 255, 255, 0.08);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+        padding: 8px 0;
+    }
+    .conf-gcash-methods {
+        grid-template-columns: 1fr;
+    }
+    .conf-qr-card {
+        padding: 14px;
+    }
+    .conf-steps-strip {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+    }
+    .conf-step-arrow {
+        display: none;
+    }
+    .conf-secondary-actions {
+        grid-template-columns: 1fr;
+    }
 }
 
 /* WIZARD ACTIONS ROW */
@@ -8072,29 +8004,6 @@ img {
     color: #ffffff;
 }
 
-.cloud-status-badge {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-size: 11.5px;
-    font-weight: 700;
-    letter-spacing: 0.4px;
-    color: #86efac;
-    background: rgba(34, 197, 94, 0.12);
-    border: 1px solid rgba(34, 197, 94, 0.30);
-    padding: 5px 13px;
-    border-radius: 999px;
-    width: fit-content;
-}
-
-.live-dot {
-    width: 7px;
-    height: 7px;
-    border-radius: 50%;
-    background: #22c55e;
-    box-shadow: 0 0 10px #22c55e;
-    display: inline-block;
-}
 
 .admin-top-actions {
     display: flex;
