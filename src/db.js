@@ -61,7 +61,7 @@ export async function saveBookingToDB(bookingData) {
     payment_type: bookingData.paymentTypeLabel,
     amount_due: bookingData.amountDue,
     reference_no: bookingData.referenceNo || null,
-    status: 'confirmed'
+    status: 'pending_deposit'
   };
 
   if (bookingData.fbName) {
@@ -96,6 +96,31 @@ export async function saveBookingToDB(bookingData) {
   }
 
   return payload;
+}
+
+// 2.5 Update booking operational status in Supabase
+export async function updateBookingStatusInDB(id, newStatus, dateStr) {
+  const supabase = getSupabase();
+  if (!supabase) return;
+
+  const { error } = await supabase
+    .from('bookings')
+    .update({ status: newStatus })
+    .eq('id', id);
+
+  if (error) {
+    console.error('[K-SoundRentals] Error updating booking status in Supabase:', error.message);
+    throw error;
+  }
+
+  // If status is cancelled, release date; otherwise ensure date is locked
+  if (dateStr) {
+    if (newStatus === 'cancelled') {
+      await syncBlockedDateToDB(dateStr, false);
+    } else {
+      await syncBlockedDateToDB(dateStr, true);
+    }
+  }
 }
 
 // 3. Cancel booking strictly in Supabase (and reopen calendar date)

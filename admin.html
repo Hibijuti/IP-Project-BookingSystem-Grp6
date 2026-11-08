@@ -100,7 +100,7 @@
                 <!-- DASHBOARD HERO BAR -->
                 <div class="admin-dash-header">
                     <div class="dash-header-title">
-                        <h2>Command <span class="text-gradient">Center.</span></h2>
+                        <h2>Command <span class="text-gradient">Center</span></h2>
                     </div>
 
                     <div class="admin-top-actions">
@@ -159,7 +159,7 @@
                         <div class="metric-value peso-inline" id="stat-contract-val"><svg class="peso-svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4v16"/><path d="M6 4h7a5 5 0 0 1 0 10H6"/><path d="M4 8h16"/><path d="M4 11.5h16"/></svg>0</div>
                         <p class="metric-label">Gross Package Value</p>
                         <div class="how-card-footer-decor">
-                            <span class="decor-tag">Confirmed contracts</span>
+                            <span class="decor-tag">Gross Value</span>
                         </div>
                     </div>
 
@@ -185,7 +185,7 @@
                     <div class="admin-calendar-col">
                         <div class="calendar-panel spotlight-card">
                             <div class="panel-header">
-                                <h3>Date <span class="text-gradient">Blocker.</span></h3>
+                                <h3>Calendar <span class="text-gradient">Availability</span></h3>
                                 <span class="cal-hint-pill">Tap date to toggle</span>
                             </div>
                             <div class="cal-legend">
@@ -195,9 +195,6 @@
 
                             <div id="calendar-root"></div>
 
-                            <div class="cal-admin-instructions">
-                                <p>Tapping any open date locks it in Supabase so customers cannot book it. Tapping a blocked date re-opens it immediately.</p>
-                            </div>
                         </div>
                     </div>
 
@@ -206,14 +203,34 @@
                         <div class="ledger-panel spotlight-card">
                             <div class="ledger-head-bar">
                                 <div>
-                                    <h3>Reservations <span class="text-gradient">Ledger.</span></h3>
-                                    <p class="ledger-subtitle">Live customer bookings synced from Supabase</p>
+                                    <h3>Reservations <span class="text-gradient">Ledger</span></h3>
                                 </div>
-                                <div class="ledger-filter-pills">
-                                    <button type="button" class="filter-pill active" data-filter="all" onclick="window.setLedgerFilter('all')">All</button>
-                                    <button type="button" class="filter-pill" data-filter="confirmed" onclick="window.setLedgerFilter('confirmed')">Active</button>
-                                    <button type="button" class="filter-pill" data-filter="cancelled" onclick="window.setLedgerFilter('cancelled')">Cancelled</button>
-                                    <button type="button" class="btn btn-outline btn-sm-pill" onclick="window.exportBookingsCsv()">
+                                <div class="ledger-filter-pills" id="admin-filter-pills">
+                                    <button type="button" class="filter-pill active" data-filter="all" onclick="window.setLedgerFilter('all')">
+                                        <span>All</span>
+                                        <span class="filter-count" id="count-all">0</span>
+                                    </button>
+                                    <button type="button" class="filter-pill" data-filter="pending_deposit" onclick="window.setLedgerFilter('pending_deposit')">
+                                        <span>Pending</span>
+                                        <span class="filter-count" id="count-pending">0</span>
+                                    </button>
+                                    <button type="button" class="filter-pill" data-filter="deposit_verified" onclick="window.setLedgerFilter('deposit_verified')">
+                                        <span>Verified</span>
+                                        <span class="filter-count" id="count-verified">0</span>
+                                    </button>
+                                    <button type="button" class="filter-pill" data-filter="out_for_delivery" onclick="window.setLedgerFilter('out_for_delivery')">
+                                        <span>In Transit</span>
+                                        <span class="filter-count" id="count-transit">0</span>
+                                    </button>
+                                    <button type="button" class="filter-pill" data-filter="completed" onclick="window.setLedgerFilter('completed')">
+                                        <span>Completed</span>
+                                        <span class="filter-count" id="count-completed">0</span>
+                                    </button>
+                                    <button type="button" class="filter-pill" data-filter="cancelled" onclick="window.setLedgerFilter('cancelled')">
+                                        <span>Cancelled</span>
+                                        <span class="filter-count" id="count-cancelled">0</span>
+                                    </button>
+                                    <button type="button" class="btn btn-outline btn-sm-pill btn-export-csv" onclick="window.exportBookingsCsv()">
                                         <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.3"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
                                         <span>Export CSV</span>
                                     </button>
