@@ -8681,3 +8681,194 @@ summary:focus-visible,
         padding-right: 16px;
     }
 }
+
+/* =========================================================
+   WITTY AUDIO & CELEBRATION ANIMATIONS
+   ========================================================= */
+
+/* 1. Animated Equalizer Audio Visualizer Bars on Package Cards */
+.pkg-equalizer-bars {
+    position: absolute;
+    top: 14px;
+    left: 14px;
+    z-index: 4;
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 20px;
+    padding: 4px 7px;
+    border-radius: 999px;
+    background: rgba(0, 0, 0, 0.45);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    pointer-events: none;
+    transition: background 0.25s ease, border-color 0.25s ease;
+}
+
+.eq-bar {
+    width: 3px;
+    border-radius: 999px;
+    background: linear-gradient(180deg, #ff8c00, #ec4899);
+    transition: height 0.2s ease;
+}
+
+.eq-bar-1 { height: 6px; animation: eqIdle 1.8s ease-in-out infinite 0.1s; }
+.eq-bar-2 { height: 12px; animation: eqIdle 1.6s ease-in-out infinite 0.3s; }
+.eq-bar-3 { height: 8px; animation: eqIdle 1.9s ease-in-out infinite 0.5s; }
+.eq-bar-4 { height: 14px; animation: eqIdle 1.5s ease-in-out infinite 0.2s; }
+.eq-bar-5 { height: 9px; animation: eqIdle 1.7s ease-in-out infinite 0.4s; }
+
+@keyframes eqIdle {
+    0%, 100% { transform: scaleY(0.7); }
+    50% { transform: scaleY(1.1); }
+}
+
+@keyframes eqPartyDance {
+    0%, 100% { height: 4px; }
+    20% { height: 16px; }
+    40% { height: 8px; }
+    60% { height: 18px; }
+    80% { height: 10px; }
+}
+
+.package-card:hover .pkg-equalizer-bars {
+    background: rgba(255, 140, 0, 0.18);
+    border-color: rgba(255, 140, 0, 0.45);
+    box-shadow: 0 0 14px rgba(255, 140, 0, 0.35);
+}
+
+.package-card:hover .eq-bar-1 { animation: eqPartyDance 0.55s ease-in-out infinite 0.05s; }
+.package-card:hover .eq-bar-2 { animation: eqPartyDance 0.48s ease-in-out infinite 0.15s; }
+.package-card:hover .eq-bar-3 { animation: eqPartyDance 0.52s ease-in-out infinite 0.25s; }
+.package-card:hover .eq-bar-4 { animation: eqPartyDance 0.44s ease-in-out infinite 0.10s; }
+.package-card:hover .eq-bar-5 { animation: eqPartyDance 0.50s ease-in-out infinite 0.20s; }
+
+/* 2. Subwoofer Bass-Thump Animation on Speaker */
+@keyframes bassSubwooferKick {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+    18% {
+        transform: translateY(-5px) scale(1.06);
+        filter: drop-shadow(0 16px 28px rgba(255, 140, 0, 0.45));
+    }
+    35% {
+        transform: translateY(1px) scale(0.98);
+    }
+    55% {
+        transform: translateY(-3px) scale(1.03);
+    }
+    100% {
+        transform: translateY(0) scale(1);
+    }
+}
+
+.package-card:hover .pkg-studio-speaker {
+    animation: bassSubwooferKick 0.85s cubic-bezier(0.25, 1, 0.5, 1) infinite !important;
+}
+
+/* 3. Floating Musical Notes on Package Hover */
+.pkg-note-float {
+    position: absolute;
+    font-size: 16px;
+    font-weight: 800;
+    pointer-events: none;
+    opacity: 0;
+    z-index: 5;
+    transition: opacity 0.3s ease;
+}
+
+.pkg-note-float.n1 {
+    top: 30%;
+    left: 20%;
+    color: #ffad42;
+}
+
+.pkg-note-float.n2 {
+    top: 25%;
+    right: 22%;
+    color: #f472b6;
+}
+
+@keyframes pkgNoteDrift1 {
+    0% { transform: translateY(6px) rotate(-10deg); opacity: 0; }
+    50% { opacity: 0.95; }
+    100% { transform: translateY(-24px) rotate(15deg); opacity: 0; }
+}
+
+@keyframes pkgNoteDrift2 {
+    0% { transform: translateY(8px) rotate(10deg); opacity: 0; }
+    50% { opacity: 0.95; }
+    100% { transform: translateY(-26px) rotate(-18deg); opacity: 0; }
+}
+
+.package-card:hover .pkg-note-float.n1 {
+    animation: pkgNoteDrift1 1.6s ease-in-out infinite;
+}
+
+.package-card:hover .pkg-note-float.n2 {
+    animation: pkgNoteDrift2 1.8s ease-in-out infinite 0.4s;
+}
+
+/* 4. Playful Microphone Rock on Features Hover */
+@keyframes micRockBeat {
+    0%, 100% { transform: rotate(0deg); }
+    25% { transform: rotate(-14deg) scale(1.15); }
+    75% { transform: rotate(14deg) scale(1.15); }
+}
+
+.pkg-feature-list li:hover .equip-icon {
+    animation: micRockBeat 0.5s ease-in-out infinite alternate;
+    color: var(--orange-light);
+}
+
+/* 5. Booking Confirmation Confetti & Musical Sparkle Burst */
+.conf-hero {
+    position: relative;
+}
+
+.conf-celebration-burst {
+    position: absolute;
+    top: 28px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 1px;
+    height: 1px;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.burst-item {
+    position: absolute;
+    font-size: 18px;
+    font-weight: 800;
+    opacity: 0;
+    animation: burstRadiate 1.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.burst-n1 { color: #ffad42; animation-delay: 0.1s; --tx: -55px; --ty: -45px; --rot: -20deg; }
+.burst-n2 { color: #f472b6; animation-delay: 0.15s; --tx: 58px; --ty: -40px; --rot: 25deg; }
+.burst-s1 { color: #fde047; font-size: 15px; animation-delay: 0.05s; --tx: -70px; --ty: 10px; --rot: 45deg; }
+.burst-s2 { color: #38bdf8; font-size: 16px; animation-delay: 0.2s; --tx: 75px; --ty: 12px; --rot: -30deg; }
+.burst-m1 { font-size: 20px; animation-delay: 0.12s; --tx: -35px; --ty: -65px; --rot: -15deg; }
+.burst-n3 { color: #a78bfa; animation-delay: 0.18s; --tx: 36px; --ty: -62px; --rot: 18deg; }
+.burst-s3 { color: #34d399; font-size: 16px; animation-delay: 0.22s; --tx: 0px; --ty: -75px; --rot: 0deg; }
+
+@keyframes burstRadiate {
+    0% {
+        transform: translate(0, 0) scale(0.3) rotate(0deg);
+        opacity: 0;
+    }
+    30% {
+        opacity: 1;
+        transform: translate(var(--tx), var(--ty)) scale(1.3) rotate(var(--rot));
+    }
+    70% {
+        opacity: 0.85;
+        transform: translate(calc(var(--tx) * 1.15), calc(var(--ty) * 1.15)) scale(1.1) rotate(var(--rot));
+    }
+    100% {
+        transform: translate(calc(var(--tx) * 1.3), calc(var(--ty) * 1.3)) scale(0.7) rotate(var(--rot));
+        opacity: 0;
+    }
+}

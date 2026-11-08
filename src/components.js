@@ -126,7 +126,16 @@ export function createPackageCardHTML(pkg) {
     <article class="package-card${featuredClass} spotlight-card anim-reveal" data-pkg-card="${pkg.id}">
       <div class="pkg-studio-header ${pkg.themeClass}">
         ${badgeHTML}
+        <div class="pkg-equalizer-bars" aria-hidden="true" title="Audio Party Ready">
+          <span class="eq-bar eq-bar-1"></span>
+          <span class="eq-bar eq-bar-2"></span>
+          <span class="eq-bar eq-bar-3"></span>
+          <span class="eq-bar eq-bar-4"></span>
+          <span class="eq-bar eq-bar-5"></span>
+        </div>
         <div class="pkg-studio-art">
+          <span class="pkg-note-float n1" aria-hidden="true">♪</span>
+          <span class="pkg-note-float n2" aria-hidden="true">♫</span>
           <img src="${pkg.img}" alt="${pkg.imgAlt}" class="pkg-studio-speaker float-anim">
         </div>
       </div>

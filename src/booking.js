@@ -355,6 +355,15 @@ function showBookingConfirmation(bookingData, isOfflineFallback = false) {
   if (contentEl) {
     contentEl.innerHTML = [
       '<div class="conf-hero">',
+      '  <div class="conf-celebration-burst" aria-hidden="true">',
+      '    <span class="burst-item burst-n1">♪</span>',
+      '    <span class="burst-item burst-n2">♫</span>',
+      '    <span class="burst-item burst-s1">✦</span>',
+      '    <span class="burst-item burst-s2">★</span>',
+      '    <span class="burst-item burst-m1">🎤</span>',
+      '    <span class="burst-item burst-n3">♬</span>',
+      '    <span class="burst-item burst-s3">✨</span>',
+      '  </div>',
       '  <div class="conf-badge-pulse">',
       '    <svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="2.6"><polyline points="20 6 9 17 4 12"/></svg>',
       '  </div>',
